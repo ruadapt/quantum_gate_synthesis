@@ -350,6 +350,148 @@ void testRootTwoDyadic()
     std::cout << "\tfromInteger tests passed" << std::endl;
 }
 
+void testRootTwoRational()
+{
+    QRootTwo r0 = QRootTwo(0_mpq, 0_mpq);              // 0
+    QRootTwo r1 = QRootTwo(2_mpq / 4, 9_mpq / 18);     // 1.207
+    QRootTwo r1equal = QRootTwo(1_mpq / 2, 1_mpq / 2); // 1.207
+    QRootTwo r2 = QRootTwo(-7_mpq / 13, 33_mpq / 20);  // 1.795
+    QRootTwo r3 = QRootTwo(9_mpq / 17, -100_mpq / 3);  // -46.611
+    QRootTwo r4 = QRootTwo(5_mpq, -7_mpq);             // -4.899
+
+    std::cout << "QRootTwo testing:" << std::endl;
+
+    // Make sure that we're converting the rational numbers to the standard,
+    // canonical form.
+    QRootTwo rNonCanonical = QRootTwo(2_mpq / 4, -3_mpq / 9);
+    assert(rNonCanonical.a.get_num() == 1);
+    assert(rNonCanonical.a.get_den() == 2);
+    assert(rNonCanonical.b.get_num() == -1);
+    assert(rNonCanonical.b.get_den() == 3);
+    std::cout << "\tcanonicalization test passed" << std::endl;
+
+    QRootTwo fromScalar = QRootTwo(1_mpq / 2);
+    assert(QRootTwo(1_mpq / 2, 0_mpq) == fromScalar);
+    std::cout << "\tfromScalar test passed" << std::endl;
+
+    assert(r1 == r1equal);
+    assert(r1 != r0);
+    assert(r1 != r2);
+    assert(r1 != r3);
+    assert(r2 == r2);
+    assert(r2 != r3);
+    assert(!(r1 != r1equal));
+    assert(!(r1 == r0));
+    assert(!(r1 == r2));
+    assert(!(r1 == r3));
+    assert(!(r2 != r2));
+    assert(!(r2 == r3));
+    std::cout << "\tequality tests passed" << std::endl;
+
+    assert("RootTwo(0, 0)" == r0.toString());
+    assert("RootTwo(-7/13, 33/20)" == r2.toString());
+    assert("RootTwo(9/17, -100/3)" == r3.toString());
+    assert("RootTwo(5, -7)" == r4.toString());
+    std::cout << "\ttoString tests passed" << std::endl;
+
+    // // r3 < r4 < r0 < r1 < r2
+    assert(r3 < r4);
+    assert(r4 < r0);
+    assert(r0 < r1);
+    assert(r1 < r2);
+    assert(r4 < r1);
+    assert(r0 < r2);
+    assert(r3 <= r4);
+    assert(r4 <= r0);
+    assert(r0 <= r1);
+    assert(r1 <= r2);
+    assert(r4 <= r1);
+    assert(r0 <= r2);
+    assert(!(r3 > r4));
+    assert(!(r4 > r0));
+    assert(!(r0 > r1));
+    assert(!(r1 > r2));
+    assert(!(r4 > r1));
+    assert(!(r0 > r2));
+    assert(!(r3 >= r4));
+    assert(!(r4 >= r0));
+    assert(!(r0 >= r1));
+    assert(!(r1 >= r2));
+    assert(!(r4 >= r1));
+    assert(!(r0 >= r2));
+    assert(r4 > r3);
+    assert(r0 > r4);
+    assert(r1 > r0);
+    assert(r2 > r1);
+    assert(r1 > r4);
+    assert(r2 > r0);
+    assert(r4 >= r3);
+    assert(r0 >= r4);
+    assert(r1 >= r0);
+    assert(r2 >= r1);
+    assert(r1 >= r4);
+    assert(r2 >= r0);
+    assert(!(r4 < r3));
+    assert(!(r0 < r4));
+    assert(!(r1 < r0));
+    assert(!(r2 < r1));
+    assert(!(r1 < r4));
+    assert(!(r2 < r0));
+    assert(!(r4 <= r3));
+    assert(!(r0 <= r4));
+    assert(!(r1 <= r0));
+    assert(!(r2 <= r1));
+    assert(!(r1 <= r4));
+    assert(!(r2 <= r0));
+    std::cout << "\tcomparison tests passed" << std::endl;
+
+    QRootTwo sum = r1 + r2;
+    QRootTwo expectedSum = QRootTwo(-1_mpq / 26, 43_mpq / 20);
+    assert(expectedSum == sum);
+    std::cout << "\tsum test passed" << std::endl;
+
+    QRootTwo difference = r2 - r3;
+    QRootTwo expectedDifference = QRootTwo(-236_mpq / 221, 2099_mpq / 60);
+    assert(expectedDifference == difference);
+    std::cout << "\tdifference test passed" << std::endl;
+
+    QRootTwo product = r2 * r3;
+    QRootTwo expectedProduct = QRootTwo(-24373_mpq / 221, 249583_mpq / 13260);
+    assert(expectedProduct == product);
+    std::cout << "\tproduct test passed" << std::endl;
+
+    QRootTwo negation = -r3;
+    QRootTwo expectedNegation = QRootTwo(-9_mpq / 17, 100_mpq / 3);
+    assert(expectedNegation == negation);
+    std::cout << "\tnegation test passed" << std::endl;
+
+    QRootTwo expectedR0Abs = QRootTwo(0_mpq, 0_mpq);
+    assert(QRootTwo(0_mpq, 0_mpq) == r0.abs());
+    assert(QRootTwo(1_mpq / 2, 1_mpq / 2) == r1.abs());
+    assert(QRootTwo(-9_mpq / 17, 100_mpq / 3) == r3.abs());
+    std::cout << "\tabs tests passed" << std::endl;
+
+    assert(0 == r0.signum());
+    assert(1 == r1.signum());
+    assert(1 == r2.signum());
+    assert(-1 == r3.signum());
+    assert(-1 == r4.signum());
+    std::cout << "\tsignum tests passed" << std::endl;
+
+    assert(QRootTwo(1_mpq / 2, 0_mpq) == QRootTwo::half());
+    std::cout << "\thalf test passed" << std::endl;
+
+    assert(QRootTwo(0_mpq, 1_mpq) == QRootTwo::rootTwo());
+    std::cout << "\trootTwo test passed" << std::endl;
+
+    assert(QRootTwo(0_mpq, 1_mpq / 2) == QRootTwo::rootHalf());
+    std::cout << "\trootHalf test passed" << std::endl;
+
+    assert(QRootTwo(5_mpq, 0_mpq) == QRootTwo::fromInteger(5));
+    assert(QRootTwo(-2_mpq, 0_mpq) == QRootTwo::fromInteger(-2));
+    std::cout << "\tfromInteger tests passed" << std::endl;
+}
+
 void testZ2()
 {
     Z2 x = Z2(0);
@@ -427,6 +569,8 @@ int main()
     testRootTwoDyadic<int>();
     std::cout << std::endl;
     testRootTwoDyadic<mpz_class>();
+    std::cout << std::endl;
+    testRootTwoRational();
     std::cout << std::endl;
     testDyadic<int>();
     std::cout << std::endl;

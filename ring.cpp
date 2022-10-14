@@ -125,6 +125,12 @@ namespace ring
     }
 
     template <>
+    int sign(mpq_class a)
+    {
+        return sgn(a);
+    }
+
+    template <>
     int sign(int a)
     {
         return sign<long int>(a);
@@ -192,6 +198,12 @@ namespace ring
     double half()
     {
         return 0.5;
+    }
+
+    template <>
+    mpq_class half()
+    {
+        return mpq_class(1, 2);
     }
 
     template <typename T>
@@ -370,6 +382,10 @@ public:
     {
         return "Dyadic(" + ring::toString(a) + ", " + ring::toString(n) + ")";
     }
+    void print(std::string prefix) const
+    {
+        std::cout << prefix << ": " << this->toString() << std::endl;
+    }
     static Dyadic fromInteger(int n)
     {
         return Dyadic(T(n), T(0));
@@ -512,6 +528,10 @@ public:
     {
         return "RootTwo(" + ring::toString(a) + ", " + ring::toString(b) + ")";
     }
+    void print(std::string prefix) const
+    {
+        std::cout << prefix << ": " << this->toString() << std::endl;
+    }
     static RootTwo half()
     {
         return RootTwo<T>(ring::half<T>(), T(0));
@@ -535,12 +555,29 @@ public:
 };
 
 template <>
+RootTwo<mpq_class>::RootTwo(mpq_class a, mpq_class b)
+{
+    // Make sure numerator and denominator are in canonical form.
+    a.canonicalize();
+    b.canonicalize();
+    this->a = a;
+    this->b = b;
+}
+
+template <>
 std::string RootTwo<mpz_class>::toString() const
 {
     return "RootTwo(" + a.get_str() + ", " + b.get_str() + ")";
 }
 
+template <>
+std::string RootTwo<mpq_class>::toString() const
+{
+    return "RootTwo(" + a.get_str() + ", " + b.get_str() + ")";
+}
+
 using ZRootTwo = RootTwo<mpz_class>;
+using QRootTwo = RootTwo<mpq_class>;
 
 class Z2
 {
@@ -601,6 +638,10 @@ public:
     std::string toString() const
     {
         return "Z2(" + std::to_string(this->mod2) + ")";
+    }
+    void print(std::string prefix) const
+    {
+        std::cout << prefix << ": " << this->toString() << std::endl;
     }
     static Z2 fromInteger(int n)
     {
