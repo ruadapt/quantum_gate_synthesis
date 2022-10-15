@@ -1,9 +1,12 @@
 #include <iostream>
 #include <gmpxx.h>
 
+typedef mpz_class Integer;
+typedef mpq_class Rational;
+
 namespace ring
 {
-    signed long int mpzToLongInt(mpz_class z)
+    signed long int mpzToLongInt(Integer z)
     {
         assert(z.fits_slong_p());
         return z.get_si();
@@ -20,15 +23,15 @@ namespace ring
     }
 
     template <typename Integral>
-    Integral shift(Integral x, mpz_class bits)
+    Integral shift(Integral x, Integer bits)
     {
         return shift(x, mpzToLongInt(bits));
     }
 
     template <>
-    mpz_class shift(mpz_class x, long int bits)
+    Integer shift(Integer x, long int bits)
     {
-        mpz_class result;
+        Integer result;
         if (bits >= 0)
         {
             mpz_mul_2exp(result.get_mpz_t(), x.get_mpz_t(), bits);
@@ -41,7 +44,7 @@ namespace ring
     }
 
     template <>
-    mpz_class shift(mpz_class x, mpz_class bits)
+    Integer shift(Integer x, Integer bits)
     {
         return shift(x, mpzToLongInt(bits));
     }
@@ -54,7 +57,7 @@ namespace ring
     }
 
     template <typename Integral>
-    Integral shiftL(Integral x, mpz_class bits)
+    Integral shiftL(Integral x, Integer bits)
     {
         return shiftL(x, mpzToLongInt(bits));
     }
@@ -67,7 +70,7 @@ namespace ring
     }
 
     template <typename Integral>
-    Integral shiftR(Integral x, mpz_class bits)
+    Integral shiftR(Integral x, Integer bits)
     {
         return shiftR(x, mpzToLongInt(bits));
     }
@@ -79,7 +82,7 @@ namespace ring
     }
 
     template <typename Integral>
-    Integral exp2(mpz_class pow)
+    Integral exp2(Integer pow)
     {
         return exp2<Integral>(mpzToLongInt(pow));
     }
@@ -108,7 +111,7 @@ namespace ring
     }
 
     template <>
-    int sign(mpz_class a)
+    int sign(Integer a)
     {
         if (a == 0)
         {
@@ -125,7 +128,7 @@ namespace ring
     }
 
     template <>
-    int sign(mpq_class a)
+    int sign(Rational a)
     {
         return sgn(a);
     }
@@ -158,7 +161,7 @@ namespace ring
         }
     }
 
-    mp_bitcnt_t lobit(mpz_class n)
+    mp_bitcnt_t lobit(Integer n)
     {
         if (n == 0)
         {
@@ -184,7 +187,7 @@ namespace ring
         }
     }
 
-    size_t hibit(mpz_class n)
+    size_t hibit(Integer n)
     {
         // We need the - 1 because mpz_sizeinbase returns the position of the first 1
         // bit counting from 1 instead of 0.
@@ -201,9 +204,9 @@ namespace ring
     }
 
     template <>
-    mpq_class half()
+    Rational half()
     {
-        return mpq_class(1, 2);
+        return Rational(1, 2);
     }
 
     template <typename T>
@@ -407,13 +410,13 @@ Dyadic<int> ring::half()
 }
 
 template <>
-Dyadic<mpz_class> ring::half()
+Dyadic<Integer> ring::half()
 {
-    return Dyadic<mpz_class>(1, 1);
+    return Dyadic<Integer>(1, 1);
 }
 
 template <>
-std::string Dyadic<mpz_class>::toString() const
+std::string Dyadic<Integer>::toString() const
 {
     return "Dyadic(" + a.get_str() + ", " + n.get_str() + ")";
 }
@@ -555,7 +558,7 @@ public:
 };
 
 template <>
-RootTwo<mpq_class>::RootTwo(mpq_class a, mpq_class b)
+RootTwo<Rational>::RootTwo(Rational a, Rational b)
 {
     // Make sure numerator and denominator are in canonical form.
     a.canonicalize();
@@ -565,19 +568,19 @@ RootTwo<mpq_class>::RootTwo(mpq_class a, mpq_class b)
 }
 
 template <>
-std::string RootTwo<mpz_class>::toString() const
+std::string RootTwo<Integer>::toString() const
 {
     return "RootTwo(" + a.get_str() + ", " + b.get_str() + ")";
 }
 
 template <>
-std::string RootTwo<mpq_class>::toString() const
+std::string RootTwo<Rational>::toString() const
 {
     return "RootTwo(" + a.get_str() + ", " + b.get_str() + ")";
 }
 
-using ZRootTwo = RootTwo<mpz_class>;
-using QRootTwo = RootTwo<mpq_class>;
+using ZRootTwo = RootTwo<Integer>;
+using QRootTwo = RootTwo<Rational>;
 
 template <typename T>
 class Complex
@@ -648,7 +651,7 @@ public:
 };
 
 template <>
-std::string Complex<mpz_class>::toString() const
+std::string Complex<Integer>::toString() const
 {
     return "Complex(" + a.get_str() + ", " + b.get_str() + ")";
 }
@@ -736,7 +739,7 @@ std::string ring::toString(const RootTwo<long int> &arg)
 }
 
 template <>
-std::string ring::toString(const RootTwo<mpz_class> &arg)
+std::string ring::toString(const RootTwo<Integer> &arg)
 {
     return arg.toString();
 }
@@ -754,7 +757,7 @@ std::string ring::toString(const Dyadic<long int> &arg)
 }
 
 template <>
-std::string ring::toString(const Dyadic<mpz_class> &arg)
+std::string ring::toString(const Dyadic<Integer> &arg)
 {
     return arg.toString();
 }

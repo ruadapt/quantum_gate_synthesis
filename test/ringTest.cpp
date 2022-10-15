@@ -617,23 +617,23 @@ int main()
 {
     testRootTwoIntegral<int>();
     std::cout << std::endl;
-    testRootTwoIntegral<mpz_class>();
+    testRootTwoIntegral<Integer>();
     std::cout << std::endl;
     testRootTwoDyadic<int>();
     std::cout << std::endl;
-    testRootTwoDyadic<mpz_class>();
+    testRootTwoDyadic<Integer>();
     std::cout << std::endl;
     testRootTwoRational();
     std::cout << std::endl;
 
     testComplexIntegral<int>();
     std::cout << std::endl;
-    testComplexIntegral<mpz_class>();
+    testComplexIntegral<Integer>();
     std::cout << std::endl;
 
     testDyadic<int>();
     std::cout << std::endl;
-    testDyadic<mpz_class>();
+    testDyadic<Integer>();
     std::cout << std::endl;
     
     testZ2();
