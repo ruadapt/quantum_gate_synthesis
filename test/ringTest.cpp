@@ -560,6 +560,59 @@ void testZ2()
     std::cout << "\tfromInteger tests passed" << std::endl;
 }
 
+template <typename T>
+void testComplexIntegral()
+{
+    Complex<T> c1 = Complex<T>(1, 2);
+    Complex<T> c1copy = Complex<T>(1, 2);
+    Complex<T> c2 = Complex<T>(4, 9);
+    Complex<T> c3 = Complex<T>(-2, 5);
+    Complex<T> c4 = Complex<T>(-3, -1);
+
+    std::cout << "Complex<" << typeid(T).name() << "> testing:" << std::endl;
+
+    assert(c1 == c1copy);
+    assert(!(c1 == c2));
+    assert(c1 != c2);
+    assert(!(c1 != c1copy));
+    std::cout << "\tequality tests passed" << std::endl;
+
+    assert("Complex(1, 2)" == c1.toString());
+    assert("Complex(4, 9)" == c2.toString());
+    std::cout << "\ttoString tests passed" << std::endl;
+
+    assert(Complex<T>(5, 2) == c1 + T(4));
+    std::cout << "\tscalar sum test passed" << std::endl;
+
+    assert(Complex<T>(-1, 2) == c1 - T(2));
+    std::cout << "\tscalar difference test passed" << std::endl;
+
+    assert(Complex<T>(12, 27) == c2 * T(3));
+    std::cout << "\tscalar product test passed" << std::endl;
+
+    assert(Complex<T>(5, 11) == c1 + c2);
+    std::cout << "\tsum test passed" << std::endl;
+
+    assert(Complex<T>(-3, -7) == c1 - c2);
+    std::cout << "\tdifference test passed" << std::endl;
+
+    assert(Complex<T>(-53, 2) == c2 * c3);
+    std::cout << "\tproduct test passed" << std::endl;
+
+    assert(Complex<T>(-1, -2) == -c1);
+    std::cout << "\tnegation test passed" << std::endl;
+
+    // abs doesn't do anything for complex numbers.
+    assert(Complex<T>(1, 2) == c1.abs());
+    assert(Complex<T>(-2, 5) == c3.abs());
+    std::cout << "\tabs tests passed" << std::endl;
+
+    // signum is always 1 for complex numbers.
+    assert(1 == c1.signum());
+    assert(1 == c2.signum());
+    std::cout << "\tsignum tests passed" << std::endl;
+}
+
 int main()
 {
     testRootTwoIntegral<int>();
@@ -572,10 +625,18 @@ int main()
     std::cout << std::endl;
     testRootTwoRational();
     std::cout << std::endl;
+
+    testComplexIntegral<int>();
+    std::cout << std::endl;
+    testComplexIntegral<mpz_class>();
+    std::cout << std::endl;
+
     testDyadic<int>();
     std::cout << std::endl;
     testDyadic<mpz_class>();
     std::cout << std::endl;
+    
     testZ2();
+
     return 0;
 }

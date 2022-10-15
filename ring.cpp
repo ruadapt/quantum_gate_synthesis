@@ -434,9 +434,9 @@ public:
         this->a = a;
         this->b = b;
     }
-    RootTwo<T> copy() const
+    RootTwo copy() const
     {
-        return RootTwo<T>(a, b);
+        return RootTwo(a, b);
     }
     bool operator==(const RootTwo &r) const
     {
@@ -578,6 +578,80 @@ std::string RootTwo<mpq_class>::toString() const
 
 using ZRootTwo = RootTwo<mpz_class>;
 using QRootTwo = RootTwo<mpq_class>;
+
+template <typename T>
+class Complex
+{
+public:
+    T a;
+    T b;
+    Complex(T arg)
+    {
+        this->a = arg;
+        this->b = T(0);
+    }
+    Complex(T a, T b)
+    {
+        this->a = a;
+        this->b = b;
+    }
+    Complex copy() const
+    {
+        return Complex(a, b);
+    }
+    bool operator==(const Complex &c) const
+    {
+        return (this->a == c.a) && (this->b == c.b);
+    }
+    bool operator!=(const Complex &c) const
+    {
+        return !(*this == c);
+    }
+    Complex operator+(const Complex &c) const
+    {
+        return Complex(this->a + c.a, this->b + c.b);
+    }
+    Complex operator-(const Complex &c) const
+    {
+        return Complex(this->a - c.a, this->b - c.b);
+    }
+    Complex operator*(const Complex &c) const
+    {
+        T newA = this->a * c.a - this->b * c.b;
+        T newB = this->a * c.b + c.a * this->b;
+        return Complex(newA, newB);
+    }
+    Complex operator-() const
+    {
+        return Complex(-this->a, -this->b);
+    }
+    Complex abs() const
+    {
+        return this->copy();
+    }
+    int signum() const
+    {
+        return 1;
+    }
+    std::string toString() const
+    {
+        return "Complex(" + ring::toString(a) + ", " + ring::toString(b) + ")";
+    }
+    void print(std::string prefix) const
+    {
+        std::cout << prefix << ": " << this->toString() << std::endl;
+    }
+    static Complex half()
+    {
+        return Complex<T>(ring::half<T>(), T(0));
+    }
+};
+
+template <>
+std::string Complex<mpz_class>::toString() const
+{
+    return "Complex(" + a.get_str() + ", " + b.get_str() + ")";
+}
 
 class Z2
 {
