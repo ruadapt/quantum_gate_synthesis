@@ -1,8 +1,6 @@
+#include "ring.h"
 #include <iostream>
 #include <gmpxx.h>
-
-typedef mpz_class Integer;
-typedef mpq_class Rational;
 namespace ring
 {
     signed long int mpzToLongInt(Integer z)
@@ -260,192 +258,223 @@ namespace ring
     std::string toString(const Rational &arg) { return arg.get_str(); }
 }
 
-enum Ordering
-{
-    LT,
-    EQ,
-    GT
-};
-
 template <typename T>
-T subtract(T arg1, T arg2)
+Dyadic<T>::Dyadic(T arg)
 {
-    return arg1 + (-arg2);
+    this->a = arg;
+    this->n = 0;
 }
 
 template <typename T>
-class Dyadic
+Dyadic<T>::Dyadic()
 {
-public:
-    T a;
-    T n;
-    Dyadic(T arg)
+    this->a = 0;
+    this->n = 0;
+}
+
+template <typename T>
+Dyadic<T>::Dyadic(T a, T n)
+{
+    this->a = a;
+    this->n = n;
+}
+
+template <typename T>
+Dyadic<T> Dyadic<T>::copy() const
+{
+    return Dyadic<T>(a, n);
+}
+
+template <typename T>
+bool Dyadic<T>::operator==(const Dyadic &d) const
+{
+    T b = d.a;
+    T m = d.n;
+    T k = (m > n) ? m : n;
+    return (a * ring::exp2<T>(k - n)) == (b * ring::exp2<T>(k - m));
+}
+
+template <typename T>
+bool Dyadic<T>::operator!=(const Dyadic &d) const
+{
+    return !(*this == d);
+}
+
+template <typename T>
+Ordering Dyadic<T>::compare(const Dyadic &d) const
+{
+    T b = d.a;
+    T m = d.n;
+    T k = (n > m) ? n : m;
+    T size1 = a * ring::exp2<T>(k - n);
+    T size2 = b * ring::exp2<T>(k - m);
+    if (size1 > size2)
     {
-        this->a = arg;
-        this->n = 0;
+        return GT;
     }
-    Dyadic()
+    else if (size1 < size2)
     {
-        this->a = 0;
-        this->n = 0;
+        return LT;
     }
-    Dyadic(T a, T n)
+    return EQ;
+}
+
+template <typename T>
+bool Dyadic<T>::operator<(const Dyadic &d) const
+{
+    return this->compare(d) == LT;
+}
+
+template <typename T>
+bool Dyadic<T>::operator>(const Dyadic &d) const
+{
+    return this->compare(d) == GT;
+}
+
+template <typename T>
+bool Dyadic<T>::operator<=(const Dyadic &d) const
+{
+    Ordering c = this->compare(d);
+    return (c == LT) || (c == EQ);
+}
+
+template <typename T>
+bool Dyadic<T>::operator>=(const Dyadic &d) const
+{
+    Ordering c = this->compare(d);
+    return (c == GT) || (c == EQ);
+}
+
+template <typename T>
+Dyadic<T> Dyadic<T>::operator+(const Dyadic &d) const
+{
+    T b = d.a;
+    T m = d.n;
+    if (n < m)
     {
-        this->a = a;
-        this->n = n;
+        T c = ring::shiftL(a, m - n) + b;
+        return Dyadic(c, m);
     }
-    Dyadic copy() const
+    else
     {
-        return Dyadic(a, n);
+        T d = a + ring::shiftL(b, n - m);
+        return Dyadic(d, n);
     }
-    bool operator==(const Dyadic &d) const
-    {
-        T b = d.a;
-        T m = d.n;
-        T k = (m > n) ? m : n;
-        return (a * ring::exp2<T>(k - n)) == (b * ring::exp2<T>(k - m));
-    }
-    bool operator!=(const Dyadic &d) const
-    {
-        return !(*this == d);
-    }
-    Ordering compare(const Dyadic &d) const
-    {
-        T b = d.a;
-        T m = d.n;
-        T k = (n > m) ? n : m;
-        T size1 = a * ring::exp2<T>(k - n);
-        T size2 = b * ring::exp2<T>(k - m);
-        if (size1 > size2)
-        {
-            return GT;
-        }
-        else if (size1 < size2)
-        {
-            return LT;
-        }
-        return EQ;
-    }
-    bool operator<(const Dyadic &d) const
-    {
-        return this->compare(d) == LT;
-    }
-    bool operator>(const Dyadic &d) const
-    {
-        return this->compare(d) == GT;
-    }
-    bool operator<=(const Dyadic &d) const
-    {
-        Ordering c = this->compare(d);
-        return (c == LT) || (c == EQ);
-    }
-    bool operator>=(const Dyadic &d) const
-    {
-        Ordering c = this->compare(d);
-        return (c == GT) || (c == EQ);
-    }
-    Dyadic operator+(const Dyadic &d) const
-    {
-        T b = d.a;
-        T m = d.n;
-        if (n < m)
-        {
-            T c = ring::shiftL(a, m - n) + b;
-            return Dyadic(c, m);
-        }
-        else
-        {
-            T d = a + ring::shiftL(b, n - m);
-            return Dyadic(d, n);
-        }
-    }
-    Dyadic operator-(const Dyadic &d) const
-    {
-        return (*this) + (-d);
-    }
-    Dyadic operator*(const Dyadic &d) const
-    {
-        T b = d.a;
-        T m = d.n;
-        return Dyadic(a * b, m + n);
-    }
-    Dyadic operator-() const
-    {
-        return Dyadic(-a, n);
-    }
-    Dyadic abs() const
-    {
-        if (this->compare(fromInteger(0)) != LT)
-        {
-            return this->copy();
-        }
-        return -this->copy();
-    }
-    int signum() const
-    {
-        Ordering comp = this->compare(fromInteger(0));
-        if (comp == LT)
-        {
-            return -1;
-        }
-        else if (comp == GT)
-        {
-            return 1;
-        }
-        return 0;
-    }
-    Dyadic adj() const
+}
+
+template <typename T>
+Dyadic<T> Dyadic<T>::operator-(const Dyadic &d) const
+{
+    return (*this) + (-d);
+}
+
+template <typename T>
+Dyadic<T> Dyadic<T>::operator*(const Dyadic &d) const
+{
+    T b = d.a;
+    T m = d.n;
+    return Dyadic(a * b, m + n);
+}
+
+template <typename T>
+Dyadic<T> Dyadic<T>::operator-() const
+{
+    return Dyadic(-a, n);
+}
+
+template <typename T>
+Dyadic<T> Dyadic<T>::abs() const
+{
+    if (this->compare(fromInteger(0)) != LT)
     {
         return this->copy();
     }
-    Dyadic adj2() const
+    return -this->copy();
+}
+
+template <typename T>
+int Dyadic<T>::signum() const
+{
+    Ordering comp = this->compare(fromInteger(0));
+    if (comp == LT)
     {
-        return this->copy();
+        return -1;
     }
-    std::tuple<T, T> decomposeDyadic() const
+    else if (comp == GT)
     {
-        if (a == 0)
+        return 1;
+    }
+    return 0;
+}
+
+template <typename T>
+Dyadic<T> Dyadic<T>::adj() const
+{
+    return this->copy();
+}
+
+template <typename T>
+Dyadic<T> Dyadic<T>::adj2() const
+{
+    return this->copy();
+}
+
+template <typename T>
+std::tuple<T, T> Dyadic<T>::decomposeDyadic() const
+{
+    if (a == 0)
+    {
+        return std::make_tuple(0, 0);
+    }
+    else
+    {
+        int k = ring::lobit(a);
+        if (n >= k)
         {
-            return std::make_tuple(0, 0);
+            return std::make_tuple(ring::shiftR(a, k), n - k);
         }
         else
         {
-            int k = ring::lobit(a);
-            if (n >= k)
-            {
-                return std::make_tuple(ring::shiftR(a, k), n - k);
-            }
-            else
-            {
-                return std::make_tuple(ring::shiftR(a, n), 0);
-            }
+            return std::make_tuple(ring::shiftR(a, n), 0);
         }
     }
-    T integerOfDyadic(T k) const
-    {
-        return ring::shift(a, (k - n));
-    };
-    std::string toString() const
-    {
-        return "Dyadic(" + ring::toString(a) + ", " + ring::toString(n) + ")";
-    }
-    void print(std::string prefix) const
-    {
-        std::cout << prefix << ": " << this->toString() << std::endl;
-    }
-    static Dyadic fromInteger(int n)
-    {
-        return Dyadic(T(n), T(0));
-    }
-    static Dyadic fromDyadic(const Dyadic &d)
-    {
-        return d.copy();
-    }
-    static Dyadic half()
-    {
-        return Dyadic(T(1), T(1));
-    }
-};
+}
+
+template <typename T>
+T Dyadic<T>::integerOfDyadic(T k) const
+{
+    return ring::shift(a, (k - n));
+}
+
+template <typename T>
+std::string Dyadic<T>::toString() const
+{
+    return "Dyadic(" + ring::toString(a) + ", " + ring::toString(n) + ")";
+}
+
+template <typename T>
+void Dyadic<T>::print(std::string prefix) const
+{
+    std::cout << prefix << ": " << this->toString() << std::endl;
+}
+
+template <typename T>
+Dyadic<T> Dyadic<T>::fromInteger(int n)
+{
+    return Dyadic(T(n), T(0));
+}
+
+template <typename T>
+Dyadic<T> Dyadic<T>::fromDyadic(const Dyadic &d)
+{
+    return d.copy();
+}
+
+template <typename T>
+Dyadic<T> Dyadic<T>::half()
+{
+    return Dyadic(T(1), T(1));
+}
 
 template <>
 Dyadic<int> ring::half()
@@ -459,149 +488,194 @@ Dyadic<Integer> ring::half()
     return Dyadic<Integer>(1, 1);
 }
 
+
 template <typename T>
-class RootTwo
+RootTwo<T>::RootTwo(T arg)
 {
-public:
-    T a;
-    T b;
-    RootTwo(T arg)
+    this->a = arg;
+    this->b = T(0);
+}
+
+template <typename T>
+RootTwo<T>::RootTwo(T a, T b)
+{
+    this->a = a;
+    this->b = b;
+}
+
+template <typename T>
+RootTwo<T> RootTwo<T>::copy() const
+{
+    return RootTwo(a, b);
+}
+
+template <typename T>
+bool RootTwo<T>::operator==(const RootTwo &r) const
+{
+    return (this->a == r.a) && (this->b == r.b);
+}
+
+template <typename T>
+bool RootTwo<T>::operator!=(const RootTwo &r) const
+{
+    return !(*this == r);
+}
+
+template <typename T>
+bool RootTwo<T>::operator<=(const RootTwo &r) const
+{
+    return (r - *this).signum() != -1;
+}
+
+template <typename T>
+bool RootTwo<T>::operator<(const RootTwo &r) const
+{
+    return (*this <= r) && !(*this == r);
+}
+
+template <typename T>
+bool RootTwo<T>::operator>=(const RootTwo &r) const
+{
+    return !(*this < r);
+}
+
+template <typename T>
+bool RootTwo<T>::operator>(const RootTwo &r) const
+{
+    return !(*this <= r);
+}
+
+template <typename T>
+RootTwo<T> RootTwo<T>::operator+(const RootTwo &r) const
+{
+    return RootTwo(this->a + r.a, this->b + r.b);
+}
+
+template <typename T>
+RootTwo<T> RootTwo<T>::operator-(const RootTwo &r) const
+{
+    return RootTwo(this->a - r.a, this->b - r.b);
+}
+
+template <typename T>
+RootTwo<T> RootTwo<T>::operator*(const RootTwo &r) const
+{
+    T newA = this->a * r.a + (this->b * r.b) + (this->b * r.b);
+    T newB = this->a * r.b + r.a * this->b;
+    return RootTwo(newA, newB);
+}
+
+template <typename T>
+RootTwo<T> RootTwo<T>::operator-() const
+{
+    return RootTwo(-this->a, -this->b);
+}
+
+template <typename T>
+RootTwo<T> RootTwo<T>::abs() const
+{
+    int sign = this->signum();
+    if (sign != -1)
     {
-        this->a = arg;
-        this->b = T(0);
+        return this->copy();
     }
-    RootTwo(T a, T b)
+    return -(*this);
+}
+
+template <typename T>
+int RootTwo<T>::signum() const
+{
+    int sa = ring::sign(a);
+    int sb = ring::sign(b);
+    if (sa == 0 && sb == 0)
     {
-        this->a = a;
-        this->b = b;
+        return 0;
     }
-    RootTwo copy() const
+    else if (sa != -1 && sb != -1)
     {
-        return RootTwo(a, b);
+        return 1;
     }
-    bool operator==(const RootTwo &r) const
+    else if (sa != 1 && sb != 1)
     {
-        return (this->a == r.a) && (this->b == r.b);
-    }
-    bool operator!=(const RootTwo &r) const
-    {
-        return !(*this == r);
-    }
-    bool operator<=(const RootTwo &r) const
-    {
-        return (r - *this).signum() != -1;
-    }
-    bool operator<(const RootTwo &r) const
-    {
-        return (*this <= r) && !(*this == r);
-    }
-    bool operator>=(const RootTwo &r) const
-    {
-        return !(*this < r);
-    }
-    bool operator>(const RootTwo &r) const
-    {
-        return !(*this <= r);
-    }
-    RootTwo operator+(const RootTwo &r) const
-    {
-        return RootTwo(this->a + r.a, this->b + r.b);
-    }
-    RootTwo operator-(const RootTwo &r) const
-    {
-        return RootTwo(this->a - r.a, this->b - r.b);
-    }
-    RootTwo operator*(const RootTwo &r) const
-    {
-        T newA = this->a * r.a + (this->b * r.b) + (this->b * r.b);
-        T newB = this->a * r.b + r.a * this->b;
-        return RootTwo(newA, newB);
-    }
-    RootTwo operator-() const
-    {
-        return RootTwo(-this->a, -this->b);
-    }
-    RootTwo abs() const
-    {
-        int sign = this->signum();
-        if (sign != -1)
-        {
-            return this->copy();
-        }
-        return -(*this);
-    }
-    int signum() const
-    {
-        int sa = ring::sign(a);
-        int sb = ring::sign(b);
-        if (sa == 0 && sb == 0)
-        {
-            return 0;
-        }
-        else if (sa != -1 && sb != -1)
-        {
-            return 1;
-        }
-        else if (sa != 1 && sb != 1)
-        {
-            return -1;
-        }
-        else if (sa != -1 && sb != 1 && ring::sign<T>(a * a - b * b - b * b) != -1)
-        {
-            return 1;
-        }
-        else if (sa != 1 && sb != -1 && ring::sign<T>(a * a - b * b - b * b) != 1)
-        {
-            return 1;
-        }
         return -1;
     }
-    RootTwo adj() const
+    else if (sa != -1 && sb != 1 && ring::sign<T>(a * a - b * b - b * b) != -1)
     {
-        return RootTwo(ring::adj(a), ring::adj(b));
+        return 1;
     }
-    RootTwo adj2() const
+    else if (sa != 1 && sb != -1 && ring::sign<T>(a * a - b * b - b * b) != 1)
     {
-        return RootTwo(ring::adj2(a), -ring::adj2(b));
+        return 1;
     }
-    RootTwo recip() const
-    {
-        T k = pow(a, 2) - 2 * pow(b, 2);
-        return RootTwo(a / k, -b / k);
-    }
-    RootTwo norm() const
-    {
-        return pow(abs(a), 2) - 2 * pow(abs(b), 2);
-    }
-    std::string toString() const
-    {
-        return "RootTwo(" + ring::toString(a) + ", " + ring::toString(b) + ")";
-    }
-    void print(std::string prefix) const
-    {
-        std::cout << prefix << ": " << this->toString() << std::endl;
-    }
-    static RootTwo half()
-    {
-        return RootTwo<T>(ring::half<T>(), T(0));
-    }
-    static RootTwo rootTwo()
-    {
-        return RootTwo<T>(T(0), T(1));
-    }
-    static RootTwo rootHalf()
-    {
-        return RootTwo<T>(T(0), ring::half<T>());
-    }
-    static RootTwo fromInteger(int n)
-    {
-        return RootTwo<T>(T(n), T(0));
-    }
-    static RootTwo fromRational(double x)
-    {
-        return RootTwo<T>(T(x), T(0));
-    }
-};
+    return -1;
+}
+
+template <typename T>
+RootTwo<T> RootTwo<T>::adj() const
+{
+    return RootTwo(ring::adj(a), ring::adj(b));
+}
+
+template <typename T>
+RootTwo<T> RootTwo<T>::adj2() const
+{
+    return RootTwo(ring::adj2(a), -ring::adj2(b));
+}
+
+template <typename T>
+RootTwo<T> RootTwo<T>::recip() const
+{
+    T k = pow(a, 2) - 2 * pow(b, 2);
+    return RootTwo(a / k, -b / k);
+}
+
+template <typename T>
+RootTwo<T> RootTwo<T>::norm() const
+{
+    return pow(abs(a), 2) - 2 * pow(abs(b), 2);
+}
+
+template <typename T>
+std::string RootTwo<T>::toString() const
+{
+    return "RootTwo(" + ring::toString(a) + ", " + ring::toString(b) + ")";
+}
+
+template <typename T>
+void RootTwo<T>::print(std::string prefix) const
+{
+    std::cout << prefix << ": " << this->toString() << std::endl;
+}
+
+template <typename T>
+RootTwo<T> RootTwo<T>::half()
+{
+    return RootTwo<T>(ring::half<T>(), T(0));
+}
+
+template <typename T>
+RootTwo<T> RootTwo<T>::rootTwo()
+{
+    return RootTwo<T>(T(0), T(1));
+}
+
+template <typename T>
+RootTwo<T> RootTwo<T>::rootHalf()
+{
+    return RootTwo<T>(T(0), ring::half<T>());
+}
+
+template <typename T>
+RootTwo<T> RootTwo<T>::fromInteger(int n)
+{
+    return RootTwo<T>(T(n), T(0));
+}
+
+template <typename T>
+RootTwo<T> RootTwo<T>::fromRational(double x)
+{
+    return RootTwo<T>(T(x), T(0));
+}
 
 template <>
 RootTwo<Rational>::RootTwo(Rational a, Rational b)
@@ -616,148 +690,182 @@ RootTwo<Rational>::RootTwo(Rational a, Rational b)
 using ZRootTwo = RootTwo<Integer>;
 using QRootTwo = RootTwo<Rational>;
 
-template <typename T>
-class Complex
-{
-public:
-    T a;
-    T b;
-    Complex(T arg)
-    {
-        this->a = arg;
-        this->b = T(0);
-    }
-    Complex(T a, T b)
-    {
-        this->a = a;
-        this->b = b;
-    }
-    Complex copy() const
-    {
-        return Complex(a, b);
-    }
-    bool operator==(const Complex &c) const
-    {
-        return (this->a == c.a) && (this->b == c.b);
-    }
-    bool operator!=(const Complex &c) const
-    {
-        return !(*this == c);
-    }
-    Complex operator+(const Complex &c) const
-    {
-        return Complex(this->a + c.a, this->b + c.b);
-    }
-    Complex operator-(const Complex &c) const
-    {
-        return Complex(this->a - c.a, this->b - c.b);
-    }
-    Complex operator*(const Complex &c) const
-    {
-        T newA = this->a * c.a - this->b * c.b;
-        T newB = this->a * c.b + c.a * this->b;
-        return Complex(newA, newB);
-    }
-    Complex operator-() const
-    {
-        return Complex(-this->a, -this->b);
-    }
-    Complex abs() const
-    {
-        return this->copy();
-    }
-    int signum() const
-    {
-        return 1;
-    }
-    Complex adj() const
-    {
-        return Complex(ring::adj(a), -ring::adj(b));
-    }
-    Complex adj2() const
-    {
-        return Complex(ring::adj2(a), ring::adj2(b));
-    }
-    std::string toString() const
-    {
-        return "Complex(" + ring::toString(a) + ", " + ring::toString(b) + ")";
-    }
-    void print(std::string prefix) const
-    {
-        std::cout << prefix << ": " << this->toString() << std::endl;
-    }
-    static Complex half()
-    {
-        return Complex<T>(ring::half<T>(), T(0));
-    }
-};
 
-class Z2
+template <typename T>
+Complex<T>::Complex(T arg)
 {
-public:
-    bool mod2;
-    Z2(bool mod2)
+    this->a = arg;
+    this->b = T(0);
+}
+
+template <typename T>
+Complex<T>::Complex(T a, T b)
+{
+    this->a = a;
+    this->b = b;
+}
+
+template <typename T>
+Complex<T> Complex<T>::copy() const
+{
+    return Complex(a, b);
+}
+
+template <typename T>
+bool Complex<T>::operator==(const Complex &c) const
+{
+    return (this->a == c.a) && (this->b == c.b);
+}
+
+template <typename T>
+bool Complex<T>::operator!=(const Complex &c) const
+{
+    return !(*this == c);
+}
+
+template <typename T>
+Complex<T> Complex<T>::operator+(const Complex &c) const
+{
+    return Complex(this->a + c.a, this->b + c.b);
+}
+
+template <typename T>
+Complex<T> Complex<T>::operator-(const Complex &c) const
+{
+    return Complex(this->a - c.a, this->b - c.b);
+}
+
+template <typename T>
+Complex<T> Complex<T>::operator*(const Complex &c) const
+{
+    T newA = this->a * c.a - this->b * c.b;
+    T newB = this->a * c.b + c.a * this->b;
+    return Complex(newA, newB);
+}
+
+template <typename T>
+Complex<T> Complex<T>::operator-() const
+{
+    return Complex(-this->a, -this->b);
+}
+
+template <typename T>
+Complex<T> Complex<T>::abs() const
+{
+    return this->copy();
+}
+
+template <typename T>
+int Complex<T>::signum() const
+{
+    return 1;
+}
+
+template <typename T>
+Complex<T> Complex<T>::adj() const
+{
+    return Complex(ring::adj(a), -ring::adj(b));
+}
+
+template <typename T>
+Complex<T> Complex<T>::adj2() const
+{
+    return Complex(ring::adj2(a), ring::adj2(b));
+}
+
+template <typename T>
+std::string Complex<T>::toString() const
+{
+    return "Complex(" + ring::toString(a) + ", " + ring::toString(b) + ")";
+}
+
+template <typename T>
+void Complex<T>::print(std::string prefix) const
+{
+    std::cout << prefix << ": " << this->toString() << std::endl;
+}
+
+template <typename T>
+Complex<T> Complex<T>::half()
+{
+    return Complex<T>(ring::half<T>(), T(0));
+}
+
+
+Z2::Z2(bool mod2)
+{
+    this->mod2 = mod2;
+}
+
+Z2 Z2::copy() const
+{
+    return Z2(this->mod2);
+}
+
+bool Z2::operator==(const Z2 &z) const
+{
+    return this->mod2 == z.mod2;
+}
+
+bool Z2::operator!=(const Z2 &z) const
+{
+    return !(*this == z);
+}
+
+Z2 Z2::operator+(const Z2 &z) const
+{
+    return Z2(this->mod2 != z.mod2);
+}
+
+Z2 Z2::operator-(const Z2 &z) const
+{
+    return (*this) + (-z);
+}
+
+Z2 Z2::operator*(const Z2 &z) const
+{
+    if (this->mod2 == 0)
     {
-        this->mod2 = mod2;
+        return Z2(0);
     }
-    Z2 copy() const
-    {
-        return Z2(this->mod2);
-    }
-    bool operator==(const Z2 &z) const
-    {
-        return this->mod2 == z.mod2;
-    }
-    bool operator!=(const Z2 &z) const
-    {
-        return !(*this == z);
-    }
-    Z2 operator+(const Z2 &z) const
-    {
-        return Z2(this->mod2 != z.mod2);
-    }
-    Z2 operator-(const Z2 &z) const
-    {
-        return (*this) + (-z);
-    }
-    Z2 operator*(const Z2 &z) const
-    {
-        if (this->mod2 == 0)
-        {
-            return Z2(0);
-        }
-        return z.mod2;
-    }
-    Z2 operator-() const
-    {
-        return this->copy();
-    }
-    Z2 abs() const
-    {
-        return this->copy();
-    }
-    int signum() const
-    {
-        return 1;
-    }
-    Z2 adj() const
-    {
-        return this->copy();
-    }
-    Z2 adj2() const
-    {
-        return this->copy();
-    }
-    std::string toString() const
-    {
-        return "Z2(" + std::to_string(this->mod2) + ")";
-    }
-    void print(std::string prefix) const
-    {
-        std::cout << prefix << ": " << this->toString() << std::endl;
-    }
-    static Z2 fromInteger(int n)
-    {
-        return Z2((bool)(n % 2));
-    }
-};
+    return z.mod2;
+}
+
+Z2 Z2::operator-() const
+{
+    return this->copy();
+}
+Z2 Z2::abs() const
+{
+    return this->copy();
+}
+
+int Z2::signum() const
+{
+    return 1;
+}
+
+Z2 Z2::adj() const
+{
+    return this->copy();
+}
+
+Z2 Z2::adj2() const
+{
+    return this->copy();
+}
+
+std::string Z2::toString() const
+{
+    return "Z2(" + std::to_string(this->mod2) + ")";
+}
+
+void Z2::print(std::string prefix) const
+{
+    std::cout << prefix << ": " << this->toString() << std::endl;
+}
+
+Z2 Z2::fromInteger(int n)
+{
+    return Z2((bool)(n % 2));
+}

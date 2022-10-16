@@ -1,4 +1,4 @@
-#include "../ring.cpp"
+#include "../ring.h"
 #include <assert.h>
 #include <iostream>
 #include <memory>
