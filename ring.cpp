@@ -241,12 +241,23 @@ namespace ring
     template <>
     Rational adj2(Rational arg) { return arg; }
 
-
     template <typename T>
     std::string toString(const T &arg)
     {
-        return std::to_string(arg);
+        return arg.toString();
     }
+
+    template <>
+    std::string toString(const int &arg) { return std::to_string(arg); }
+
+    template <>
+    std::string toString(const Integer &arg) { return arg.get_str(); }
+
+    template <>
+    std::string toString(const double &arg) { return std::to_string(arg); }
+
+    template <>
+    std::string toString(const Rational &arg) { return arg.get_str(); }
 }
 
 enum Ordering
@@ -448,12 +459,6 @@ Dyadic<Integer> ring::half()
     return Dyadic<Integer>(1, 1);
 }
 
-template <>
-std::string Dyadic<Integer>::toString() const
-{
-    return "Dyadic(" + a.get_str() + ", " + n.get_str() + ")";
-}
-
 template <typename T>
 class RootTwo
 {
@@ -608,18 +613,6 @@ RootTwo<Rational>::RootTwo(Rational a, Rational b)
     this->b = b;
 }
 
-template <>
-std::string RootTwo<Integer>::toString() const
-{
-    return "RootTwo(" + a.get_str() + ", " + b.get_str() + ")";
-}
-
-template <>
-std::string RootTwo<Rational>::toString() const
-{
-    return "RootTwo(" + a.get_str() + ", " + b.get_str() + ")";
-}
-
 using ZRootTwo = RootTwo<Integer>;
 using QRootTwo = RootTwo<Rational>;
 
@@ -699,12 +692,6 @@ public:
     }
 };
 
-template <>
-std::string Complex<Integer>::toString() const
-{
-    return "Complex(" + a.get_str() + ", " + b.get_str() + ")";
-}
-
 class Z2
 {
 public:
@@ -774,45 +761,3 @@ public:
         return Z2((bool)(n % 2));
     }
 };
-
-template <>
-std::string ring::toString(const RootTwo<int> &arg)
-{
-    return arg.toString();
-}
-
-template <>
-std::string ring::toString(const RootTwo<long int> &arg)
-{
-    return arg.toString();
-}
-
-template <>
-std::string ring::toString(const RootTwo<Integer> &arg)
-{
-    return arg.toString();
-}
-
-template <>
-std::string ring::toString(const Dyadic<int> &arg)
-{
-    return arg.toString();
-}
-
-template <>
-std::string ring::toString(const Dyadic<long int> &arg)
-{
-    return arg.toString();
-}
-
-template <>
-std::string ring::toString(const Dyadic<Integer> &arg)
-{
-    return arg.toString();
-}
-
-template <>
-std::string ring::toString(const Z2 &arg)
-{
-    return arg.toString();
-}
