@@ -3,7 +3,6 @@
 
 typedef mpz_class Integer;
 typedef mpq_class Rational;
-
 namespace ring
 {
     signed long int mpzToLongInt(Integer z)
@@ -208,6 +207,40 @@ namespace ring
     {
         return Rational(1, 2);
     }
+
+    template <typename T>
+    T adj(T arg)
+    {
+        return arg.adj();
+    }
+
+    template <>
+    int adj(int arg) { return arg; }
+
+    template <>
+    Integer adj(Integer arg) { return arg; }
+
+    template <>
+    double adj(double arg) { return arg; }
+
+    template <>
+    Rational adj(Rational arg) { return arg; }
+
+    template <typename T>
+    T adj2(T arg)
+    {
+        return arg.adj2();
+    }
+
+    template <>
+    int adj2(int arg) { return arg; }
+
+    template <>
+    Integer adj2(Integer arg) { return arg; }
+
+    template <>
+    Rational adj2(Rational arg) { return arg; }
+
 
     template <typename T>
     std::string toString(const T &arg)
@@ -518,6 +551,14 @@ public:
         }
         return -1;
     }
+    RootTwo adj() const
+    {
+        return RootTwo(ring::adj(a), ring::adj(b));
+    }
+    RootTwo adj2() const
+    {
+        return RootTwo(ring::adj2(a), -ring::adj2(b));
+    }
     RootTwo recip() const
     {
         T k = pow(a, 2) - 2 * pow(b, 2);
@@ -635,6 +676,14 @@ public:
     int signum() const
     {
         return 1;
+    }
+    Complex adj() const
+    {
+        return Complex(ring::adj(a), -ring::adj(b));
+    }
+    Complex adj2() const
+    {
+        return Complex(ring::adj2(a), ring::adj2(b));
     }
     std::string toString() const
     {
