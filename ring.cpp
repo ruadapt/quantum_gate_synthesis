@@ -192,19 +192,85 @@ namespace ring
     }
 
     template <typename T>
-    T half();
-
-    template <>
-    double half()
+    T fromInteger(int arg)
     {
-        return 0.5;
+        return T::fromInteger(arg);
     }
 
     template <>
-    Rational half()
+    int fromInteger(int arg) { return arg; }
+
+    template <>
+    Integer fromInteger(int arg) { return Integer(arg); }
+
+    template <>
+    double fromInteger(int arg) { return double(arg); }
+
+    template <>
+    Rational fromInteger(int arg) { return Rational(arg); }
+
+    template <typename T>
+    T powNonNeg(T base, int exp)
     {
-        return Rational(1, 2);
+        assert(exp >= 0);
+        if (exp == 0)
+        {
+            return T(1);
+        }
+        T result = base;
+        if (exp == 1)
+        {
+            return base;
+        }
+        if (exp % 2 == 0)
+        {
+            return powNonNeg(base * base, exp / 2);
+        }
+        return base * powNonNeg(base * base, (exp - 1) / 2);
     }
+
+    template <typename T>
+    T half()
+    {
+        return T::half();
+    }
+
+    template <>
+    double half() { return 0.5; }
+
+    template <>
+    Rational half() { return Rational(1, 2); }
+
+    template <typename T>
+    T fromDyadic(Dyadic<int> d)
+    {
+        std::tuple<int, int> decomposed = d.decomposeDyadic();
+        int a = std::get<0>(decomposed);
+        int n = std::get<1>(decomposed);
+        if (n >= 0)
+        {
+            return fromInteger<T>(a) * powNonNeg<T>(half<T>(), n);
+        }
+        else
+        {
+            return fromInteger<T>(a) * fromInteger<T>(exp2<T>(-n));
+        }
+    }
+
+    // template <typename T>
+    // T fromDyadic(Dyadic<Integer> d);
+
+    // template <>
+    // double fromDyadic(Dyadic<int> d);
+
+    // template <>
+    // double fromDyadic(Dyadic<Integer> d);
+
+    // template <>
+    // Rational fromDyadic(Dyadic<int> d);
+
+    // template <>
+    // Rational fromDyadic(Dyadic<Integer> d);
 
     template <typename T>
     T adj(T arg)
@@ -259,16 +325,16 @@ namespace ring
 }
 
 template <typename T>
-Dyadic<T>::Dyadic(T arg)
+Dyadic<T>::Dyadic()
 {
-    this->a = arg;
+    this->a = 0;
     this->n = 0;
 }
 
 template <typename T>
-Dyadic<T>::Dyadic()
+Dyadic<T>::Dyadic(T arg)
 {
-    this->a = 0;
+    this->a = arg;
     this->n = 0;
 }
 
@@ -488,6 +554,12 @@ Dyadic<Integer> ring::half()
     return Dyadic<Integer>(1, 1);
 }
 
+template <typename T>
+RootTwo<T>::RootTwo()
+{
+    this->a = T(0);
+    this->b = T(0);
+}
 
 template <typename T>
 RootTwo<T>::RootTwo(T arg)
@@ -690,6 +762,12 @@ RootTwo<Rational>::RootTwo(Rational a, Rational b)
 using ZRootTwo = RootTwo<Integer>;
 using QRootTwo = RootTwo<Rational>;
 
+template <typename T>
+Complex<T>::Complex()
+{
+    this->a = T(0);
+    this->b = T(0);
+}
 
 template <typename T>
 Complex<T>::Complex(T arg)
@@ -774,6 +852,13 @@ Complex<T> Complex<T>::adj2() const
 }
 
 template <typename T>
+Complex<T> Complex<T>::recip() const
+{
+    T d = a * a + b * b;
+    return Complex(a / d, -b / d);
+}
+
+template <typename T>
 std::string Complex<T>::toString() const
 {
     return "Complex(" + ring::toString(a) + ", " + ring::toString(b) + ")";
@@ -791,6 +876,16 @@ Complex<T> Complex<T>::half()
     return Complex<T>(ring::half<T>(), T(0));
 }
 
+template <typename T>
+Complex<T> Complex<T>::i()
+{
+    return Complex<T>(T(0), T(1));
+}
+
+Z2::Z2()
+{
+    this->mod2 = 0;
+}
 
 Z2::Z2(bool mod2)
 {

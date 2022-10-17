@@ -169,6 +169,7 @@ class RootTwo
 public:
     T a;
     T b;
+    RootTwo();
     RootTwo(T arg);
     RootTwo(T a, T b);
     RootTwo copy() const;
@@ -209,6 +210,7 @@ class Complex
 public:
     T a;
     T b;
+    Complex();
     Complex(T arg);
     Complex(T a, T b);
     Complex copy() const;
@@ -222,15 +224,18 @@ public:
     int signum() const;
     Complex adj() const;
     Complex adj2() const;
+    Complex recip() const;
     std::string toString() const;
     void print(std::string prefix) const;
     static Complex half();
+    static Complex i();
 };
 
 class Z2
 {
 public:
     bool mod2;
+    Z2();
     Z2(bool mod2);
     Z2 copy() const;
     bool operator==(const Z2 &z) const;
@@ -247,5 +252,26 @@ public:
     void print(std::string prefix) const;
     static Z2 fromInteger(int n);
 };
+
+namespace ring
+{
+    template <typename T>
+    T fromDyadic(Dyadic<int> d);
+
+    // template <typename T>
+    // T fromDyadic(Dyadic<Integer> d);
+
+    // template <>
+    // double fromDyadic(Dyadic<int> d);
+
+    // template <>
+    // double fromDyadic(Dyadic<Integer> d);
+
+    // template <>
+    // Rational fromDyadic(Dyadic<int> d);
+
+    // template <>
+    // Rational fromDyadic(Dyadic<Integer> d);
+}
 
 #include "ring.cpp"

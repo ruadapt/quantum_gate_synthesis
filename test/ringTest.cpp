@@ -95,6 +95,9 @@ void testDyadic()
 
     assert(Dyadic<T>(1, 1) == Dyadic<T>::half());
     std::cout << "\thalf test passed" << std::endl;
+
+    assert(0.25 == ring::fromDyadic<double>(Dyadic<T>(1, 2)));
+    std::cout << "\tfromDyadic test passed" << std::endl;
 }
 
 template <typename T>
@@ -611,30 +614,34 @@ void testComplexIntegral()
     assert(1 == c1.signum());
     assert(1 == c2.signum());
     std::cout << "\tsignum tests passed" << std::endl;
+
+    assert(Complex<T>(1, -2) == c1.adj());
+    assert(Complex<T>(-2, -5) == c3.adj());
+    std::cout << "\tadj tests passed" << std::endl;
 }
 
 int main()
 {
-    testRootTwoIntegral<int>();
-    std::cout << std::endl;
-    testRootTwoIntegral<Integer>();
-    std::cout << std::endl;
-    testRootTwoDyadic<int>();
-    std::cout << std::endl;
-    testRootTwoDyadic<Integer>();
-    std::cout << std::endl;
-    testRootTwoRational();
-    std::cout << std::endl;
+    // testRootTwoIntegral<int>();
+    // std::cout << std::endl;
+    // testRootTwoIntegral<Integer>();
+    // std::cout << std::endl;
+    // testRootTwoDyadic<int>();
+    // std::cout << std::endl;
+    // testRootTwoDyadic<Integer>();
+    // std::cout << std::endl;
+    // testRootTwoRational();
+    // std::cout << std::endl;
 
-    testComplexIntegral<int>();
-    std::cout << std::endl;
-    testComplexIntegral<Integer>();
-    std::cout << std::endl;
+    // testComplexIntegral<int>();
+    // std::cout << std::endl;
+    // testComplexIntegral<Integer>();
+    // std::cout << std::endl;
 
     testDyadic<int>();
     std::cout << std::endl;
-    testDyadic<Integer>();
-    std::cout << std::endl;
+    // testDyadic<Integer>();
+    // std::cout << std::endl;
     
     testZ2();
 
