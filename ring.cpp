@@ -3,14 +3,14 @@
 #include <gmpxx.h>
 namespace ring
 {
-    signed long int mpzToLongInt(Integer z)
+    int mpzToInt(Integer z)
     {
-        assert(z.fits_slong_p());
+        assert(z.fits_sint_p());
         return z.get_si();
     }
 
     template <typename Integral>
-    Integral shift(Integral x, long int bits)
+    Integral shift(Integral x, int bits)
     {
         if (bits >= 0)
         {
@@ -22,11 +22,11 @@ namespace ring
     template <typename Integral>
     Integral shift(Integral x, Integer bits)
     {
-        return shift(x, mpzToLongInt(bits));
+        return shift(x, mpzToInt(bits));
     }
 
     template <>
-    Integer shift(Integer x, long int bits)
+    Integer shift(Integer x, int bits)
     {
         Integer result;
         if (bits >= 0)
@@ -43,11 +43,11 @@ namespace ring
     template <>
     Integer shift(Integer x, Integer bits)
     {
-        return shift(x, mpzToLongInt(bits));
+        return shift(x, mpzToInt(bits));
     }
 
     template <typename Integral>
-    Integral shiftL(Integral x, long int bits)
+    Integral shiftL(Integral x, int bits)
     {
         assert(bits >= 0);
         return shift(x, bits);
@@ -56,11 +56,11 @@ namespace ring
     template <typename Integral>
     Integral shiftL(Integral x, Integer bits)
     {
-        return shiftL(x, mpzToLongInt(bits));
+        return shiftL(x, mpzToInt(bits));
     }
 
     template <typename Integral>
-    Integral shiftR(Integral x, long int bits)
+    Integral shiftR(Integral x, int bits)
     {
         assert(bits >= 0);
         return shift(x, -bits);
@@ -69,11 +69,11 @@ namespace ring
     template <typename Integral>
     Integral shiftR(Integral x, Integer bits)
     {
-        return shiftR(x, mpzToLongInt(bits));
+        return shiftR(x, mpzToInt(bits));
     }
 
     template <typename Integral>
-    Integral exp2(long int pow)
+    Integral exp2(int pow)
     {
         return shiftL(1, pow);
     }
@@ -81,7 +81,7 @@ namespace ring
     template <typename Integral>
     Integral exp2(Integer pow)
     {
-        return exp2<Integral>(mpzToLongInt(pow));
+        return exp2<Integral>(mpzToInt(pow));
     }
 
     template <typename T>
@@ -91,7 +91,7 @@ namespace ring
     }
 
     template <>
-    int sign(long int a)
+    int sign(int a)
     {
         if (a == 0)
         {
@@ -125,18 +125,29 @@ namespace ring
     }
 
     template <>
+    int sign(double a)
+    {
+        if (a == 0)
+        {
+            return 0;
+        }
+        else if (a > 0)
+        {
+            return 1;
+        }
+        else
+        {
+            return -1;
+        }
+    }
+
+    template <>
     int sign(Rational a)
     {
         return sgn(a);
     }
 
-    template <>
-    int sign(int a)
-    {
-        return sign<long int>(a);
-    }
-
-    bool getBit(long int n, long int bit)
+    bool getBit(int n, int bit)
     {
         return (n >> bit) & 1;
     }
@@ -210,6 +221,12 @@ namespace ring
     Rational fromInteger(int arg) { return Rational(arg); }
 
     template <typename T>
+    T fromInteger(Integer arg)
+    {
+        return fromInteger<T>(mpzToInt(arg));
+    }
+
+    template <typename T>
     T powNonNeg(T base, int exp)
     {
         assert(exp >= 0);
@@ -224,9 +241,13 @@ namespace ring
         }
         if (exp % 2 == 0)
         {
-            return powNonNeg(base * base, exp / 2);
+            T newBase = base * base;
+            int newExp = exp / 2;
+            return powNonNeg(newBase, newExp);
         }
-        return base * powNonNeg(base * base, (exp - 1) / 2);
+        T newBase = base * base;
+        int newExp = (exp - 1) / 2;
+        return base * powNonNeg(newBase, newExp);
     }
 
     template <typename T>
@@ -253,24 +274,25 @@ namespace ring
         }
         else
         {
-            return fromInteger<T>(a) * fromInteger<T>(exp2<T>(-n));
+            return fromInteger<T>(a) * fromInteger<T>(exp2<Integer>(-n));
         }
     }
 
-    // template <typename T>
-    // T fromDyadic(Dyadic<Integer> d);
-
-    // template <>
-    // double fromDyadic(Dyadic<int> d);
-
-    // template <>
-    // double fromDyadic(Dyadic<Integer> d);
-
-    // template <>
-    // Rational fromDyadic(Dyadic<int> d);
-
-    // template <>
-    // Rational fromDyadic(Dyadic<Integer> d);
+    template <typename T>
+    T fromDyadic(Dyadic<Integer> d)
+    {
+        std::tuple<Integer, Integer> decomposed = d.decomposeDyadic();
+        Integer a = std::get<0>(decomposed);
+        Integer n = std::get<1>(decomposed);
+        if (n >= 0)
+        {
+            return fromInteger<T>(a) * powNonNeg<T>(half<T>(), mpzToInt(n));
+        }
+        else
+        {
+            return fromInteger<T>(a) * fromInteger<T>(exp2<Integer>(mpzToInt(-n)));
+        }
+    }
 
     template <typename T>
     T adj(T arg)

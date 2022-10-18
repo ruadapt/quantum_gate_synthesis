@@ -7,34 +7,34 @@ typedef mpq_class Rational;
 
 namespace ring
 {
-    signed long int mpzToLongInt(Integer z);
+    int mpzToInt(Integer z);
 
     template <typename Integral>
-    Integral shift(Integral x, long int bits);
+    Integral shift(Integral x, int bits);
 
     template <typename Integral>
     Integral shift(Integral x, Integer bits);
 
     template <>
-    Integer shift(Integer x, long int bits);
+    Integer shift(Integer x, int bits);
 
     template <>
     Integer shift(Integer x, Integer bits);
 
     template <typename Integral>
-    Integral shiftL(Integral x, long int bits);
+    Integral shiftL(Integral x, int bits);
 
     template <typename Integral>
     Integral shiftL(Integral x, Integer bits);
 
     template <typename Integral>
-    Integral shiftR(Integral x, long int bits);
+    Integral shiftR(Integral x, int bits);
 
     template <typename Integral>
     Integral shiftR(Integral x, Integer bits);
 
     template <typename Integral>
-    Integral exp2(long int pow);
+    Integral exp2(int pow);
 
     template <typename Integral>
     Integral exp2(Integer pow);
@@ -43,7 +43,7 @@ namespace ring
     int sign(T a);
 
     template <>
-    int sign(long int a);
+    int sign(int a);
 
     template <>
     int sign(Integer a);
@@ -54,7 +54,7 @@ namespace ring
     template <>
     int sign(int a);
 
-    bool getBit(long int n, long int bit);
+    bool getBit(int n, int bit);
 
     int lobit(int n);
 
@@ -63,6 +63,24 @@ namespace ring
     int hibit(int n);
 
     size_t hibit(Integer n);
+
+    template <typename T>
+    T fromInteger(int arg);
+
+    template <>
+    int fromInteger(int arg);
+
+    template <>
+    Integer fromInteger(int arg);
+
+    template <>
+    double fromInteger(int arg);
+
+    template <>
+    Rational fromInteger(int arg);
+
+    template <typename T>
+    T powNonNeg(T base, int exp);
 
     template <typename T>
     T half();
@@ -258,20 +276,8 @@ namespace ring
     template <typename T>
     T fromDyadic(Dyadic<int> d);
 
-    // template <typename T>
-    // T fromDyadic(Dyadic<Integer> d);
-
-    // template <>
-    // double fromDyadic(Dyadic<int> d);
-
-    // template <>
-    // double fromDyadic(Dyadic<Integer> d);
-
-    // template <>
-    // Rational fromDyadic(Dyadic<int> d);
-
-    // template <>
-    // Rational fromDyadic(Dyadic<Integer> d);
+    template <typename T>
+    T fromDyadic(Dyadic<Integer> d);
 }
 
 #include "ring.cpp"

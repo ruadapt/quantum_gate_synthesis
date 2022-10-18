@@ -91,13 +91,16 @@ void testDyadic()
 
     assert(Dyadic<T>(1, 5) == Dyadic<T>::fromDyadic(d));
     assert(Dyadic<T>(-2, 6) == Dyadic<T>::fromDyadic(dneg));
-    std::cout << "\tfromDyadic tests passed" << std::endl;
+    std::cout << "\tfromDyadic<Dyadic<T>> tests passed" << std::endl;
+
+    assert(0.25 == ring::fromDyadic<double>(Dyadic<T>(1, 2)));
+    std::cout << "\tfromDyadic<double> test passed" << std::endl;
+
+    assert(3_mpq / 128 == ring::fromDyadic<Rational>(Dyadic<T>(3, 7)));
+    std::cout << "\tfromDyadic<Rational> test passed" << std::endl;
 
     assert(Dyadic<T>(1, 1) == Dyadic<T>::half());
     std::cout << "\thalf test passed" << std::endl;
-
-    assert(0.25 == ring::fromDyadic<double>(Dyadic<T>(1, 2)));
-    std::cout << "\tfromDyadic test passed" << std::endl;
 }
 
 template <typename T>
@@ -622,26 +625,26 @@ void testComplexIntegral()
 
 int main()
 {
-    // testRootTwoIntegral<int>();
-    // std::cout << std::endl;
-    // testRootTwoIntegral<Integer>();
-    // std::cout << std::endl;
-    // testRootTwoDyadic<int>();
-    // std::cout << std::endl;
-    // testRootTwoDyadic<Integer>();
-    // std::cout << std::endl;
-    // testRootTwoRational();
-    // std::cout << std::endl;
+    testRootTwoIntegral<int>();
+    std::cout << std::endl;
+    testRootTwoIntegral<Integer>();
+    std::cout << std::endl;
+    testRootTwoDyadic<int>();
+    std::cout << std::endl;
+    testRootTwoDyadic<Integer>();
+    std::cout << std::endl;
+    testRootTwoRational();
+    std::cout << std::endl;
 
-    // testComplexIntegral<int>();
-    // std::cout << std::endl;
-    // testComplexIntegral<Integer>();
-    // std::cout << std::endl;
+    testComplexIntegral<int>();
+    std::cout << std::endl;
+    testComplexIntegral<Integer>();
+    std::cout << std::endl;
 
     testDyadic<int>();
     std::cout << std::endl;
-    // testDyadic<Integer>();
-    // std::cout << std::endl;
+    testDyadic<Integer>();
+    std::cout << std::endl;
     
     testZ2();
 
