@@ -328,6 +328,12 @@ namespace ring
     }
 
     template <typename T>
+    T i()
+    {
+        return T::i();
+    }
+
+    template <typename T>
     T adj(T arg)
     {
         return arg.adj();
@@ -790,6 +796,12 @@ template <typename T>
 RootTwo<T> RootTwo<T>::rootHalf()
 {
     return RootTwo<T>(T(0), ring::half<T>());
+}
+
+template <typename T>
+RootTwo<T> RootTwo<T>::i()
+{
+    return RootTwo<T>(ring::i<T>(), T(0));
 }
 
 template <typename T>

@@ -60,6 +60,18 @@ void testRootHalfRing()
     std::cout << "\tfromDRootTwo tests passed" << std::endl;
 }
 
+void testComplexRing()
+{
+    std::cout << "ComplexRing testing:" << std::endl;
+
+    assert(Complex<int>(0, 1) == ring::i<Complex<int>>());
+    assert(Complex<Integer>(0, 1) == ring::i<Complex<Integer>>());
+    assert(Complex<Complex<int>>(Complex<int>(0, 0), Complex<int>(1, 0)) == ring::i<Complex<Complex<int>>>());
+    assert(RootTwo<Complex<int>>(Complex<int>(0, 1), Complex<int>(0, 0)) == ring::i<RootTwo<Complex<int>>>());
+    assert(RootTwo<Complex<Integer>>(Complex<Integer>(0, 1), Complex<Integer>(0, 0)) == ring::i<RootTwo<Complex<Integer>>>());
+    std::cout << "\ti tests passed" << std::endl;
+}
+
 template <typename T>
 void testDyadic()
 {
@@ -689,6 +701,8 @@ int main()
     testRootTwoRing();
     std::cout << std::endl;
     testRootHalfRing();
+    std::cout << std::endl;
+    testComplexRing();
     std::cout << std::endl;
 
     testRootTwoIntegral<int>();

@@ -77,6 +77,7 @@ public:
     static RootTwo half();
     static RootTwo rootTwo();
     static RootTwo rootHalf();
+    static RootTwo i();
     static RootTwo fromInteger(int n);
     static RootTwo fromRational(double x);
 };
@@ -214,6 +215,9 @@ namespace ring
     Rational fromInteger(int arg);
 
     template <typename T>
+    T fromInteger(Integer arg);
+
+    template <typename T>
     T powNonNeg(T base, int exp);
 
     template <typename T>
@@ -254,6 +258,9 @@ namespace ring
 
     template <typename T>
     T fromDRootTwo(DRootTwo arg);
+
+    template <typename T>
+    T i();
 
     template <typename T>
     T adj(T arg);
