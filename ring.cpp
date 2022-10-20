@@ -1,6 +1,8 @@
 #include "ring.h"
+#include <cmath>
 #include <iostream>
 #include <gmpxx.h>
+
 namespace ring
 {
     int mpzToInt(Integer z)
@@ -49,7 +51,6 @@ namespace ring
     template <typename Integral>
     Integral shiftL(Integral x, int bits)
     {
-        assert(bits >= 0);
         return shift(x, bits);
     }
 
@@ -62,7 +63,6 @@ namespace ring
     template <typename Integral>
     Integral shiftR(Integral x, int bits)
     {
-        assert(bits >= 0);
         return shift(x, -bits);
     }
 
@@ -292,6 +292,21 @@ namespace ring
         {
             return fromInteger<T>(a) * fromInteger<T>(exp2<Integer>(mpzToInt(-n)));
         }
+    }
+
+    template <typename T>
+    T rootTwo()
+    {
+        return T::rootTwo();
+    }
+
+    template <>
+    double rootTwo() { return sqrt(2); }
+
+    template <typename T>
+    T fromZRootTwo(ZRootTwo arg)
+    {
+        return fromInteger<T>(arg.a) + rootTwo<T> * fromInteger<T>(arg.b);
     }
 
     template <typename T>
@@ -781,9 +796,6 @@ RootTwo<Rational>::RootTwo(Rational a, Rational b)
     this->b = b;
 }
 
-using ZRootTwo = RootTwo<Integer>;
-using QRootTwo = RootTwo<Rational>;
-
 template <typename T>
 Complex<T>::Complex()
 {
@@ -902,6 +914,12 @@ template <typename T>
 Complex<T> Complex<T>::i()
 {
     return Complex<T>(T(0), T(1));
+}
+
+template <typename T>
+Complex<T> Complex<T>::fromInteger(int n)
+{
+    return Complex<T>(T(n), T(0));
 }
 
 Z2::Z2()

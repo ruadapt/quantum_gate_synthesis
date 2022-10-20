@@ -3,6 +3,29 @@
 #include <iostream>
 #include <memory>
 
+void testHalfRing()
+{
+    std::cout << "HalfRing testing:" << std::endl;
+
+    assert(0.5 == ring::half<double>());
+    assert(1_mpq / 2 == ring::half<Rational>());
+    assert(Dyadic<int>(1, 1) == ring::half<Dyadic<int>>());
+    assert(Dyadic<Integer>(1, 1) == ring::half<Dyadic<Integer>>());
+    assert(RootTwo<Rational>(1_mpq / 2, 0_mpq) == ring::half<RootTwo<Rational>>());
+    assert(Complex<double>(0.5, 0) == ring::half<Complex<double>>());
+    std::cout << "\thalf tests passed" << std::endl;
+
+    assert(0.375 == ring::fromDyadic<double>(Dyadic<int>(3, 3)));
+    assert(24 == ring::fromDyadic<double>(Dyadic<int>(3, -3)));
+    assert(3_mpq / 8 == ring::fromDyadic<Rational>(Dyadic<int>(3, 3)));
+    assert(24_mpq == ring::fromDyadic<Rational>(Dyadic<int>(3, -3)));
+    assert(RootTwo<Rational>(3_mpq / 8, 0_mpq) == ring::fromDyadic<RootTwo<Rational>>(Dyadic<int>(3, 3)));
+    assert(RootTwo<Rational>(24_mpq, 0_mpq) == ring::fromDyadic<RootTwo<Rational>>(Dyadic<int>(3, -3)));
+    assert(Complex<double>(0.375, 0) == ring::fromDyadic<Complex<double>>(Dyadic<int>(3, 3)));
+    assert(Complex<double>(24, 0) == ring::fromDyadic<Complex<double>>(Dyadic<int>(3, -3)));
+    std::cout << "\tfromDyadic for Dyadic<int> passed" << std::endl;
+}
+
 template <typename T>
 void testDyadic()
 {
@@ -76,6 +99,8 @@ void testDyadic()
     assert(Dyadic<T>(-2, 6) == dneg.adj2());
     std::cout << "\tadj2 tests passed" << std::endl;
 
+    Dyadic<T> dnegDenom = Dyadic<T>(3, -5);
+    assert(std::make_tuple(96, 0) == dnegDenom.decomposeDyadic());
     assert(std::make_tuple(1, 5) == d.decomposeDyadic());
     assert(std::make_tuple(-1, 5) == dneg.decomposeDyadic());
     Dyadic<T> veryReducible = Dyadic<T>(128, 9);
@@ -625,6 +650,9 @@ void testComplexIntegral()
 
 int main()
 {
+    testHalfRing();
+    std::cout << std::endl;
+
     testRootTwoIntegral<int>();
     std::cout << std::endl;
     testRootTwoIntegral<Integer>();
@@ -645,7 +673,7 @@ int main()
     std::cout << std::endl;
     testDyadic<Integer>();
     std::cout << std::endl;
-    
+
     testZ2();
 
     return 0;
