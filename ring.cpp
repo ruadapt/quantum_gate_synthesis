@@ -367,6 +367,18 @@ namespace ring
     Rational adj2(Rational arg) { return arg; }
 
     template <typename T>
+    Integer norm(T arg)
+    {
+        return arg.norm();
+    }
+
+    template <>
+    Integer norm(int arg) { return mpz_class(arg); }
+
+    template <>
+    Integer norm(Integer arg) { return arg; }
+
+    template <typename T>
     std::string toString(const T &arg)
     {
         return arg.toString();
@@ -763,9 +775,11 @@ RootTwo<T> RootTwo<T>::recip() const
 }
 
 template <typename T>
-RootTwo<T> RootTwo<T>::norm() const
+Integer RootTwo<T>::norm() const
 {
-    return pow(abs(a), 2) - 2 * pow(abs(b), 2);
+    Integer normA = ring::norm<T>(a);
+    Integer normB = ring::norm<T>(b);
+    return normA * normA - 2 * normB * normB;
 }
 
 template <typename T>
@@ -920,6 +934,14 @@ Complex<T> Complex<T>::recip() const
 {
     T d = a * a + b * b;
     return Complex(a / d, -b / d);
+}
+
+template <typename T>
+Integer Complex<T>::norm() const
+{
+    Integer normA = ring::norm<T>(a);
+    Integer normB = ring::norm<T>(b);
+    return normA * normA + normB * normB;
 }
 
 template <typename T>

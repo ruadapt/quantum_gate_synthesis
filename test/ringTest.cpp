@@ -72,6 +72,25 @@ void testComplexRing()
     std::cout << "\ti tests passed" << std::endl;
 }
 
+void testNormedRing()
+{
+    std::cout << "NormedRing testing:" << std::endl;
+
+    assert(10_mpz == ring::norm<int>(10));
+    assert(10_mpz == ring::norm<Integer>(10));
+    assert(85_mpz == ring::norm<Complex<int>>(Complex<int>(6, -7)));
+    assert(85_mpz == ring::norm<Complex<Integer>>(Complex<Integer>(6, -7)));
+    assert(-62_mpz == ring::norm<RootTwo<int>>(RootTwo<int>(6, -7)));
+    assert(-62_mpz == ring::norm<RootTwo<Integer>>(RootTwo<Integer>(6, -7)));
+    // norm = (3^2 + 4^2)^2 - 2 * (5^2 + 2^2)^2 = 35^2 - 2 * 29^2 = -1057.
+    assert(-1057_mpz == ring::norm<RootTwo<Complex<int>>>(
+                            RootTwo<Complex<int>>(Complex<int>(3, 4), Complex<int>(5, 2))));
+    // norm = (3^2 - 2 * 4^2)^2 + (5^2 - 2 * 2^2)^2 = (-23)^2 + (17)^2 = 818.
+    assert(818_mpq == ring::norm<Complex<RootTwo<int>>>(
+                          Complex<RootTwo<int>>(RootTwo<int>(3, 4), RootTwo<int>(5, 2))));
+    std::cout << "\tnorm tests passed" << std::endl;
+}
+
 void testAdjoint()
 {
     std::cout << "Adjoint testing:" << std::endl;
@@ -770,6 +789,8 @@ int main()
     testAdjoint();
     std::cout << std::endl;
     testAdjoint2();
+    std::cout << std::endl;
+    testNormedRing();
     std::cout << std::endl;
 
     testRootTwoIntegral<int>();

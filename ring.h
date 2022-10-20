@@ -71,7 +71,7 @@ public:
     RootTwo adj() const;
     RootTwo adj2() const;
     RootTwo recip() const;
-    RootTwo norm() const;
+    Integer norm() const;
     std::string toString() const;
     void print(std::string prefix) const;
     static RootTwo half();
@@ -110,6 +110,7 @@ public:
     Complex adj() const;
     Complex adj2() const;
     Complex recip() const;
+    Integer norm() const;
     std::string toString() const;
     void print(std::string prefix) const;
     static Complex half();
@@ -288,6 +289,15 @@ namespace ring
 
     template <>
     Rational adj2(Rational arg);
+
+    template <typename T>
+    Integer norm(T arg);
+
+    template <>
+    Integer norm(int arg);
+
+    template <>
+    Integer norm(Integer arg);
 
     template <typename T>
     std::string toString(const T &arg);
