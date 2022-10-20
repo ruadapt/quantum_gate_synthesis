@@ -26,6 +26,24 @@ void testHalfRing()
     std::cout << "\tfromDyadic for Dyadic<int> passed" << std::endl;
 }
 
+void testRootTwoRing()
+{
+    std::cout << "RootTwoRing testing:" << std::endl;
+
+    assert(1.4142135623730951 == ring::rootTwo<double>());
+    assert(Complex<double>(1.4142135623730951, 0) == ring::rootTwo<Complex<double>>());
+    assert(RootTwo<Integer>(0, 1) == ring::rootTwo<RootTwo<Integer>>());
+    assert(RootTwo<Rational>(0_mpq, 1_mpq) == ring::rootTwo<RootTwo<Rational>>());
+    std::cout << "\trootTwo tests passed" << std::endl;
+
+    ZRootTwo z = ZRootTwo(10, -7);
+    assert(0.10050506338833465 == ring::fromZRootTwo<double>(z));
+    assert(Complex<double>(0.10050506338833465, 0) == ring::fromZRootTwo<Complex<double>>(z));
+    assert(RootTwo<Integer>(10, -7) == ring::fromZRootTwo<RootTwo<Integer>>(z));
+    assert(RootTwo<Rational>(10_mpq, -7_mpq) == ring::fromZRootTwo<RootTwo<Rational>>(z));
+    std::cout << "\tfromZRootTwo tests passed" << std::endl;
+}
+
 template <typename T>
 void testDyadic()
 {
@@ -651,6 +669,8 @@ void testComplexIntegral()
 int main()
 {
     testHalfRing();
+    std::cout << std::endl;
+    testRootTwoRing();
     std::cout << std::endl;
 
     testRootTwoIntegral<int>();

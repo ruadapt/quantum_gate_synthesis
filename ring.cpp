@@ -306,7 +306,7 @@ namespace ring
     template <typename T>
     T fromZRootTwo(ZRootTwo arg)
     {
-        return fromInteger<T>(arg.a) + rootTwo<T> * fromInteger<T>(arg.b);
+        return fromInteger<T>(arg.a) + rootTwo<T>() * fromInteger<T>(arg.b);
     }
 
     template <typename T>
@@ -908,6 +908,12 @@ template <typename T>
 Complex<T> Complex<T>::half()
 {
     return Complex<T>(ring::half<T>(), T(0));
+}
+
+template <typename T>
+Complex<T> Complex<T>::rootTwo()
+{
+    return Complex<T>(ring::rootTwo<T>(), T(0));
 }
 
 template <typename T>

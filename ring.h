@@ -111,6 +111,7 @@ public:
     std::string toString() const;
     void print(std::string prefix) const;
     static Complex half();
+    static Complex rootTwo();
     static Complex i();
     static Complex fromInteger(int n);
 };
