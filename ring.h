@@ -86,6 +86,7 @@ RootTwo<Rational>::RootTwo(Rational a, Rational b);
 
 using ZRootTwo = RootTwo<Integer>;
 using QRootTwo = RootTwo<Rational>;
+using DRootTwo = RootTwo<Dyadic<Integer>>;
 
 template <typename T>
 class Complex
@@ -112,6 +113,7 @@ public:
     void print(std::string prefix) const;
     static Complex half();
     static Complex rootTwo();
+    static Complex rootHalf();
     static Complex i();
     static Complex fromInteger(int n);
 };
@@ -243,6 +245,15 @@ namespace ring
 
     template <typename T>
     T fromZRootTwo(ZRootTwo arg);
+
+    template <typename T>
+    T rootHalf();
+
+    template <>
+    double rootHalf();
+
+    template <typename T>
+    T fromDRootTwo(DRootTwo arg);
 
     template <typename T>
     T adj(T arg);

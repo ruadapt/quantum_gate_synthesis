@@ -310,6 +310,24 @@ namespace ring
     }
 
     template <typename T>
+    T rootHalf()
+    {
+        return T::rootHalf();
+    }
+
+    template <>
+    double rootHalf()
+    {
+        return sqrt(0.5);
+    }
+
+    template <typename T>
+    T fromDRootTwo(DRootTwo arg)
+    {
+        return fromDyadic<T>(arg.a) + rootTwo<T>() * fromDyadic<T>(arg.b);
+    }
+
+    template <typename T>
     T adj(T arg)
     {
         return arg.adj();
@@ -914,6 +932,12 @@ template <typename T>
 Complex<T> Complex<T>::rootTwo()
 {
     return Complex<T>(ring::rootTwo<T>(), T(0));
+}
+
+template <typename T>
+Complex<T> Complex<T>::rootHalf()
+{
+    return Complex<T>(ring::rootHalf<T>(), T(0));
 }
 
 template <typename T>
