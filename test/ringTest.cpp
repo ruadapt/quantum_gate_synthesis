@@ -72,6 +72,69 @@ void testComplexRing()
     std::cout << "\ti tests passed" << std::endl;
 }
 
+void testAdjoint()
+{
+    std::cout << "Adjoint testing:" << std::endl;
+
+    assert(7 == ring::adj<int>(7));
+    assert(123123123123123123_mpz == ring::adj<Integer>(123123123123123123_mpz));
+    assert(0.123 == ring::adj<double>(0.123));
+    assert(123_mpq / 456 == ring::adj<Rational>(123_mpq / 456));
+    assert(Z2(0) == ring::adj<Z2>(0));
+    assert(Z2(1) == ring::adj<Z2>(1));
+    assert(Dyadic<int>(2, 7) == ring::adj<Dyadic<int>>(Dyadic<int>(2, 7)));
+    assert(Dyadic<Integer>(2, 7) == ring::adj<Dyadic<Integer>>(Dyadic<Integer>(2, 7)));
+    assert(Complex<int>(3, -4) == ring::adj<Complex<int>>(Complex<int>(3, 4)));
+    assert(Complex<Integer>(3, -4) == ring::adj<Complex<Integer>>(Complex<Integer>(3, 4)));
+    assert(RootTwo<int>(4, 7) == ring::adj<RootTwo<int>>(RootTwo<int>(4, 7)));
+    assert(RootTwo<Integer>(4, 7) == ring::adj<RootTwo<Integer>>(RootTwo<Integer>(4, 7)));
+    assert(
+        RootTwo<Complex<int>>(Complex<int>(4, -5), Complex<int>(6, -7)) ==
+        ring::adj<RootTwo<Complex<int>>>(RootTwo<Complex<int>>(Complex<int>(4, 5), Complex<int>(6, 7))));
+    assert(
+        RootTwo<Complex<Integer>>(Complex<Integer>(4, -5), Complex<Integer>(6, -7)) ==
+        ring::adj<RootTwo<Complex<Integer>>>(RootTwo<Complex<Integer>>(Complex<Integer>(4, 5), Complex<Integer>(6, 7))));
+    assert(
+        Complex<RootTwo<Dyadic<int>>>(
+            RootTwo<Dyadic<int>>(Dyadic<int>(5, 7), Dyadic<int>(9, 4)),
+            RootTwo<Dyadic<int>>(Dyadic<int>(-7, 9), Dyadic<int>(-11, 4))) ==
+        ring::adj<Complex<RootTwo<Dyadic<int>>>>(Complex<RootTwo<Dyadic<int>>>(
+            RootTwo<Dyadic<int>>(Dyadic<int>(5, 7), Dyadic<int>(9, 4)),
+            RootTwo<Dyadic<int>>(Dyadic<int>(7, 9), Dyadic<int>(11, 4)))));
+    std::cout << "\tadj tests passed" << std::endl;
+}
+
+void testAdjoint2()
+{
+    std::cout << "Adjoint2 testing:" << std::endl;
+
+    assert(7 == ring::adj2<int>(7));
+    assert(123123123123123123_mpz == ring::adj2<Integer>(123123123123123123_mpz));
+    assert(123_mpq / 456 == ring::adj2<Rational>(123_mpq / 456));
+    assert(Z2(0) == ring::adj2<Z2>(0));
+    assert(Z2(1) == ring::adj2<Z2>(1));
+    assert(Dyadic<int>(2, 7) == ring::adj2<Dyadic<int>>(Dyadic<int>(2, 7)));
+    assert(Dyadic<Integer>(2, 7) == ring::adj2<Dyadic<Integer>>(Dyadic<Integer>(2, 7)));
+    assert(Complex<int>(3, 4) == ring::adj2<Complex<int>>(Complex<int>(3, 4)));
+    assert(Complex<Integer>(3, 4) == ring::adj2<Complex<Integer>>(Complex<Integer>(3, 4)));
+    assert(RootTwo<int>(4, -7) == ring::adj2<RootTwo<int>>(RootTwo<int>(4, 7)));
+    assert(RootTwo<Integer>(4, -7) == ring::adj2<RootTwo<Integer>>(RootTwo<Integer>(4, 7)));
+    assert(
+        RootTwo<Complex<int>>(Complex<int>(4, 5), Complex<int>(-6, -7)) ==
+        ring::adj2<RootTwo<Complex<int>>>(RootTwo<Complex<int>>(Complex<int>(4, 5), Complex<int>(6, 7))));
+    assert(
+        RootTwo<Complex<Integer>>(Complex<Integer>(4, 5), Complex<Integer>(-6, -7)) ==
+        ring::adj2<RootTwo<Complex<Integer>>>(RootTwo<Complex<Integer>>(Complex<Integer>(4, 5), Complex<Integer>(6, 7))));
+    assert(
+        Complex<RootTwo<Dyadic<int>>>(
+            RootTwo<Dyadic<int>>(Dyadic<int>(5, 7), Dyadic<int>(-9, 4)),
+            RootTwo<Dyadic<int>>(Dyadic<int>(7, 9), Dyadic<int>(-11, 4))) ==
+        ring::adj2<Complex<RootTwo<Dyadic<int>>>>(Complex<RootTwo<Dyadic<int>>>(
+            RootTwo<Dyadic<int>>(Dyadic<int>(5, 7), Dyadic<int>(9, 4)),
+            RootTwo<Dyadic<int>>(Dyadic<int>(7, 9), Dyadic<int>(11, 4)))));
+    std::cout << "\tadj2 tests passed" << std::endl;
+}
+
 template <typename T>
 void testDyadic()
 {
@@ -703,6 +766,10 @@ int main()
     testRootHalfRing();
     std::cout << std::endl;
     testComplexRing();
+    std::cout << std::endl;
+    testAdjoint();
+    std::cout << std::endl;
+    testAdjoint2();
     std::cout << std::endl;
 
     testRootTwoIntegral<int>();
