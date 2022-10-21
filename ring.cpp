@@ -202,6 +202,19 @@ namespace ring
         return mpz_sizeinbase(n.get_mpz_t(), 2) - 1;
     }
 
+    /**
+     * Return the floor of sqrt(n).
+     */
+    Integer intsqrt(Integer n)
+    {
+        assert(n >= 0);
+        Integer sqrt;
+        // This computes the square root truncated to an integer, and since the square
+        // root is non-negative, truncating it is equivalent to taking the floor.
+        mpz_sqrt(sqrt.get_mpz_t(), n.get_mpz_t());
+        return sqrt;
+    }
+
     template <typename T>
     T fromInteger(int arg)
     {
@@ -377,6 +390,62 @@ namespace ring
 
     template <>
     Integer norm(Integer arg) { return arg; }
+
+    Integer floor_of(double arg)
+    {
+        return floor(arg);
+    }
+
+    Integer floor_of(Rational arg)
+    {
+        Integer result;
+        mpz_fdiv_q(result.get_mpz_t(), arg.get_num_mpz_t(), arg.get_den_mpz_t());
+        return result;
+    }
+
+    Integer floor_of(Integer arg)
+    {
+        return arg;
+    }
+
+    Integer floor_of(QRootTwo arg)
+    {
+        Integer a = floor_of(arg.a);
+        Integer b = intsqrt(floor_of(2 * arg.b * arg.b));
+        Integer rInt = (arg.b >= 0) ? (Integer(a + b)) : (Integer(a - b));
+        QRootTwo r = QRootTwo(Rational(rInt));
+        if (r + ring::fromInteger<QRootTwo>(1) <= arg)
+        {
+            return rInt + 1;
+        }
+        else if (r <= arg)
+        {
+            return rInt;
+        }
+        return rInt - 1;
+    }
+
+    Integer ceiling_of(double arg)
+    {
+        return ceil(arg);
+    }
+
+    Integer ceiling_of(Rational arg)
+    {
+        Integer result;
+        mpz_cdiv_q(result.get_mpz_t(), arg.get_num_mpz_t(), arg.get_den_mpz_t());
+        return result;
+    }
+
+    Integer ceiling_of(Integer arg)
+    {
+        return arg;
+    }
+
+    Integer ceiling_of(QRootTwo arg)
+    {
+        return -floor_of(-arg);
+    }
 
     template <typename T>
     std::string toString(const T &arg)

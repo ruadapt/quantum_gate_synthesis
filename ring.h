@@ -46,6 +46,8 @@ public:
     static Dyadic half();
 };
 
+using ZDyadic = Dyadic<Integer>;
+
 template <typename T>
 class RootTwo
 {
@@ -86,8 +88,8 @@ template <>
 RootTwo<Rational>::RootTwo(Rational a, Rational b);
 
 using ZRootTwo = RootTwo<Integer>;
+using DRootTwo = RootTwo<ZDyadic>;
 using QRootTwo = RootTwo<Rational>;
-using DRootTwo = RootTwo<Dyadic<Integer>>;
 
 template <typename T>
 class Complex
@@ -140,6 +142,13 @@ public:
     void print(std::string prefix) const;
     static Z2 fromInteger(int n);
 };
+
+using ZComplex = Complex<Integer>;
+using DComplex = Complex<Dyadic<Integer>>;
+using QComplex = Complex<Rational>;
+using DRComplex = Complex<DRootTwo>;
+using QRComplex = Complex<QRootTwo>;
+using CDouble = Complex<double>;
 
 namespace ring
 {
@@ -200,6 +209,8 @@ namespace ring
 
     size_t hibit(Integer n);
 
+    Integer intsqrt(Integer n);
+    
     template <typename T>
     T fromInteger(int arg);
 
@@ -298,6 +309,22 @@ namespace ring
 
     template <>
     Integer norm(Integer arg);
+
+    Integer floor_of(double arg);
+
+    Integer floor_of(Rational arg);
+
+    Integer floor_of(Integer arg);
+
+    Integer floor_of(QRootTwo arg);
+
+    Integer ceiling_of(double arg);
+
+    Integer ceiling_of(Rational arg);
+
+    Integer ceiling_of(Integer arg);
+
+    Integer ceiling_of(QRootTwo arg);
 
     template <typename T>
     std::string toString(const T &arg);

@@ -3,6 +3,16 @@
 #include <iostream>
 #include <memory>
 
+void testUtilityFunctions()
+{
+    std::cout << "Utility function testing:" << std::endl;
+
+    assert(2 == ring::intsqrt(4));
+    assert(11096085937082_mpz == ring::intsqrt(123123123123123123123123123_mpz));
+    assert(456456456456456456_mpz == ring::intsqrt(208352496640784928656512368224079936_mpz));
+    std::cout << "\tintsqrt tests passed" << std::endl;
+}
+
 void testHalfRing()
 {
     std::cout << "HalfRing testing:" << std::endl;
@@ -152,6 +162,44 @@ void testAdjoint2()
             RootTwo<Dyadic<int>>(Dyadic<int>(5, 7), Dyadic<int>(9, 4)),
             RootTwo<Dyadic<int>>(Dyadic<int>(7, 9), Dyadic<int>(11, 4)))));
     std::cout << "\tadj2 tests passed" << std::endl;
+}
+
+void testFloor(){
+    std::cout << "Floor testing:" << std::endl;
+
+    // double
+    assert(5 == ring::floor_of(5.2));
+    assert(4 == ring::floor_of(4));
+    assert(-3 == ring::floor_of(-2.5));
+    // Integer
+    assert(123123123123123123123123_mpq == ring::floor_of(Integer(123123123123123123123123_mpz)));
+    assert(-22 == ring::floor_of(Integer(-22_mpq)));
+    // Rational
+    assert(4 == ring::floor_of(Rational(123_mpq / 25)));
+    assert(12 == ring::floor_of(Rational(144_mpq / 12)));
+    assert(-13 ==ring::floor_of(Rational(-145_mpq / 12)));
+    // QRootTwo
+    assert(3 == ring::floor_of(QRootTwo(123_mpq / 22, -45_mpq / 27)));
+    assert(12 == ring::floor_of(QRootTwo(144_mpq / 12, 0)));
+    assert(-1398 == ring::floor_of(QRootTwo(12345671234567_mpq / 786876876876_mpq, -999)));
+    std::cout <<"\tfloor_of tests passed" << std::endl;
+
+    // double
+    assert(6 == ring::ceiling_of(5.2));
+    assert(4 == ring::ceiling_of(4));
+    assert(-2 == ring::ceiling_of(-2.5));
+    // Integer
+    assert(123123123123123123123123_mpz == ring::ceiling_of(Integer(123123123123123123123123_mpz)));
+    assert(-22 == ring::ceiling_of(Integer(-22_mpz)));
+    // Rational
+    assert(5 == ring::ceiling_of(Rational(123_mpq / 25)));
+    assert(12 == ring::ceiling_of(Rational(144_mpq / 12)));
+    assert(-12 ==ring::ceiling_of(Rational(-145_mpq / 12)));
+    // QRootTwo
+    assert(4 == ring::ceiling_of(QRootTwo(123_mpq / 22, -45_mpq / 27)));
+    assert(12 == ring::ceiling_of(QRootTwo(144_mpq / 12, 0)));
+    assert(-1397 == ring::ceiling_of(QRootTwo(12345671234567_mpq / 786876876876_mpz, -999)));
+    std::cout <<"\tceiling_of tests passed" << std::endl;
 }
 
 template <typename T>
@@ -778,6 +826,9 @@ void testComplexIntegral()
 
 int main()
 {
+    testUtilityFunctions();
+    std::cout << std::endl;
+
     testHalfRing();
     std::cout << std::endl;
     testRootTwoRing();
@@ -791,6 +842,8 @@ int main()
     testAdjoint2();
     std::cout << std::endl;
     testNormedRing();
+    std::cout << std::endl;
+    testFloor();
     std::cout << std::endl;
 
     testRootTwoIntegral<int>();
