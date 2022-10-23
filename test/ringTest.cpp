@@ -164,7 +164,8 @@ void testAdjoint2()
     std::cout << "\tadj2 tests passed" << std::endl;
 }
 
-void testFloor(){
+void testFloor()
+{
     std::cout << "Floor testing:" << std::endl;
 
     // double
@@ -177,12 +178,12 @@ void testFloor(){
     // Rational
     assert(4 == ring::floor_of(Rational(123_mpq / 25)));
     assert(12 == ring::floor_of(Rational(144_mpq / 12)));
-    assert(-13 ==ring::floor_of(Rational(-145_mpq / 12)));
+    assert(-13 == ring::floor_of(Rational(-145_mpq / 12)));
     // QRootTwo
     assert(3 == ring::floor_of(QRootTwo(123_mpq / 22, -45_mpq / 27)));
     assert(12 == ring::floor_of(QRootTwo(144_mpq / 12, 0)));
     assert(-1398 == ring::floor_of(QRootTwo(12345671234567_mpq / 786876876876_mpq, -999)));
-    std::cout <<"\tfloor_of tests passed" << std::endl;
+    std::cout << "\tfloor_of tests passed" << std::endl;
 
     // double
     assert(6 == ring::ceiling_of(5.2));
@@ -194,12 +195,12 @@ void testFloor(){
     // Rational
     assert(5 == ring::ceiling_of(Rational(123_mpq / 25)));
     assert(12 == ring::ceiling_of(Rational(144_mpq / 12)));
-    assert(-12 ==ring::ceiling_of(Rational(-145_mpq / 12)));
+    assert(-12 == ring::ceiling_of(Rational(-145_mpq / 12)));
     // QRootTwo
     assert(4 == ring::ceiling_of(QRootTwo(123_mpq / 22, -45_mpq / 27)));
     assert(12 == ring::ceiling_of(QRootTwo(144_mpq / 12, 0)));
     assert(-1397 == ring::ceiling_of(QRootTwo(12345671234567_mpq / 786876876876_mpz, -999)));
-    std::cout <<"\tceiling_of tests passed" << std::endl;
+    std::cout << "\tceiling_of tests passed" << std::endl;
 }
 
 template <typename T>
@@ -824,6 +825,70 @@ void testComplexIntegral()
     std::cout << "\tadj tests passed" << std::endl;
 }
 
+template <typename T>
+void testOmega()
+{
+    std::cout << "Omega<" << typeid(T).name() << "> testing:" << std::endl;
+
+    Omega<T> o0 = Omega<T>(T(0), T(0), T(0), T(0));
+    Omega<T> o1 = Omega<T>(T(1), T(-3), T(3), T(-7));
+    Omega<T> o1copy = Omega<T>(T(1), T(-3), T(3), T(-7));
+    Omega<T> o2 = Omega<T>(T(3), T(7), T(12), T(2));
+    Omega<T> o2copy = Omega<T>(T(3), T(7), T(12), T(2));
+    Omega<T> o3 = Omega<T>(T(5), T(9), T(-4), T(-9));
+
+    assert(o1 == o1copy);
+    assert(o2 == o2copy);
+    assert(o1 != o2);
+    assert(o2 != o3);
+    assert(o1 != o3);
+    assert(!(o1 != o1copy));
+    assert(!(o2 != o2copy));
+    assert(!(o1 == o2));
+    assert(!(o2 == o3));
+    assert(!(o1 == o3));
+    std::cout << "\tequality tests passed" << std::endl;
+
+    assert("Omega(0, 0, 0, 0)" == o0.toString());
+    assert("Omega(1, -3, 3, -7)" == o1.toString());
+    assert("Omega(3, 7, 12, 2)" == o2.toString());
+    assert("Omega(5, 9, -4, -9)" == o3.toString());
+    std::cout << "\ttoString tests passed" << std::endl;
+
+    assert(Omega<T>(0, 0, 0, 0) == o0.copy());
+    assert(Omega<T>(1, -3, 3, -7) == o1.copy());
+    std::cout << "\tcopy tests passed" << std::endl;
+
+    assert(Omega<T>(4, 4, 15, -5) == o1 + o2);
+    assert(Omega<T>(8, 16, 8, -7) == o2 + o3);
+    std::cout << "\tsum tests passed" << std::endl;
+
+    assert(Omega<T>(-2, -10, -9, -9) == o1 - o2);
+    assert(Omega<T>(-2, -2, 16, 11) == o2 - o3);
+    std::cout << "\tdifference tests passed" << std::endl;
+
+    assert(Omega<T>(0, 0, 0, 0) == o0 * o2);
+    assert(Omega<T>(-34, -22, -76, -14) == o1 * o2);
+    assert(Omega<T>(63, -108, -178, -129) == o2 * o3);
+    std::cout << "\tproduct tests passed" << std::endl;
+
+    assert(Omega<T>(0, 0, 0, 0) == -o0);
+    assert(Omega<T>(-1, 3, -3, 7) == -o1);
+    assert(Omega<T>(-3, -7, -12, -2) == -o2);
+    std::cout << "\tnegation tests passed" << std::endl;
+
+    assert(Omega<T>(0, 0, 0, 0) == o0.abs());
+    assert(Omega<T>(1, -3, 3, -7) == o1.abs());
+    assert(Omega<T>(3, 7, 12, 2) == o2.abs());
+    std::cout << "\tabs tests passed" << std::endl;
+
+    assert(1 == o0.signum());
+    assert(1 == o1.signum());
+    assert(1 == o2.signum());
+    assert(1 == o3.signum());
+    std::cout << "\tsignum tests passed" << std::endl;
+}
+
 int main()
 {
     testUtilityFunctions();
@@ -868,6 +933,10 @@ int main()
     std::cout << std::endl;
 
     testZ2();
+    std::cout << std::endl;
+
+    testOmega<int>();
+    std::cout << std::endl;
 
     return 0;
 }

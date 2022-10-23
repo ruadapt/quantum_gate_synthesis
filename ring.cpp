@@ -1137,3 +1137,91 @@ Z2 Z2::fromInteger(int n)
 {
     return Z2((bool)(n % 2));
 }
+
+template <typename T>
+Omega<T>::Omega()
+{
+    this->a = T(0);
+    this->b = T(0);
+    this->c = T(0);
+    this->d = T(0);
+}
+
+template <typename T>
+Omega<T>::Omega(T a, T b, T c, T d)
+{
+    this->a = a;
+    this->b = b;
+    this->c = c;
+    this->d = d;
+}
+
+template <typename T>
+Omega<T> Omega<T>::copy() const
+{
+    return Omega<T>(a, b, c, d);
+}
+
+template <typename T>
+bool Omega<T>::operator==(const Omega &o) const
+{
+    return (a == o.a) && (b == o.b) && (c == o.c) && (d == o.d);
+}
+
+template <typename T>
+bool Omega<T>::operator!=(const Omega &o) const
+{
+    return !(*this == o);
+}
+
+template <typename T>
+Omega<T> Omega<T>::operator+(const Omega &o) const
+{
+    return Omega<T>(a + o.a, b + o.b, c + o.c, d + o.d);
+}
+
+template <typename T>
+Omega<T> Omega<T>::operator-(const Omega &o) const
+{
+    return Omega<T>(a - o.a, b - o.b, c - o.c, d - o.d);
+}
+
+template <typename T>
+Omega<T> Omega<T>::operator*(const Omega &o) const
+{
+    return Omega<T>(
+        a * o.d + b * o.c + c * o.b + d * o.a,
+        b * o.d + c * o.c + d * o.b - a * o.a,
+        c * o.d + d * o.c - a * o.b - b * o.a,
+        d * o.d - a * o.c - b * o.b - c * o.a);
+}
+
+template <typename T>
+Omega<T> Omega<T>::operator-() const
+{
+    return Omega<T>(-a, -b, -c, -d);
+}
+
+template <typename T>
+Omega<T> Omega<T>::abs() const
+{
+    return this->copy();
+}
+
+template <typename T>
+int Omega<T>::signum() const
+{
+    return 1;
+}
+
+template <typename T>
+std::string Omega<T>::toString() const
+{
+    return "Omega(" + ring::toString(a) + ", " + ring::toString(b) + ", " + ring::toString(c) + ", " + ring::toString(d) + ")";
+}
+
+template <typename T>
+void Omega<T>::print(std::string prefix) const
+{
+    std::cout << prefix << ": " << this->toString() << std::endl;
+}

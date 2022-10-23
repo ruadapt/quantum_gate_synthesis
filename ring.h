@@ -150,6 +150,29 @@ using DRComplex = Complex<DRootTwo>;
 using QRComplex = Complex<QRootTwo>;
 using CDouble = Complex<double>;
 
+template <typename T>
+class Omega
+{
+public:
+    T a;
+    T b;
+    T c;
+    T d;
+    Omega();
+    Omega(T a, T b, T c, T d);
+    Omega copy() const;
+    bool operator==(const Omega &o) const;
+    bool operator!=(const Omega &o) const;
+    Omega operator+(const Omega &o) const;
+    Omega operator-(const Omega &o) const;
+    Omega operator*(const Omega &o) const;
+    Omega operator-() const;
+    Omega abs() const;
+    int signum() const;
+    std::string toString() const;
+    void print(std::string prefix) const;
+};
+
 namespace ring
 {
     int mpzToInt(Integer z);
@@ -210,7 +233,7 @@ namespace ring
     size_t hibit(Integer n);
 
     Integer intsqrt(Integer n);
-    
+
     template <typename T>
     T fromInteger(int arg);
 
