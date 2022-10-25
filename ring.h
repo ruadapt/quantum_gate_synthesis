@@ -169,6 +169,10 @@ public:
     Omega operator-() const;
     Omega abs() const;
     int signum() const;
+    Omega adj() const;
+    Omega adj2() const;
+    Omega recip() const;
+    Integer norm() const;
     std::string toString() const;
     void print(std::string prefix) const;
 };

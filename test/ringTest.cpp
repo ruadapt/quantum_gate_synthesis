@@ -849,11 +849,23 @@ void testOmega()
     assert(!(o1 == o3));
     std::cout << "\tequality tests passed" << std::endl;
 
-    assert("Omega(0, 0, 0, 0)" == o0.toString());
-    assert("Omega(1, -3, 3, -7)" == o1.toString());
-    assert("Omega(3, 7, 12, 2)" == o2.toString());
-    assert("Omega(5, 9, -4, -9)" == o3.toString());
-    std::cout << "\ttoString tests passed" << std::endl;
+    if constexpr (std::is_same<T, int>::value)
+    {
+        assert("Omega(0, 0, 0, 0)" == o0.toString());
+        assert("Omega(1, -3, 3, -7)" == o1.toString());
+        assert("Omega(3, 7, 12, 2)" == o2.toString());
+        assert("Omega(5, 9, -4, -9)" == o3.toString());
+        std::cout << "\ttoString tests passed" << std::endl;
+    }
+
+    if constexpr (std::is_same<T, double>::value)
+    {
+        assert("Omega(0.000000, 0.000000, 0.000000, 0.000000)" == o0.toString());
+        assert("Omega(1.000000, -3.000000, 3.000000, -7.000000)" == o1.toString());
+        assert("Omega(3.000000, 7.000000, 12.000000, 2.000000)" == o2.toString());
+        assert("Omega(5.000000, 9.000000, -4.000000, -9.000000)" == o3.toString());
+        std::cout << "\ttoString tests passed" << std::endl;
+    }
 
     assert(Omega<T>(0, 0, 0, 0) == o0.copy());
     assert(Omega<T>(1, -3, 3, -7) == o1.copy());
@@ -887,6 +899,35 @@ void testOmega()
     assert(1 == o2.signum());
     assert(1 == o3.signum());
     std::cout << "\tsignum tests passed" << std::endl;
+
+    assert(Omega<T>(0, 0, 0, 0) == o0.adj());
+    assert(Omega<T>(-3, 3, -1, -7) == o1.adj());
+    assert(Omega<T>(-12, -7, -3, 2) == o2.adj());
+    assert(Omega<T>(4, -9, -5, -9) == o3.adj());
+    std::cout << "\tadj tests passed" << std::endl;
+
+    if constexpr (std::is_same<T, double>::value || std::is_same<T, Rational>::value)
+    {
+        assert(Omega<T>(1.7114914425427872e-2, 3.0562347188264057e-2, -5.256723716381418e-2, -0.1295843520782396) == o1.recip());
+        assert(Omega<T>(-0.11208737066841847, 3.3092461816390216e-2, -2.4634586960091973e-4, -5.7070126457546395e-2) == o2.recip());
+        assert(Omega<T>(3.2468311407893156e-2, -6.945499620136751e-2, 2.419129113519133e-2, -4.066536047023071e-2) == o3.recip());
+        std::cout << "\trecip tests passed" << std::endl;
+    }
+
+    if constexpr (std::is_same<T, int>::value || std::is_same<T, Integer>::value)
+    {
+        assert(Omega<T>(0, 0, 0, 0) == o0.adj2());
+        assert(Omega<T>(-1, -3, -3, -7) == o1.adj2());
+        assert(Omega<T>(-3, 7, -12, 2) == o2.adj2());
+        assert(Omega<T>(-5, 9, 4, -9) == o3.adj2());
+        std::cout << "\tadj2 tests passed" << std::endl;
+
+        assert(0 == o0.norm());
+        assert(3272 == o1.norm());
+        assert(12178 == o2.norm());
+        assert(25009 == o3.norm());
+        std::cout << "\tnorm tests passed" << std::endl;
+    }
 }
 
 int main()
@@ -936,6 +977,8 @@ int main()
     std::cout << std::endl;
 
     testOmega<int>();
+    std::cout << std::endl;
+    testOmega<double>();
     std::cout << std::endl;
 
     return 0;

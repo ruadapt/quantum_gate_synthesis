@@ -1215,6 +1215,44 @@ int Omega<T>::signum() const
 }
 
 template <typename T>
+Omega<T> Omega<T>::adj() const
+{
+    return Omega(-ring::adj<T>(c), -ring::adj<T>(b), -ring::adj<T>(a), ring::adj<T>(d));
+}
+
+template <typename T>
+Omega<T> Omega<T>::adj2() const
+{
+    return Omega(-ring::adj2<T>(a), ring::adj2<T>(b), -ring::adj2<T>(c), ring::adj2<T>(d));
+}
+
+template <typename T>
+Omega<T> Omega<T>::recip() const
+{
+    static_assert(std::is_same<T, double>::value || std::is_same<T, Rational>::value,
+                  "recip can only be called with T = double or T = Rational.");
+    Omega<T> x1 = Omega<T>(-c, -b, -a, d);
+    Omega<T> x2 = Omega<T>(-a, b, -c, d);
+    Omega<T> x3 = Omega<T>(c, -b, a, d);
+    T sumSquares = a * a + b * b + c * c + d * d;
+    T sumProds = a * b + b * c + c * d - d * a;
+    T denom = sumSquares * sumSquares - 2 * sumProds * sumProds;
+    return x1 * x2 * x3 * Omega(0, 0, 0, 1 / denom);
+}
+
+template <typename T>
+Integer Omega<T>::norm() const
+{
+    Integer nA = ring::norm<T>(a);
+    Integer nB = ring::norm<T>(b);
+    Integer nC = ring::norm<T>(c);
+    Integer nD = ring::norm<T>(d);
+    Integer sum1 = nA * nA + nB * nB + nC * nC + nD * nD;
+    Integer sum2 = nA * nB + nB * nC + nC * nD - nD * nA;
+    return sum1 * sum1 - 2 * sum2 * sum2;
+}
+
+template <typename T>
 std::string Omega<T>::toString() const
 {
     return "Omega(" + ring::toString(a) + ", " + ring::toString(b) + ", " + ring::toString(c) + ", " + ring::toString(d) + ")";
