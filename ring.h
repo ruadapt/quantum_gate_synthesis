@@ -19,7 +19,7 @@ public:
     T a;
     T n;
     Dyadic();
-    Dyadic(T arg);
+    Dyadic(int arg);
     Dyadic(T a, T n);
     Dyadic copy() const;
     bool operator==(const Dyadic &d) const;
@@ -55,7 +55,7 @@ public:
     T a;
     T b;
     RootTwo();
-    RootTwo(T arg);
+    RootTwo(int arg);
     RootTwo(T a, T b);
     RootTwo copy() const;
     bool operator==(const RootTwo &r) const;
@@ -98,7 +98,7 @@ public:
     T a;
     T b;
     Complex();
-    Complex(T arg);
+    Complex(int arg);
     Complex(T a, T b);
     Complex copy() const;
     bool operator==(const Complex &c) const;
@@ -126,6 +126,7 @@ class Z2
 public:
     bool mod2;
     Z2();
+    Z2(int arg);
     Z2(bool mod2);
     Z2 copy() const;
     bool operator==(const Z2 &z) const;
@@ -159,6 +160,7 @@ public:
     T c;
     T d;
     Omega();
+    Omega(int arg);
     Omega(T a, T b, T c, T d);
     Omega copy() const;
     bool operator==(const Omega &o) const;

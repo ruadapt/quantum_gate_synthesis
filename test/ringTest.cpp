@@ -13,6 +13,39 @@ void testUtilityFunctions()
     std::cout << "\tintsqrt tests passed" << std::endl;
 }
 
+void testTypeConversions()
+{
+    std::cout << "Type conversion testing" << std::endl;
+
+    double d = double(2);
+    assert(2.0 == d);
+    Integer i = Integer(2);
+    assert(2_mpz == i);
+    Rational r = Rational(2);
+    assert(2_mpq == r);
+    Dyadic<int> dInt = Dyadic<int>(2);
+    assert(Dyadic<int>(2, 0) == dInt);
+    Dyadic<Integer> dInteger = Dyadic<Integer>(2);
+    assert(Dyadic<Integer>(2_mpz, 0_mpz) == dInteger);
+    RootTwo<int> rInt = RootTwo<int>(2);
+    assert(RootTwo<int>(2, 0) == rInt);
+    RootTwo<Integer> rInteger = RootTwo<Integer>(2);
+    assert(RootTwo<Integer>(2_mpz, 0_mpz) == rInteger);
+    RootTwo<double> rDouble = RootTwo<double>(2);
+    assert(RootTwo<double>(2.0, 0.0) == rDouble);
+    RootTwo<Rational> rRational = RootTwo<Rational>(2);
+    assert(RootTwo<Rational>(2_mpq, 0_mpq) == rRational);
+    RootTwo<Dyadic<int>> rDyadicInt = RootTwo<Dyadic<int>>(2);
+    assert(RootTwo<Dyadic<int>>(Dyadic<int>(2, 0), Dyadic<int>(0, 0)) == rDyadicInt);
+    RootTwo<Dyadic<Integer>> rDyadicInteger = RootTwo<Dyadic<Integer>>(2);
+    assert(RootTwo<Dyadic<Integer>>(Dyadic<Integer>(2, 0), Dyadic<Integer>(0, 0)) == rDyadicInteger);
+    Complex<QRootTwo> cQRootTwo = Complex<QRootTwo>(2);
+    assert(Complex<QRootTwo>(QRootTwo(2_mpq, 0_mpq), QRootTwo(0_mpq, 0_mpq)) == cQRootTwo);
+    Complex<DRootTwo> cDRootTwo = Complex<DRootTwo>(2);
+    assert(Complex<DRootTwo>(DRootTwo(ZDyadic(2, 0), ZDyadic(0, 0)), DRootTwo(ZDyadic(0, 0), ZDyadic(0, 0))) == cDRootTwo);
+    std::cout << "\tconversion from int tests passed" << std::endl;
+}
+
 void testHalfRing()
 {
     std::cout << "HalfRing testing:" << std::endl;
@@ -361,13 +394,13 @@ void testRootTwoIntegral()
     assert(!(r2 <= rneg1));
     std::cout << "\tcomparison tests passed" << std::endl;
 
-    assert(RootTwo<T>(5, 2) == r + T(4));
+    assert(RootTwo<T>(5, 2) == r + 4);
     std::cout << "\tscalar sum test passed" << std::endl;
 
-    assert(RootTwo<T>(-1, 2) == r - T(2));
+    assert(RootTwo<T>(-1, 2) == r - 2);
     std::cout << "\tscalar difference test passed" << std::endl;
 
-    assert(RootTwo<T>(12, 27) == r2 * T(3));
+    assert(RootTwo<T>(12, 27) == r2 * 3);
     std::cout << "\tscalar product test passed" << std::endl;
 
     assert(RootTwo<T>(5, 11) == r + r2);
@@ -394,7 +427,7 @@ void testRootTwoIntegral()
     assert(-1 == rneg2.signum());
     std::cout << "\tsignum tests passed" << std::endl;
 
-    assert(RootTwo<T>(T(0), 1) == RootTwo<T>::rootTwo());
+    assert(RootTwo<T>(0, 1) == RootTwo<T>::rootTwo());
     std::cout << "\trootTwo test passed" << std::endl;
 
     assert(RootTwo<T>(5, 0) == RootTwo<T>::fromInteger(5));
@@ -473,24 +506,6 @@ void testRootTwoDyadic()
     assert(!(r2 <= r3));
     assert(!(r <= r4));
     std::cout << "\tcomparison tests passed" << std::endl;
-
-    RootTwo<Dyadic<T>> scalarSum = r + Dyadic<T>(T(4), T(3));
-    RootTwo<Dyadic<T>> expectedScalarSum = RootTwo<Dyadic<T>>(
-        Dyadic<T>(6, 3), Dyadic<T>(2, 3));
-    assert(expectedScalarSum == scalarSum);
-    std::cout << "\tscalar sum test passed" << std::endl;
-
-    RootTwo<Dyadic<T>> scalarDifference = r - Dyadic<T>(T(7), T(4));
-    RootTwo<Dyadic<T>> expectedScalarDifference = RootTwo<Dyadic<T>>(
-        Dyadic<T>(-3, 4), Dyadic<T>(2, 3));
-    assert(expectedScalarDifference == scalarDifference);
-    std::cout << "\tscalar difference test passed" << std::endl;
-
-    RootTwo<Dyadic<T>> scalarProduct = r2 * Dyadic<T>(T(3), T(2));
-    RootTwo<Dyadic<T>> expectedScalarProduct = RootTwo<Dyadic<T>>(
-        Dyadic<T>(3, 4), Dyadic<T>(-6, 7));
-    assert(expectedScalarProduct == scalarProduct);
-    std::cout << "\tscalar product test passed" << std::endl;
 
     RootTwo<Dyadic<T>> sum = r + r2;
     RootTwo<Dyadic<T>> expectedSum = RootTwo<Dyadic<T>>(
@@ -577,10 +592,6 @@ void testRootTwoRational()
     assert(rNonCanonical.b.get_num() == -1);
     assert(rNonCanonical.b.get_den() == 3);
     std::cout << "\tcanonicalization test passed" << std::endl;
-
-    QRootTwo fromScalar = QRootTwo(1_mpq / 2);
-    assert(QRootTwo(1_mpq / 2, 0_mpq) == fromScalar);
-    std::cout << "\tfromScalar test passed" << std::endl;
 
     assert(r1 == r1equal);
     assert(r1 != r0);
@@ -789,13 +800,13 @@ void testComplexIntegral()
     assert("Complex(4, 9)" == c2.toString());
     std::cout << "\ttoString tests passed" << std::endl;
 
-    assert(Complex<T>(5, 2) == c1 + T(4));
+    assert(Complex<T>(5, 2) == c1 + 4);
     std::cout << "\tscalar sum test passed" << std::endl;
 
-    assert(Complex<T>(-1, 2) == c1 - T(2));
+    assert(Complex<T>(-1, 2) == c1 - 2);
     std::cout << "\tscalar difference test passed" << std::endl;
 
-    assert(Complex<T>(12, 27) == c2 * T(3));
+    assert(Complex<T>(12, 27) == c2 * 3);
     std::cout << "\tscalar product test passed" << std::endl;
 
     assert(Complex<T>(5, 11) == c1 + c2);
@@ -830,12 +841,12 @@ void testOmega()
 {
     std::cout << "Omega<" << typeid(T).name() << "> testing:" << std::endl;
 
-    Omega<T> o0 = Omega<T>(T(0), T(0), T(0), T(0));
-    Omega<T> o1 = Omega<T>(T(1), T(-3), T(3), T(-7));
-    Omega<T> o1copy = Omega<T>(T(1), T(-3), T(3), T(-7));
-    Omega<T> o2 = Omega<T>(T(3), T(7), T(12), T(2));
-    Omega<T> o2copy = Omega<T>(T(3), T(7), T(12), T(2));
-    Omega<T> o3 = Omega<T>(T(5), T(9), T(-4), T(-9));
+    Omega<T> o0 = Omega<T>(0, 0, 0, 0);
+    Omega<T> o1 = Omega<T>(1, -3, 3, -7);
+    Omega<T> o1copy = Omega<T>(1, -3, 3, -7);
+    Omega<T> o2 = Omega<T>(3, 7, 12, 2);
+    Omega<T> o2copy = Omega<T>(3, 7, 12, 2);
+    Omega<T> o3 = Omega<T>(5, 9, -4, -9);
 
     assert(o1 == o1copy);
     assert(o2 == o2copy);
@@ -933,6 +944,8 @@ void testOmega()
 int main()
 {
     testUtilityFunctions();
+    std::cout << std::endl;
+    testTypeConversions();
     std::cout << std::endl;
 
     testHalfRing();

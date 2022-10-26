@@ -245,7 +245,7 @@ namespace ring
         assert(exp >= 0);
         if (exp == 0)
         {
-            return T(1);
+            return 1;
         }
         T result = base;
         if (exp == 1)
@@ -413,7 +413,7 @@ namespace ring
         Integer a = floor_of(arg.a);
         Integer b = intsqrt(floor_of(2 * arg.b * arg.b));
         Integer rInt = (arg.b >= 0) ? (Integer(a + b)) : (Integer(a - b));
-        QRootTwo r = QRootTwo(Rational(rInt));
+        QRootTwo r = QRootTwo(Rational(rInt), 0);
         if (r + ring::fromInteger<QRootTwo>(1) <= arg)
         {
             return rInt + 1;
@@ -474,7 +474,7 @@ Dyadic<T>::Dyadic()
 }
 
 template <typename T>
-Dyadic<T>::Dyadic(T arg)
+Dyadic<T>::Dyadic(int arg)
 {
     this->a = arg;
     this->n = 0;
@@ -669,7 +669,7 @@ void Dyadic<T>::print(std::string prefix) const
 template <typename T>
 Dyadic<T> Dyadic<T>::fromInteger(int n)
 {
-    return Dyadic(T(n), T(0));
+    return Dyadic(n, 0);
 }
 
 template <typename T>
@@ -681,7 +681,7 @@ Dyadic<T> Dyadic<T>::fromDyadic(const Dyadic &d)
 template <typename T>
 Dyadic<T> Dyadic<T>::half()
 {
-    return Dyadic(T(1), T(1));
+    return Dyadic(1, 1);
 }
 
 template <>
@@ -699,15 +699,15 @@ Dyadic<Integer> ring::half()
 template <typename T>
 RootTwo<T>::RootTwo()
 {
-    this->a = T(0);
-    this->b = T(0);
+    this->a = 0;
+    this->b = 0;
 }
 
 template <typename T>
-RootTwo<T>::RootTwo(T arg)
+RootTwo<T>::RootTwo(int arg)
 {
     this->a = arg;
-    this->b = T(0);
+    this->b = 0;
 }
 
 template <typename T>
@@ -866,37 +866,37 @@ void RootTwo<T>::print(std::string prefix) const
 template <typename T>
 RootTwo<T> RootTwo<T>::half()
 {
-    return RootTwo<T>(ring::half<T>(), T(0));
+    return RootTwo<T>(ring::half<T>(), 0);
 }
 
 template <typename T>
 RootTwo<T> RootTwo<T>::rootTwo()
 {
-    return RootTwo<T>(T(0), T(1));
+    return RootTwo<T>(0, 1);
 }
 
 template <typename T>
 RootTwo<T> RootTwo<T>::rootHalf()
 {
-    return RootTwo<T>(T(0), ring::half<T>());
+    return RootTwo<T>(0, ring::half<T>());
 }
 
 template <typename T>
 RootTwo<T> RootTwo<T>::i()
 {
-    return RootTwo<T>(ring::i<T>(), T(0));
+    return RootTwo<T>(ring::i<T>(), 0);
 }
 
 template <typename T>
 RootTwo<T> RootTwo<T>::fromInteger(int n)
 {
-    return RootTwo<T>(T(n), T(0));
+    return RootTwo<T>(n, 0);
 }
 
 template <typename T>
 RootTwo<T> RootTwo<T>::fromRational(double x)
 {
-    return RootTwo<T>(T(x), T(0));
+    return RootTwo<T>(x, 0);
 }
 
 template <>
@@ -912,15 +912,15 @@ RootTwo<Rational>::RootTwo(Rational a, Rational b)
 template <typename T>
 Complex<T>::Complex()
 {
-    this->a = T(0);
-    this->b = T(0);
+    this->a = 0;
+    this->b = 0;
 }
 
 template <typename T>
-Complex<T>::Complex(T arg)
+Complex<T>::Complex(int arg)
 {
     this->a = arg;
-    this->b = T(0);
+    this->b = 0;
 }
 
 template <typename T>
@@ -1028,36 +1028,41 @@ void Complex<T>::print(std::string prefix) const
 template <typename T>
 Complex<T> Complex<T>::half()
 {
-    return Complex<T>(ring::half<T>(), T(0));
+    return Complex<T>(ring::half<T>(), 0);
 }
 
 template <typename T>
 Complex<T> Complex<T>::rootTwo()
 {
-    return Complex<T>(ring::rootTwo<T>(), T(0));
+    return Complex<T>(ring::rootTwo<T>(), 0);
 }
 
 template <typename T>
 Complex<T> Complex<T>::rootHalf()
 {
-    return Complex<T>(ring::rootHalf<T>(), T(0));
+    return Complex<T>(ring::rootHalf<T>(), 0);
 }
 
 template <typename T>
 Complex<T> Complex<T>::i()
 {
-    return Complex<T>(T(0), T(1));
+    return Complex<T>(0, 1);
 }
 
 template <typename T>
 Complex<T> Complex<T>::fromInteger(int n)
 {
-    return Complex<T>(T(n), T(0));
+    return Complex<T>(n, 0);
 }
 
 Z2::Z2()
 {
     this->mod2 = 0;
+}
+
+Z2::Z2(int arg)
+{
+    this->mod2 = (arg % 2) != 0;
 }
 
 Z2::Z2(bool mod2)
@@ -1141,10 +1146,19 @@ Z2 Z2::fromInteger(int n)
 template <typename T>
 Omega<T>::Omega()
 {
-    this->a = T(0);
-    this->b = T(0);
-    this->c = T(0);
-    this->d = T(0);
+    this->a = 0;
+    this->b = 0;
+    this->c = 0;
+    this->d = 0;
+}
+
+template <typename T>
+Omega<T>::Omega(int arg)
+{
+    this->a = 0;
+    this->b = 0;
+    this->c = 0;
+    this->d = arg;
 }
 
 template <typename T>
