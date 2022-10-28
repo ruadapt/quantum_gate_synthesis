@@ -1277,3 +1277,33 @@ void Omega<T>::print(std::string prefix) const
 {
     std::cout << prefix << ": " << this->toString() << std::endl;
 }
+
+template <typename T>
+Omega<T> Omega<T>::half()
+{
+    return Omega<T>(0, 0, 0, ring::half<T>());
+}
+
+template <typename T>
+Omega<T> Omega<T>::rootTwo()
+{
+    return Omega<T>(-1, 0, 1, 0);
+}
+
+template <typename T>
+Omega<T> Omega<T>::rootHalf()
+{
+    return Omega<T>(-ring::half<T>(), 0, ring::half<T>(), 0);
+}
+
+template <typename T>
+Omega<T> Omega<T>::i()
+{
+    return Omega<T>(0, 1, 0, 0);
+}
+
+template <typename T>
+Omega<T> Omega<T>::fromInteger(int n)
+{
+    return Omega<T>(0, 0, 0, n);
+}

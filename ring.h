@@ -177,7 +177,17 @@ public:
     Integer norm() const;
     std::string toString() const;
     void print(std::string prefix) const;
+    static Omega half();
+    static Omega rootTwo();
+    static Omega rootHalf();
+    static Omega i();
+    static Omega fromInteger(int n);
+    static Omega fromRational(double x);
 };
+
+using ZOmega = Omega<Integer>;
+using DOmega = Omega<ZDyadic>;
+using QOmega = Omega<Rational>;
 
 namespace ring
 {
