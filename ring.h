@@ -80,6 +80,7 @@ public:
     static RootTwo rootTwo();
     static RootTwo rootHalf();
     static RootTwo i();
+    static RootTwo omega();
     static RootTwo fromInteger(int n);
     static RootTwo fromRational(double x);
 };
@@ -119,6 +120,7 @@ public:
     static Complex rootTwo();
     static Complex rootHalf();
     static Complex i();
+    static Complex omega();
     static Complex fromInteger(int n);
 };
 class Z2
@@ -181,6 +183,7 @@ public:
     static Omega rootTwo();
     static Omega rootHalf();
     static Omega i();
+    static Omega omega();
     static Omega fromInteger(int n);
     static Omega fromRational(double x);
 };
@@ -364,6 +367,9 @@ namespace ring
     Integer ceiling_of(Integer arg);
 
     Integer ceiling_of(QRootTwo arg);
+
+    template <typename T>
+    T omega();
 
     template <typename T>
     std::string toString(const T &arg);

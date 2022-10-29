@@ -174,6 +174,26 @@ void testComplexRing()
     std::cout << "\ti tests passed" << std::endl;
 }
 
+void testOmegaRing()
+{
+    std::cout << "OmegaRing testing:" << std::endl;
+
+    assert(CDouble(0.7071067811865476, 0.7071067811865476) == ring::omega<CDouble>());
+    assert(DRComplex(DRootTwo(0, ZDyadic(1, 1)), DRootTwo(0, ZDyadic(1, 1))) ==
+           ring::omega<Complex<DRootTwo>>());
+    assert(QRComplex(QRootTwo(0, 1_mpq / 2), QRootTwo(0, 1_mpq / 2)) ==
+           ring::omega<Complex<QRootTwo>>());
+
+    assert(RootTwo<DComplex>(DComplex(0, 0), DComplex(ZDyadic(1, 1), ZDyadic(1, 1))) ==
+           ring::omega<RootTwo<DComplex>>());
+
+    assert(ZOmega(0, 0, 1, 0) == ring::omega<ZOmega>());
+    assert(DOmega(0, 0, 1, 0) == ring::omega<DOmega>());
+    assert(QOmega(0, 0, 1, 0) == ring::omega<QOmega>());
+
+    std::cout << "\tomega tests passed" << std::endl;
+}
+
 void testNormedRing()
 {
     std::cout << "NormedRing testing:" << std::endl;
@@ -1069,6 +1089,8 @@ int main()
     testRootHalfRing();
     std::cout << std::endl;
     testComplexRing();
+    std::cout << std::endl;
+    testOmegaRing();
     std::cout << std::endl;
     testAdjoint();
     std::cout << std::endl;

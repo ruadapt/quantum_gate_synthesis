@@ -448,6 +448,12 @@ namespace ring
     }
 
     template <typename T>
+    T omega()
+    {
+        return T::omega();
+    }
+
+    template <typename T>
     std::string toString(const T &arg)
     {
         return arg.toString();
@@ -888,6 +894,12 @@ RootTwo<T> RootTwo<T>::i()
 }
 
 template <typename T>
+RootTwo<T> RootTwo<T>::omega()
+{
+    return RootTwo<T>::rootHalf() * (RootTwo<T>(1) + RootTwo<T>::i());
+}
+
+template <typename T>
 RootTwo<T> RootTwo<T>::fromInteger(int n)
 {
     return RootTwo<T>(n, 0);
@@ -1047,6 +1059,12 @@ template <typename T>
 Complex<T> Complex<T>::i()
 {
     return Complex<T>(0, 1);
+}
+
+template <typename T>
+Complex<T> Complex<T>::omega()
+{
+    return Complex<T>::rootHalf() * (Complex<T>(1) + Complex<T>::i());
 }
 
 template <typename T>
@@ -1300,6 +1318,12 @@ template <typename T>
 Omega<T> Omega<T>::i()
 {
     return Omega<T>(0, 1, 0, 0);
+}
+
+template <typename T>
+Omega<T> Omega<T>::omega()
+{
+    return Omega<T>(0, 0, 1, 0);
 }
 
 template <typename T>
