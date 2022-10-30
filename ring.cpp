@@ -12,7 +12,10 @@ namespace ring
     }
 
     template <typename Integral>
-    Integral shift(Integral x, int bits)
+    Integral shift(Integral x, int bits);
+
+    template <>
+    int shift(int x, int bits)
     {
         if (bits >= 0)
         {
@@ -24,7 +27,7 @@ namespace ring
     template <typename Integral>
     Integral shift(Integral x, Integer bits)
     {
-        return shift(x, mpzToInt(bits));
+        return shift<Integral>(x, mpzToInt(bits));
     }
 
     template <>
@@ -45,37 +48,37 @@ namespace ring
     template <>
     Integer shift(Integer x, Integer bits)
     {
-        return shift(x, mpzToInt(bits));
+        return shift<Integer>(x, mpzToInt(bits));
     }
 
     template <typename Integral>
     Integral shiftL(Integral x, int bits)
     {
-        return shift(x, bits);
+        return shift<Integral>(x, bits);
     }
 
     template <typename Integral>
     Integral shiftL(Integral x, Integer bits)
     {
-        return shiftL(x, mpzToInt(bits));
+        return shift<Integral>(x, bits);
     }
 
     template <typename Integral>
     Integral shiftR(Integral x, int bits)
     {
-        return shift(x, -bits);
+        return shift<Integral>(x, -bits);
     }
 
     template <typename Integral>
     Integral shiftR(Integral x, Integer bits)
     {
-        return shiftR(x, mpzToInt(bits));
+        return shift<Integral>(x, -bits);
     }
 
     template <typename Integral>
     Integral exp2(int pow)
     {
-        return shiftL(1, pow);
+        return shiftL<Integral>(1, pow);
     }
 
     template <typename Integral>
@@ -213,6 +216,21 @@ namespace ring
         // root is non-negative, truncating it is equivalent to taking the floor.
         mpz_sqrt(sqrt.get_mpz_t(), n.get_mpz_t());
         return sqrt;
+    }
+
+    std::optional<Integer> log2(Integer n)
+    {
+        if (n <= 0)
+        {
+            return std::nullopt;
+        }
+        int k = lobit(n);
+        Integer powK = exp2<Integer>(k);
+        if (n == powK)
+        {
+            return k;
+        }
+        return std::nullopt;
     }
 
     template <typename T>
@@ -451,6 +469,105 @@ namespace ring
     T omega()
     {
         return T::omega();
+    }
+
+    template <typename T, typename U>
+    std::optional<RootTwo<U>> maybeDyadic(RootTwo<T> arg)
+    {
+        std::optional<U> aDyadic = ring::maybeDyadic<T, U>(arg.a);
+        std::optional<U> bDyadic = ring::maybeDyadic<T, U>(arg.b);
+        if (aDyadic.has_value() && bDyadic.has_value())
+        {
+            return RootTwo<U>(aDyadic.value(), bDyadic.value());
+        }
+        return std::nullopt;
+    }
+
+    template <typename T, typename U>
+    std::optional<Complex<U>> maybeDyadic(Complex<T> arg)
+    {
+        std::optional<U> aDyadic = ring::maybeDyadic<T, U>(arg.a);
+        std::optional<U> bDyadic = ring::maybeDyadic<T, U>(arg.b);
+        if (aDyadic.has_value() && bDyadic.has_value())
+        {
+            return Complex<U>(aDyadic.value(), bDyadic.value());
+        }
+        return std::nullopt;
+    }
+
+    template <typename T, typename U>
+    std::optional<Omega<U>> maybeDyadic(Omega<T> arg)
+    {
+        std::optional<U> aDyadic = ring::maybeDyadic<T, U>(arg.a);
+        std::optional<U> bDyadic = ring::maybeDyadic<T, U>(arg.b);
+        std::optional<U> cDyadic = ring::maybeDyadic<T, U>(arg.c);
+        std::optional<U> dDyadic = ring::maybeDyadic<T, U>(arg.d);
+        if (aDyadic.has_value() && bDyadic.has_value() && cDyadic.has_value() && dDyadic.has_value())
+        {
+            return Omega<U>(aDyadic.value(), bDyadic.value(), cDyadic.value(), dDyadic.value());
+        }
+        return std::nullopt;
+    }
+
+    template <>
+    std::optional<ZDyadic> maybeDyadic(ZDyadic arg)
+    {
+        return arg;
+    }
+
+    template <>
+    std::optional<ZDyadic> maybeDyadic(Rational r)
+    {
+        std::optional<Integer> k = log2(r.get_den());
+        if (k.has_value())
+        {
+            return ZDyadic(r.get_num(), k.value());
+        }
+        return std::nullopt;
+    }
+
+    template <typename T, typename U>
+    U toDyadic(T arg)
+    {
+        std::optional<U> maybe = maybeDyadic<T, U>(arg);
+        if (maybe.has_value())
+        {
+            return maybe.value();
+        }
+        throw std::invalid_argument("Could not convert argument to dyadic value");
+    }
+
+    template <typename T, typename U>
+    RootTwo<U> toDyadic(RootTwo<T> arg)
+    {
+        std::optional<RootTwo<U>> maybe = maybeDyadic<T, U>(arg);
+        if (maybe.has_value())
+        {
+            return maybe.value();
+        }
+        throw std::invalid_argument("Could not convert argument to dyadic value");
+    }
+
+    template <typename T, typename U>
+    Complex<U> toDyadic(Complex<T> arg)
+    {
+        std::optional<Complex<U>> maybe = maybeDyadic<T, U>(arg);
+        if (maybe.has_value())
+        {
+            return maybe.value();
+        }
+        throw std::invalid_argument("Could not convert argument to dyadic value");
+    }
+
+    template <typename T, typename U>
+    Omega<U> toDyadic(Omega<T> arg)
+    {
+        std::optional<Omega<U>> maybe = maybeDyadic<T, U>(arg);
+        if (maybe.has_value())
+        {
+            return maybe.value();
+        }
+        throw std::invalid_argument("Could not convert argument to dyadic value");
     }
 
     template <typename T>

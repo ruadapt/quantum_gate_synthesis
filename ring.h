@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <gmpxx.h>
+#include <optional>
 
 typedef mpz_class Integer;
 typedef mpq_class Rational;
@@ -253,6 +254,8 @@ namespace ring
 
     Integer intsqrt(Integer n);
 
+    std::optional<Integer> log2(Integer n);
+
     template <typename T>
     T fromInteger(int arg);
 
@@ -370,6 +373,36 @@ namespace ring
 
     template <typename T>
     T omega();
+
+    template <typename T, typename U>
+    std::optional<U> maybeDyadic(T arg);
+
+    template <typename T, typename U>
+    std::optional<RootTwo<U>> maybeDyadic(RootTwo<T> arg);
+
+    template <typename T, typename U>
+    std::optional<Complex<U>> maybeDyadic(Complex<T> arg);
+
+    template <typename T, typename U>
+    std::optional<Omega<U>> maybeDyadic(Omega<T> arg);
+
+    template <>
+    std::optional<ZDyadic> maybeDyadic(ZDyadic arg);
+
+    template <>
+    std::optional<ZDyadic> maybeDyadic(Rational r);
+
+    template <typename T, typename U>
+    U toDyadic(T arg);
+
+    template <typename T, typename U>
+    RootTwo<U> toDyadic(RootTwo<T> arg);
+
+    template <typename T, typename U>
+    Complex<U> toDyadic(Complex<T> arg);
+
+    template <typename T, typename U>
+    Omega<U> toDyadic(Omega<T> arg);
 
     template <typename T>
     std::string toString(const T &arg);

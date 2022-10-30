@@ -12,10 +12,55 @@ void testUtilityFunctions()
 {
     std::cout << "Utility function testing:" << std::endl;
 
+    assert(1 == ring::shift<int>(1, 0));
+    assert(1 == ring::shift<Integer>(1, 0));
+    assert(5120 == ring::shift<int>(5, 10));
+    assert(5120 == ring::shift<Integer>(5, 10));
+    assert(8034690221294951377709810461705813012611014968913964176506880_mpz == ring::shift<Integer>(5, 200));
+    assert(540412499179089513452888265605116091644885096989720576_mpz ==
+           ring::shift<Integer>(515377520732011331036461129765621272702107522001_mpz, 20));
+    // Fails at runtime because the shift ammount is too large.
+    // assert(1 == ring::shift<Integer>(3, 515377520732011331036461129765621272702107522001_mpz));
+    std::cout << "\tshift tests passed" << std::endl;
+
+    // shiftL should be the same as shift.
+    assert(1 == ring::shiftL<int>(1, 0));
+    assert(1 == ring::shiftL<Integer>(1, 0));
+    assert(5120 == ring::shiftL<int>(5, 10));
+    assert(5120 == ring::shiftL<Integer>(5, 10));
+    assert(8034690221294951377709810461705813012611014968913964176506880_mpz == ring::shiftL<Integer>(5, 200));
+    assert(540412499179089513452888265605116091644885096989720576_mpz ==
+           ring::shiftL<Integer>(515377520732011331036461129765621272702107522001_mpz, 20));
+    std::cout << "\tshiftL tests passed" << std::endl;
+
+    assert(1 == ring::shiftR<int>(1, 0));
+    assert(1 == ring::shiftR<Integer>(1, 0));
+    assert(5 == ring::shiftR<int>(5120, 10));
+    assert(5 == ring::shiftR<Integer>(5120, 10));
+    assert(5 == ring::shiftR<Integer>(8034690221294951377709810461705813012611014968913964176506880_mpz, 200));
+    assert(515377520732011331036461129765621272702107522001_mpz ==
+           ring::shiftR<Integer>(540412499179089513452888265605116091644885096989720576_mpz, 20));
+    std::cout << "\tshiftR tests passed" << std::endl;
+
+    assert(1 == ring::exp2<int>(0));
+    assert(1 == ring::exp2<Integer>(0));
+    assert(1024 == ring::exp2<int>(10));
+    assert(1024 == ring::exp2<Integer>(10));
+    assert(1606938044258990275541962092341162602522202993782792835301376_mpz == ring::exp2<Integer>(200));
+    std::cout << "\texp2 tests passed" << std::endl;
+
     assert(2 == ring::intsqrt(4));
     assert(11096085937082_mpz == ring::intsqrt(123123123123123123123123123_mpz));
     assert(456456456456456456_mpz == ring::intsqrt(208352496640784928656512368224079936_mpz));
     std::cout << "\tintsqrt tests passed" << std::endl;
+
+    assert(!ring::log2(0).has_value());
+    assert(0 == ring::log2(1).value());
+    assert(!ring::log2(755).has_value());
+    assert(10 == ring::log2(1024).value());
+    assert(200 == ring::log2(1606938044258990275541962092341162602522202993782792835301376_mpz).value());
+    assert(!ring::log2(1606938044258990275541962092341162602522202993782792835301377_mpz).has_value());
+    std::cout << "\tlog2 tests passed" << std::endl;
 }
 
 void testTypeConversions()
@@ -326,6 +371,43 @@ void testFloor()
     assert(12 == ring::ceiling_of(QRootTwo(144_mpq / 12, 0)));
     assert(-1397 == ring::ceiling_of(QRootTwo(12345671234567_mpq / 786876876876_mpz, -999)));
     std::cout << "\tceiling_of tests passed" << std::endl;
+}
+
+void testToDyadic()
+{
+    std::cout << "ToDyadic testing:" << std::endl;
+
+    assert(ZDyadic(5, 8) == (ring::maybeDyadic<ZDyadic, ZDyadic>(ZDyadic(5, 8))));
+    assert(ZDyadic(5, 8) == (ring::maybeDyadic<Rational, ZDyadic>(5_mpq / 256)));
+    assert(!(ring::maybeDyadic<Rational, ZDyadic>(5_mpq / 252).has_value()));
+
+    assert(DRootTwo(ZDyadic(3, 2), ZDyadic(1, 3)) ==
+           (ring::maybeDyadic<Rational, ZDyadic>(QRootTwo(3_mpq / 4, 1_mpq / 8))));
+    assert(!(ring::maybeDyadic<Rational, ZDyadic>(QRootTwo(3_mpq / 5, 1_mpq / 8)).has_value()));
+    assert(!(ring::maybeDyadic<Rational, ZDyadic>(QRootTwo(3_mpq / 4, 1_mpq / 7)).has_value()));
+    
+    assert(DComplex(ZDyadic(3, 2), ZDyadic(1, 3)) ==
+           (ring::maybeDyadic<Rational, ZDyadic>(QComplex(3_mpq / 4, 1_mpq / 8))));
+    assert(!(ring::maybeDyadic<Rational, ZDyadic>(QComplex(3_mpq / 5, 1_mpq / 8)).has_value()));
+    assert(!(ring::maybeDyadic<Rational, ZDyadic>(QComplex(3_mpq / 4, 1_mpq / 7)).has_value()));
+    
+    assert(DOmega(ZDyadic(3, 2), ZDyadic(1, 3), 2, 3) ==
+           (ring::maybeDyadic<Rational, ZDyadic>(QOmega(3_mpq / 4, 1_mpq / 8, 2, 3))));
+    assert(!(ring::maybeDyadic<Rational, ZDyadic>(QOmega(3_mpq / 5, 1_mpq / 8, 2, 2)).has_value()));
+    assert(!(ring::maybeDyadic<Rational, ZDyadic>(QOmega(3_mpq / 4, 1_mpq / 7, 2, 2)).has_value()));
+    assert(!(ring::maybeDyadic<Rational, ZDyadic>(QOmega(2, 2, 3_mpq / 7, 2)).has_value()));
+    assert(!(ring::maybeDyadic<Rational, ZDyadic>(QOmega(2, 2, 2, 3_mpq / 7)).has_value()));
+    std::cout << "\tmaybeDyadic tests passed" << std::endl;
+
+    assert(ZDyadic(5, 8) == (ring::toDyadic<ZDyadic, ZDyadic>(ZDyadic(5, 8))));
+    assert(ZDyadic(5, 8) == (ring::toDyadic<Rational, ZDyadic>(5_mpq / 256)));
+    assert(DRootTwo(ZDyadic(3, 2), ZDyadic(1, 3)) ==
+           (ring::toDyadic<Rational, ZDyadic>(QRootTwo(3_mpq / 4, 1_mpq / 8))));
+    assert(DComplex(ZDyadic(3, 2), ZDyadic(1, 3)) ==
+           (ring::toDyadic<Rational, ZDyadic>(QComplex(3_mpq / 4, 1_mpq / 8))));
+    assert(DOmega(ZDyadic(3, 2), ZDyadic(1, 3), 2, 3) ==
+           (ring::toDyadic<Rational, ZDyadic>(QOmega(3_mpq / 4, 1_mpq / 8, 2, 3))));
+    std::cout << "\ttoDyadic tests passed" << std::endl;
 }
 
 template <typename T>
@@ -1099,6 +1181,8 @@ int main()
     testNormedRing();
     std::cout << std::endl;
     testFloor();
+    std::cout << std::endl;
+    testToDyadic();
     std::cout << std::endl;
 
     testRootTwoIntegral<int>();
