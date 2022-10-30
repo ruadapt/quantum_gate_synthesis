@@ -405,6 +405,12 @@ namespace ring
     Omega<U> toDyadic(Omega<T> arg);
 
     template <typename T>
+    T real(Complex<T> arg);
+
+    template <typename T>
+    RootTwo<T> real(Omega<T> arg);
+
+    template <typename T>
     std::string toString(const T &arg);
 
     template <>

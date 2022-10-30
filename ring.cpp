@@ -571,6 +571,18 @@ namespace ring
     }
 
     template <typename T>
+    T real(Complex<T> arg)
+    {
+        return arg.a;
+    }
+
+    template <typename T>
+    RootTwo<T> real(Omega<T> arg)
+    {
+        return RootTwo<T>(arg.d, half<T>() * (arg.c - arg.a));
+    }
+
+    template <typename T>
     std::string toString(const T &arg)
     {
         return arg.toString();

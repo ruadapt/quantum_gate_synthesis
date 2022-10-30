@@ -385,12 +385,12 @@ void testToDyadic()
            (ring::maybeDyadic<Rational, ZDyadic>(QRootTwo(3_mpq / 4, 1_mpq / 8))));
     assert(!(ring::maybeDyadic<Rational, ZDyadic>(QRootTwo(3_mpq / 5, 1_mpq / 8)).has_value()));
     assert(!(ring::maybeDyadic<Rational, ZDyadic>(QRootTwo(3_mpq / 4, 1_mpq / 7)).has_value()));
-    
+
     assert(DComplex(ZDyadic(3, 2), ZDyadic(1, 3)) ==
            (ring::maybeDyadic<Rational, ZDyadic>(QComplex(3_mpq / 4, 1_mpq / 8))));
     assert(!(ring::maybeDyadic<Rational, ZDyadic>(QComplex(3_mpq / 5, 1_mpq / 8)).has_value()));
     assert(!(ring::maybeDyadic<Rational, ZDyadic>(QComplex(3_mpq / 4, 1_mpq / 7)).has_value()));
-    
+
     assert(DOmega(ZDyadic(3, 2), ZDyadic(1, 3), 2, 3) ==
            (ring::maybeDyadic<Rational, ZDyadic>(QOmega(3_mpq / 4, 1_mpq / 8, 2, 3))));
     assert(!(ring::maybeDyadic<Rational, ZDyadic>(QOmega(3_mpq / 5, 1_mpq / 8, 2, 2)).has_value()));
@@ -408,6 +408,20 @@ void testToDyadic()
     assert(DOmega(ZDyadic(3, 2), ZDyadic(1, 3), 2, 3) ==
            (ring::toDyadic<Rational, ZDyadic>(QOmega(3_mpq / 4, 1_mpq / 8, 2, 3))));
     std::cout << "\ttoDyadic tests passed" << std::endl;
+}
+
+void testRealPart()
+{
+    std::cout << "RealPart testing:" << std::endl;
+
+    assert(2 == ring::real(Complex<int>(2, 3)));
+    assert(2 == ring::real(Complex<Integer>(2, 3)));
+    assert(ZDyadic(2) == ring::real(DComplex(2, 3)));
+    assert(QRootTwo(2) == ring::real(QRComplex(2, 3)));
+    assert(QRootTwo(7_mpq / 8, 1_mpq / 6) == ring::real(QOmega(1_mpq / 2, 3_mpq / 4, 5_mpq / 6, 7_mpq / 8)));
+    assert(DRootTwo(ZDyadic(7, 8), ZDyadic(-11, 7)) ==
+           ring::real(DOmega(ZDyadic(1, 2), ZDyadic(3, 4), ZDyadic(5, 6), ZDyadic(7, 8))));
+    std::cout << "\treal tests passed" << std::endl;
 }
 
 template <typename T>
@@ -1183,6 +1197,8 @@ int main()
     testFloor();
     std::cout << std::endl;
     testToDyadic();
+    std::cout << std::endl;
+    testRealPart();
     std::cout << std::endl;
 
     testRootTwoIntegral<int>();
