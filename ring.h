@@ -418,6 +418,27 @@ namespace ring
     RootTwo<T> real(Omega<T> arg);
 
     template <typename T>
+    T fromQRootTwo(QRootTwo q);
+
+    template <typename T>
+    T fromZComplex(ZComplex z);
+
+    template <typename T>
+    T fromDComplex(DComplex d);
+
+    template <typename T>
+    T fromQComplex(QComplex q);
+
+    template <typename T>
+    T fromDRComplex(DRComplex d);
+
+    template <typename T>
+    T fromQRComplex(QRComplex q);
+
+    template <typename T>
+    T fromZOmega(ZOmega z);
+    
+    template <typename T>
     std::string toString(const T &arg);
 
     template <>

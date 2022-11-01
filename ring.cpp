@@ -618,6 +618,51 @@ namespace ring
     }
 
     template <typename T>
+    T fromQRootTwo(QRootTwo q)
+    {
+        return fromRational<T>(q.a) + rootTwo<T>() * fromRational<T>(q.b);
+    }
+
+    template <typename T>
+    T fromZComplex(ZComplex z)
+    {
+        return fromInteger<T>(z.a) + i<T>() * fromInteger<T>(z.b);
+    }
+
+    template <typename T>
+    T fromDComplex(DComplex d)
+    {
+        return fromDyadic<T>(d.a) + i<T>() * fromDyadic<T>(d.b);
+    }
+
+    template <typename T>
+    T fromQComplex(QComplex q)
+    {
+        return fromRational<T>(q.a) + i<T>() * fromRational<T>(q.b);
+    }
+
+    template <typename T>
+    T fromDRComplex(DRComplex d)
+    {
+        return fromDRootTwo<T>(d.a) + i<T>() * fromDRootTwo<T>(d.b);
+    }
+
+    template <typename T>
+    T fromQRComplex(QRComplex q)
+    {
+        return fromQRootTwo<T>(q.a) + i<T>() * fromQRootTwo<T>(q.b);
+    }
+
+    template <typename T>
+    T fromZOmega(ZOmega z)
+    {
+        T o = omega<T>();
+        T o2 = o * o;
+        T o3 = o * o * o;
+        return fromInteger<T>(z.a) * o3 + fromInteger<T>(z.b) * o2 + fromInteger<T>(z.c) * o + fromInteger<T>(z.d);
+    }
+
+    template <typename T>
     std::string toString(const T &arg)
     {
         return arg.toString();
