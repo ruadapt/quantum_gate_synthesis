@@ -104,6 +104,38 @@ void testTypeConversions()
     std::cout << "\tconversion from int tests passed" << std::endl;
 }
 
+void testFractional()
+{
+    std::cout << "Fractional testing:" << std::endl;
+
+    assert(RootTwo<double>(-0.119703136222169, -0.23461814699545125) == RootTwo<double>(1.25, -2.45).recip());
+    assert(RootTwo<Rational>(-431061208_mpq / 951316543, 923605504_mpq / 951316543) ==
+           RootTwo<Rational>(123_mpq / 456, 456_mpq / 789).recip());
+
+    assert(Complex<Rational>(431061208_mpq / 650067905, -923605504_mpq / 650067905) ==
+           Complex<Rational>(123_mpq / 456, 456_mpq / 789).recip());
+
+    assert(Omega<double>(1.7114914425427872e-2, 3.0562347188264057e-2, -5.256723716381418e-2, -0.1295843520782396) ==
+           Omega<double>(1, -3, 3, -7).recip());
+    assert(Omega<double>(-0.11208737066841847, 3.3092461816390216e-2, -2.4634586960091973e-4, -5.7070126457546395e-2) ==
+           Omega<double>(3, 7, 12, 2).recip());
+    assert(Omega<double>(3.2468311407893156e-2, -6.945499620136751e-2, 2.419129113519133e-2, -4.066536047023071e-2) ==
+           Omega<double>(5, 9, -4, -9).recip());
+
+    assert(Omega<Rational>(7_mpq / 409, 25_mpq / 818, -43_mpq / 818, -53_mpq / 409) ==
+           Omega<Rational>(1, -3, 3, -7).recip());
+    assert(Omega<Rational>(-1365_mpq / 12178, 403_mpq / 12178, -3_mpq / 12178, -695_mpq / 12178) ==
+           Omega<Rational>(3, 7, 12, 2).recip());
+    assert(Omega<Rational>(812_mpq / 25009, -1737_mpq / 25009, 605_mpq / 25009, -1017_mpq / 25009) ==
+           Omega<Rational>(5, 9, -4, -9).recip());
+    std::cout << "\trecip tests passed" << std::endl;
+
+    assert(RootTwo<Rational>(123_mpq / 456, 0) == ring::fromRational<RootTwo<Rational>>(123_mpq / 456));
+    assert(Complex<Rational>(123_mpq / 456, 0) == ring::fromRational<Complex<Rational>>(123_mpq / 456));
+    assert(Omega<Rational>(0, 0, 0, 41_mpq / 152) == ring::fromRational<Omega<Rational>>(123_mpq / 456));
+    std::cout << "\tfromRational tests passed" << std::endl;
+}
+
 void testHalfRing()
 {
     std::cout << "HalfRing testing:" << std::endl;
@@ -1146,29 +1178,6 @@ void testOmega()
     assert(Omega<T>(-12, -7, -3, 2) == o2.adj());
     assert(Omega<T>(4, -9, -5, -9) == o3.adj());
     std::cout << "\tadj tests passed" << std::endl;
-
-    if constexpr (std::is_same<T, double>::value)
-    {
-        assert(Omega<T>(1.7114914425427872e-2, 3.0562347188264057e-2, -5.256723716381418e-2, -0.1295843520782396) == o1.recip());
-        assert(Omega<T>(-0.11208737066841847, 3.3092461816390216e-2, -2.4634586960091973e-4, -5.7070126457546395e-2) == o2.recip());
-        assert(Omega<T>(3.2468311407893156e-2, -6.945499620136751e-2, 2.419129113519133e-2, -4.066536047023071e-2) == o3.recip());
-        std::cout << "\trecip tests passed" << std::endl;
-    }
-    else if constexpr (std::is_same<T, Rational>::value)
-    {
-        assert(Omega<T>(7_mpq / 409, 25_mpq / 818, -43_mpq / 818, -53_mpq / 409) == o1.recip());
-        assert(Omega<T>(-1365_mpq / 12178, 403_mpq / 12178, -3_mpq / 12178, -695_mpq / 12178) == o2.recip());
-        assert(Omega<T>(812_mpq / 25009, -1737_mpq / 25009, 605_mpq / 25009, -1017_mpq / 25009) == o3.recip());
-        std::cout << "\trecip tests passed" << std::endl;
-    }
-    else if constexpr (std::is_same<T, int>::value || std::is_same<T, Integer>::value || std::is_same<T, ZDyadic>::value)
-    {
-        // recip is not defined when T = int, T = Integer, or T = ZDyadic.
-    }
-    else
-    {
-        templateError(typeid(T).name(), "Omega");
-    }
 }
 
 int main()
@@ -1178,6 +1187,8 @@ int main()
     testTypeConversions();
     std::cout << std::endl;
 
+    testFractional();
+    std::cout << std::endl;
     testHalfRing();
     std::cout << std::endl;
     testRootTwoRing();

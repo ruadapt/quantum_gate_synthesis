@@ -258,6 +258,41 @@ namespace ring
     }
 
     template <typename T>
+    T recip(T arg);
+
+    template <>
+    double recip(double arg)
+    {
+        assert(arg != 0);
+        return 1 / arg;
+    }
+
+    template <>
+    Rational recip(Rational arg)
+    {
+        assert(arg != 0);
+        return 1 / arg;
+    }
+
+    template <typename T>
+    T fromRational(Rational r)
+    {
+        return T::fromRational(r);
+    }
+
+    template <>
+    Rational fromRational(Rational r)
+    {
+        return r;
+    }
+
+    template <>
+    double fromRational(Rational r)
+    {
+        return mpq_get_d(r.get_mpq_t());
+    }
+
+    template <typename T>
     T powNonNeg(T base, int exp)
     {
         assert(exp >= 0);
@@ -728,7 +763,7 @@ Dyadic<T> Dyadic<T>::operator-() const
 template <typename T>
 Dyadic<T> Dyadic<T>::abs() const
 {
-    if (this->compare(fromInteger(0)) != LT)
+    if (this->compare(ring::fromInteger<Dyadic<T>>(0)) != LT)
     {
         return this->copy();
     }
@@ -738,7 +773,7 @@ Dyadic<T> Dyadic<T>::abs() const
 template <typename T>
 int Dyadic<T>::signum() const
 {
-    Ordering comp = this->compare(fromInteger(0));
+    Ordering comp = this->compare(ring::fromInteger<Dyadic<T>>(0));
     if (comp == LT)
     {
         return -1;
@@ -974,8 +1009,8 @@ RootTwo<T> RootTwo<T>::adj2() const
 template <typename T>
 RootTwo<T> RootTwo<T>::recip() const
 {
-    T k = pow(a, 2) - 2 * pow(b, 2);
-    return RootTwo(a / k, -b / k);
+    T k = a * a - 2 * b * b;
+    return RootTwo(a * ring::recip(k), -b * ring::recip(k));
 }
 
 template <typename T>
@@ -1035,9 +1070,9 @@ RootTwo<T> RootTwo<T>::fromInteger(int n)
 }
 
 template <typename T>
-RootTwo<T> RootTwo<T>::fromRational(double x)
+RootTwo<T> RootTwo<T>::fromRational(Rational r)
 {
-    return RootTwo<T>(x, 0);
+    return RootTwo<T>(ring::fromRational<T>(r), 0);
 }
 
 template <>
@@ -1143,7 +1178,7 @@ template <typename T>
 Complex<T> Complex<T>::recip() const
 {
     T d = a * a + b * b;
-    return Complex(a / d, -b / d);
+    return Complex(a * ring::recip(d), -b * ring::recip(d));
 }
 
 template <typename T>
@@ -1200,6 +1235,12 @@ template <typename T>
 Complex<T> Complex<T>::fromInteger(int n)
 {
     return Complex<T>(n, 0);
+}
+
+template <typename T>
+Complex<T> Complex<T>::fromRational(Rational r)
+{
+    return Complex<T>(ring::fromRational<T>(r), 0);
 }
 
 Z2::Z2()
@@ -1398,7 +1439,7 @@ Omega<T> Omega<T>::recip() const
     T sumSquares = a * a + b * b + c * c + d * d;
     T sumProds = a * b + b * c + c * d - d * a;
     T denom = sumSquares * sumSquares - 2 * sumProds * sumProds;
-    return x1 * x2 * x3 * Omega(0, 0, 0, 1 / denom);
+    return x1 * x2 * x3 * Omega(0, 0, 0, ring::recip(denom));
 }
 
 template <typename T>
@@ -1459,4 +1500,12 @@ template <typename T>
 Omega<T> Omega<T>::fromInteger(int n)
 {
     return Omega<T>(0, 0, 0, n);
+}
+
+template <typename T>
+Omega<T> Omega<T>::fromRational(Rational r)
+{
+    Integer numerator = r.get_num();
+    Integer denominator = r.get_den();
+    return ring::fromInteger<Omega<T>>(numerator) * ring::fromInteger<Omega<T>>(denominator).recip();
 }

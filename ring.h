@@ -83,7 +83,7 @@ public:
     static RootTwo i();
     static RootTwo omega();
     static RootTwo fromInteger(int n);
-    static RootTwo fromRational(double x);
+    static RootTwo fromRational(Rational r);
 };
 
 template <>
@@ -123,6 +123,7 @@ public:
     static Complex i();
     static Complex omega();
     static Complex fromInteger(int n);
+    static Complex fromRational(Rational r);
 };
 class Z2
 {
@@ -186,7 +187,7 @@ public:
     static Omega i();
     static Omega omega();
     static Omega fromInteger(int n);
-    static Omega fromRational(double x);
+    static Omega fromRational(Rational r);
 };
 
 using ZOmega = Omega<Integer>;
@@ -273,6 +274,12 @@ namespace ring
 
     template <typename T>
     T fromInteger(Integer arg);
+
+    template <typename T>
+    T fromRational(Rational r);
+
+    template <>
+    Rational fromRational(Rational r);
 
     template <typename T>
     T powNonNeg(T base, int exp);
