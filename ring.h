@@ -447,6 +447,12 @@ namespace ring
     template <>
     QOmega toQOmega(Rational arg);
 
+    Z2 parity(int arg);
+
+    Z2 parity(Integer arg);
+
+    Z2 parity(ZRootTwo arg);
+
     template <typename T>
     T fromQRootTwo(QRootTwo q);
 

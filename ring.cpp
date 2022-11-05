@@ -632,6 +632,21 @@ namespace ring
     template <>
     QOmega toQOmega<Rational>(Rational arg) { return fromRational<Omega<Rational>>(arg); }
 
+    Z2 parity(int arg)
+    {
+        return (arg % 2) != 0;
+    }
+
+    Z2 parity(Integer arg)
+    {
+        return (arg % 2) != 0;
+    }
+
+    Z2 parity(ZRootTwo arg)
+    {
+        return parity(arg.a);
+    }
+
     template <typename T>
     T fromQRootTwo(QRootTwo q)
     {

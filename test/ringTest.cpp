@@ -473,6 +473,19 @@ void testToQOmega()
     std::cout << "\ttoQOmega tests passed" << std::endl;
 }
 
+void testParity()
+{
+    std::cout << "Parity testing:" << std::endl;
+
+    assert(Z2(0) == ring::parity(1234));
+    assert(Z2(1) == ring::parity(55555));
+    assert(Z2(0) == ring::parity(123412341234123412341234123412341234123412341234_mpz));
+    assert(Z2(1) == ring::parity(555555555555555555555555555555555555555555555555_mpz));
+    assert(Z2(0) == ring::parity(ZRootTwo(1234, 1235)));
+    assert(Z2(1) == ring::parity(ZRootTwo(1235, 1234)));
+    std::cout << "\tparity tests passed" << std::endl;
+}
+
 template <typename T>
 void testDyadic()
 {
@@ -1229,6 +1242,8 @@ int main()
     testRealPart();
     std::cout << std::endl;
     testToQOmega();
+    std::cout << std::endl;
+    testParity();
     std::cout << std::endl;
 
     testRootTwoIntegral<int>();
