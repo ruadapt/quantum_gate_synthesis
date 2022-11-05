@@ -142,6 +142,8 @@ public:
     Complex adj2() const;
     Complex recip() const;
     Integer norm() const;
+    Integer denomExp() const;
+    Complex denomExpFactor(Integer k) const;
     QOmega toQOmega() const;
     std::string toString() const;
     void print(std::string prefix) const;
@@ -214,6 +216,10 @@ public:
 
 namespace ring
 {
+    bool even(int n);
+
+    bool even(Integer n);
+
     int mpzToInt(Integer z);
 
     template <typename Integral>
@@ -434,6 +440,24 @@ namespace ring
 
     template <typename T>
     RootTwo<T> real(Omega<T> arg);
+
+    template <typename T>
+    Integer denomExp(T arg);
+
+    template <>
+    Integer denomExp(DOmega arg);
+
+    template <>
+    Integer denomExp(DRootTwo arg);
+
+    template <typename T>
+    T denomExpFactor(T arg, Integer k);
+
+    template <>
+    DOmega denomExpFactor(DOmega arg, Integer k);
+
+    template <>
+    DRootTwo denomExpFactor(DRootTwo arg, Integer k);
 
     template <typename T>
     QOmega toQOmega(T arg);

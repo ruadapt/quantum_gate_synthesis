@@ -456,6 +456,25 @@ void testRealPart()
     std::cout << "\treal tests passed" << std::endl;
 }
 
+void testDenomExp()
+{
+    std::cout << "DenomExp testing:" << std::endl;
+
+    assert(21 == ring::denomExp(DRootTwo(ZDyadic(3, 7), ZDyadic(4, 13))));
+    assert(34 == ring::denomExp(DOmega(ZDyadic(12, 3), ZDyadic(15, 17), ZDyadic(13, 2), ZDyadic(5, 9))));
+    assert(18 == ring::denomExp(
+                     DRComplex(DRootTwo(ZDyadic(1, 9), ZDyadic(2, 8)), DRootTwo(ZDyadic(3, 7), ZDyadic(4, 6)))));
+    std::cout << "\tdenomExp tests passed" << std::endl;
+
+    assert(DRootTwo(ZDyadic(64, 13), ZDyadic(1536, 13)) ==
+           ring::denomExpFactor(DRootTwo(ZDyadic(3, 7), ZDyadic(4, 13)), 7));
+    assert(DOmega(ZDyadic(12582912, 17), ZDyadic(960, 17), ZDyadic(27262976, 17), ZDyadic(81920, 17)) ==
+           ring::denomExpFactor(DOmega(ZDyadic(12, 3), ZDyadic(15, 17), ZDyadic(13, 2), ZDyadic(5, 9)), 12));
+    assert(DRComplex(DRootTwo(ZDyadic(32, 9), ZDyadic(4, 9)), DRootTwo(ZDyadic(64, 7), ZDyadic(12, 7))) ==
+           ring::denomExpFactor(DRComplex(DRootTwo(ZDyadic(1, 9), ZDyadic(2, 8)), DRootTwo(ZDyadic(3, 7), ZDyadic(4, 6))), 5));
+    std::cout << "\tdenomExpFactor tests passed" << std::endl;
+}
+
 void testToQOmega()
 {
     std::cout << "ToQOmega testing:" << std::endl;
@@ -1240,6 +1259,8 @@ int main()
     testToDyadic();
     std::cout << std::endl;
     testRealPart();
+    std::cout << std::endl;
+    testDenomExp();
     std::cout << std::endl;
     testToQOmega();
     std::cout << std::endl;

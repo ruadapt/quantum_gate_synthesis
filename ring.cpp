@@ -1,10 +1,15 @@
 #include "ring.h"
 #include <cmath>
 #include <iostream>
+#include <tuple>
 #include <gmpxx.h>
 
 namespace ring
 {
+    bool even(int n) { return n % 2 == 0; }
+
+    bool even(Integer n) { return n % 2 == 0; }
+
     int mpzToInt(Integer z)
     {
         assert(z.fits_sint_p());
@@ -618,6 +623,62 @@ namespace ring
     }
 
     template <typename T>
+    Integer denomExp(T arg)
+    {
+        return arg.denomExp();
+    }
+
+    template <>
+    Integer denomExp(DOmega arg)
+    {
+        Integer a, ak, b, bk, c, ck, d, dk;
+        std::tie(a, ak) = arg.a.decomposeDyadic();
+        std::tie(b, bk) = arg.b.decomposeDyadic();
+        std::tie(c, ck) = arg.c.decomposeDyadic();
+        std::tie(d, dk) = arg.d.decomposeDyadic();
+        Integer maxK = std::max({ak, bk, ck, ck});
+        Integer a2 = (maxK == ak) ? a : 0;
+        Integer b2 = (maxK == bk) ? b : 0;
+        Integer c2 = (maxK == ck) ? c : 0;
+        Integer d2 = (maxK == dk) ? d : 0;
+        Integer k2;
+        if (maxK > 0 && even(a2 - c2) && even(b2 - d2))
+        {
+            return 2 * maxK - 1;
+        }
+        return 2 * maxK;
+    }
+
+    template <>
+    Integer denomExp(DRootTwo arg)
+    {
+        Integer a, ak, b, bk;
+        std::tie(a, ak) = arg.a.decomposeDyadic();
+        std::tie(b, bk) = arg.b.decomposeDyadic();
+        Integer x1 = 2 * ak;
+        Integer x2 = 2 * bk - 1;
+        return (x1 > x2) ? x1 : x2;
+    }
+
+    template <typename T>
+    T denomExpFactor(T arg, Integer k)
+    {
+        return arg.denomExpFactor(k);
+    }
+
+    template <>
+    DOmega denomExpFactor(DOmega arg, Integer k)
+    {
+        return arg * powNonNeg(rootTwo<DOmega>(), mpzToInt(k));
+    }
+
+    template <>
+    DRootTwo denomExpFactor(DRootTwo arg, Integer k)
+    {
+        return arg * powNonNeg(rootTwo<DRootTwo>(), mpzToInt(k));
+    }
+
+    template <typename T>
     QOmega toQOmega(T arg)
     {
         return arg.toQOmega();
@@ -688,7 +749,7 @@ namespace ring
     {
         T o = omega<T>();
         T o2 = o * o;
-        T o3 = o * o * o;
+        T o3 = o2 * o;
         return fromInteger<T>(z.a) * o3 + fromInteger<T>(z.b) * o2 + fromInteger<T>(z.c) * o + fromInteger<T>(z.d);
     }
 
@@ -1281,6 +1342,20 @@ Integer Complex<T>::norm() const
 }
 
 template <typename T>
+Integer Complex<T>::denomExp() const
+{
+    Integer expA = ring::denomExp<T>(a);
+    Integer expB = ring::denomExp<T>(b);
+    return (expA > expB) ? expA : expB;
+}
+
+template <typename T>
+Complex<T> Complex<T>::denomExpFactor(Integer k) const
+{
+    return Complex<T>(ring::denomExpFactor<T>(a, k), ring::denomExpFactor<T>(b, k));
+}
+
+template <typename T>
 QOmega Complex<T>::toQOmega() const
 {
     return ring::toQOmega(a) + ring::i<QOmega>() * ring::toQOmega<T>(b);
@@ -1556,7 +1631,7 @@ QOmega Omega<T>::toQOmega() const
 {
     QOmega o = ring::omega<QOmega>();
     QOmega o2 = o * o;
-    QOmega o3 = o * o * o;
+    QOmega o3 = o2 * o;
     return o3 * ring::toQOmega(a) + o2 * ring::toQOmega(b) + o * ring::toQOmega(c) + ring::toQOmega(d);
 }
 
