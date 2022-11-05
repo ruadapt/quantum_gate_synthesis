@@ -6,6 +6,37 @@
 typedef mpz_class Integer;
 typedef mpq_class Rational;
 
+template <typename T>
+class Dyadic;
+
+template <typename T>
+class RootTwo;
+
+template <typename T>
+class Complex;
+
+class Z2;
+
+template <typename T>
+class Omega;
+
+using ZDyadic = Dyadic<Integer>;
+
+using ZRootTwo = RootTwo<Integer>;
+using DRootTwo = RootTwo<ZDyadic>;
+using QRootTwo = RootTwo<Rational>;
+
+using ZComplex = Complex<Integer>;
+using DComplex = Complex<Dyadic<Integer>>;
+using QComplex = Complex<Rational>;
+using DRComplex = Complex<DRootTwo>;
+using QRComplex = Complex<QRootTwo>;
+using CDouble = Complex<double>;
+
+using ZOmega = Omega<Integer>;
+using DOmega = Omega<ZDyadic>;
+using QOmega = Omega<Rational>;
+
 enum Ordering
 {
     LT,
@@ -40,14 +71,13 @@ public:
     Dyadic adj2() const;
     std::tuple<T, T> decomposeDyadic() const;
     T integerOfDyadic(T k) const;
+    QOmega toQOmega() const;
     std::string toString() const;
     void print(std::string prefix) const;
     static Dyadic fromInteger(int n);
     static Dyadic fromDyadic(const Dyadic &d);
     static Dyadic half();
 };
-
-using ZDyadic = Dyadic<Integer>;
 
 template <typename T>
 class RootTwo
@@ -75,6 +105,7 @@ public:
     RootTwo adj2() const;
     RootTwo recip() const;
     Integer norm() const;
+    QOmega toQOmega() const;
     std::string toString() const;
     void print(std::string prefix) const;
     static RootTwo half();
@@ -88,10 +119,6 @@ public:
 
 template <>
 RootTwo<Rational>::RootTwo(Rational a, Rational b);
-
-using ZRootTwo = RootTwo<Integer>;
-using DRootTwo = RootTwo<ZDyadic>;
-using QRootTwo = RootTwo<Rational>;
 
 template <typename T>
 class Complex
@@ -115,6 +142,7 @@ public:
     Complex adj2() const;
     Complex recip() const;
     Integer norm() const;
+    QOmega toQOmega() const;
     std::string toString() const;
     void print(std::string prefix) const;
     static Complex half();
@@ -148,13 +176,6 @@ public:
     static Z2 fromInteger(int n);
 };
 
-using ZComplex = Complex<Integer>;
-using DComplex = Complex<Dyadic<Integer>>;
-using QComplex = Complex<Rational>;
-using DRComplex = Complex<DRootTwo>;
-using QRComplex = Complex<QRootTwo>;
-using CDouble = Complex<double>;
-
 template <typename T>
 class Omega
 {
@@ -179,6 +200,7 @@ public:
     Omega adj2() const;
     Omega recip() const;
     Integer norm() const;
+    QOmega toQOmega() const;
     std::string toString() const;
     void print(std::string prefix) const;
     static Omega half();
@@ -189,10 +211,6 @@ public:
     static Omega fromInteger(int n);
     static Omega fromRational(Rational r);
 };
-
-using ZOmega = Omega<Integer>;
-using DOmega = Omega<ZDyadic>;
-using QOmega = Omega<Rational>;
 
 namespace ring
 {
@@ -418,6 +436,18 @@ namespace ring
     RootTwo<T> real(Omega<T> arg);
 
     template <typename T>
+    QOmega toQOmega(T arg);
+
+    template <>
+    QOmega toQOmega<int>(int arg);
+
+    template <>
+    QOmega toQOmega(Integer arg);
+
+    template <>
+    QOmega toQOmega(Rational arg);
+
+    template <typename T>
     T fromQRootTwo(QRootTwo q);
 
     template <typename T>
@@ -437,7 +467,7 @@ namespace ring
 
     template <typename T>
     T fromZOmega(ZOmega z);
-    
+
     template <typename T>
     std::string toString(const T &arg);
 

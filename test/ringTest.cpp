@@ -456,6 +456,23 @@ void testRealPart()
     std::cout << "\treal tests passed" << std::endl;
 }
 
+void testToQOmega()
+{
+    std::cout << "ToQOmega testing:" << std::endl;
+
+    assert(QOmega(5) == ring::toQOmega<Integer>(5));
+    assert(QOmega(0, 0, 0, 5_mpq / 6) == ring::toQOmega<Rational>(5_mpq / 6));
+    assert(QOmega(0, 0, 0, 5_mpq / 64) == ring::toQOmega<Dyadic<int>>(Dyadic<int>(5, 6)));
+    assert(QOmega(0, 0, 0, 5_mpq / 64) == ring::toQOmega<ZDyadic>(ZDyadic(5, 6)));
+    assert(QOmega(-7_mpq / 8, 0, 7_mpq / 8, 5_mpq / 6) ==
+           ring::toQOmega<QRootTwo>(QRootTwo(5_mpq / 6, 7_mpq / 8)));
+    assert(QOmega(-7_mpq / 8, 0, 7_mpq / 8, 5_mpq / 6) ==
+           ring::toQOmega<QRootTwo>(QRootTwo(5_mpq / 6, 7_mpq / 8)));
+    assert(QOmega(3_mpq / 512, 1_mpq / 1024, 3, 4) ==
+           ring::toQOmega<DOmega>(DOmega(ZDyadic(3, 9), ZDyadic(4, 12), 3, 4)));
+    std::cout << "\ttoQOmega tests passed" << std::endl;
+}
+
 template <typename T>
 void testDyadic()
 {
@@ -1210,6 +1227,8 @@ int main()
     testToDyadic();
     std::cout << std::endl;
     testRealPart();
+    std::cout << std::endl;
+    testToQOmega();
     std::cout << std::endl;
 
     testRootTwoIntegral<int>();

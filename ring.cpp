@@ -618,6 +618,21 @@ namespace ring
     }
 
     template <typename T>
+    QOmega toQOmega(T arg)
+    {
+        return arg.toQOmega();
+    }
+
+    template <>
+    QOmega toQOmega<int>(int arg) { return fromInteger<Omega<Rational>>(arg); }
+
+    template <>
+    QOmega toQOmega<Integer>(Integer arg) { return fromInteger<Omega<Rational>>(arg); }
+
+    template <>
+    QOmega toQOmega<Rational>(Rational arg) { return fromRational<Omega<Rational>>(arg); }
+
+    template <typename T>
     T fromQRootTwo(QRootTwo q)
     {
         return fromRational<T>(q.a) + rootTwo<T>() * fromRational<T>(q.b);
@@ -870,6 +885,16 @@ T Dyadic<T>::integerOfDyadic(T k) const
 }
 
 template <typename T>
+QOmega Dyadic<T>::toQOmega() const
+{
+    if (n >= 0)
+    {
+        return ring::toQOmega<T>(a) * ring::powNonNeg<QOmega>(ring::half<QOmega>(), ring::mpzToInt(n));
+    }
+    return ring::toQOmega<T>(a) * ring::powNonNeg<QOmega>(QOmega(2), ring::mpzToInt(-n));
+}
+
+template <typename T>
 std::string Dyadic<T>::toString() const
 {
     return "Dyadic(" + ring::toString(a) + ", " + ring::toString(n) + ")";
@@ -1067,6 +1092,12 @@ Integer RootTwo<T>::norm() const
 }
 
 template <typename T>
+QOmega RootTwo<T>::toQOmega() const
+{
+    return ring::toQOmega<T>(a) + ring::rootTwo<QOmega>() * ring::toQOmega<T>(b);
+}
+
+template <typename T>
 std::string RootTwo<T>::toString() const
 {
     return "RootTwo(" + ring::toString(a) + ", " + ring::toString(b) + ")";
@@ -1232,6 +1263,12 @@ Integer Complex<T>::norm() const
     Integer normA = ring::norm<T>(a);
     Integer normB = ring::norm<T>(b);
     return normA * normA + normB * normB;
+}
+
+template <typename T>
+QOmega Complex<T>::toQOmega() const
+{
+    return ring::toQOmega(a) + ring::i<QOmega>() * ring::toQOmega<T>(b);
 }
 
 template <typename T>
@@ -1497,6 +1534,15 @@ Integer Omega<T>::norm() const
     Integer sum1 = nA * nA + nB * nB + nC * nC + nD * nD;
     Integer sum2 = nA * nB + nB * nC + nC * nD - nD * nA;
     return sum1 * sum1 - 2 * sum2 * sum2;
+}
+
+template <typename T>
+QOmega Omega<T>::toQOmega() const
+{
+    QOmega o = ring::omega<QOmega>();
+    QOmega o2 = o * o;
+    QOmega o3 = o * o * o;
+    return o3 * ring::toQOmega(a) + o2 * ring::toQOmega(b) + o * ring::toQOmega(c) + ring::toQOmega(d);
 }
 
 template <typename T>
