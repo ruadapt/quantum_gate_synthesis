@@ -622,6 +622,60 @@ namespace ring
         return RootTwo<T>(arg.d, half<T>() * (arg.c - arg.a));
     }
 
+    template <typename T, typename U>
+    T fromWhole(U arg);
+
+    template <>
+    ZDyadic fromWhole(Integer arg)
+    {
+        return fromInteger<ZDyadic>(arg);
+    }
+
+    template <>
+    DOmega fromWhole(ZOmega arg)
+    {
+        return fromZOmega<DOmega>(arg);
+    }
+
+    template <>
+    DRootTwo fromWhole(ZRootTwo arg)
+    {
+        return fromZRootTwo<DRootTwo>(arg);
+    }
+
+    template <typename T, typename U>
+    U toWhole(T arg);
+
+    template <>
+    Integer toWhole(ZDyadic arg)
+    {
+        Integer a, n;
+        std::tie(a, n) = arg.decomposeDyadic();
+        if (n == 0)
+        {
+            return a;
+        }
+        throw std::invalid_argument("Non-integral value can't be converted to Integer");
+    }
+
+    template <>
+    ZOmega toWhole(DOmega arg)
+    {
+        Integer a2 = toWhole<ZDyadic, Integer>(arg.a);
+        Integer b2 = toWhole<ZDyadic, Integer>(arg.b);
+        Integer c2 = toWhole<ZDyadic, Integer>(arg.c);
+        Integer d2 = toWhole<ZDyadic, Integer>(arg.d);
+        return ZOmega(a2, b2, c2, d2);
+    }
+
+    template <>
+    ZRootTwo toWhole(DRootTwo arg)
+    {
+        Integer a2 = toWhole<ZDyadic, Integer>(arg.a);
+        Integer b2 = toWhole<ZDyadic, Integer>(arg.b);
+        return ZRootTwo(a2, b2);
+    }
+
     template <typename T>
     Integer denomExp(T arg)
     {

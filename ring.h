@@ -441,6 +441,30 @@ namespace ring
     template <typename T>
     RootTwo<T> real(Omega<T> arg);
 
+    template <typename T, typename U>
+    T fromWhole(U arg);
+
+    template <>
+    ZDyadic fromWhole(Integer arg);
+
+    template <>
+    DOmega fromWhole(ZOmega arg);
+
+    template <>
+    DRootTwo fromWhole(ZRootTwo arg);
+
+    template <typename T, typename U>
+    U toWhole(T arg);
+
+    template <>
+    Integer toWhole(ZDyadic arg);
+
+    template <>
+    ZOmega toWhole(DOmega arg);
+
+    template <>
+    ZRootTwo toWhole(DRootTwo arg);
+
     template <typename T>
     Integer denomExp(T arg);
 

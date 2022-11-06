@@ -456,6 +456,21 @@ void testRealPart()
     std::cout << "\treal tests passed" << std::endl;
 }
 
+void testWholePart()
+{
+    std::cout << "WholePart testing:" << std::endl;
+
+    assert(ZDyadic(5) == (ring::fromWhole<ZDyadic, Integer>(5)));
+    assert(DOmega(1, 2, 3, 4) == (ring::fromWhole<DOmega, ZOmega>(ZOmega(1, 2, 3, 4))));
+    assert(DRootTwo(1, 2) == (ring::fromWhole<DRootTwo, ZRootTwo>(ZRootTwo(1, 2))));
+    std::cout << "\tfromWhole tests passed" << std::endl;
+
+    assert(5 == (ring::toWhole<ZDyadic, Integer>(ZDyadic(5))));
+    assert(ZOmega(1, 2, 3, 4) == (ring::toWhole<DOmega, ZOmega>(DOmega(1, 2, 3, 4))));
+    assert(ZRootTwo(1, 2) == (ring::toWhole<DRootTwo, ZRootTwo>(DRootTwo(1, 2))));
+    std::cout << "\ttoWhole tests passed" << std::endl;
+}
+
 void testDenomExp()
 {
     std::cout << "DenomExp testing:" << std::endl;
@@ -1259,6 +1274,8 @@ int main()
     testToDyadic();
     std::cout << std::endl;
     testRealPart();
+    std::cout << std::endl;
+    testWholePart();
     std::cout << std::endl;
     testDenomExp();
     std::cout << std::endl;
