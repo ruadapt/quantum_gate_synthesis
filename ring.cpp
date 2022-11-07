@@ -380,7 +380,7 @@ namespace ring
     template <typename T>
     T fromZRootTwo(ZRootTwo arg)
     {
-        return fromInteger<T>(arg.a) + rootTwo<T>() * fromInteger<T>(arg.b);
+        return fromInteger<T>(arg.a()) + rootTwo<T>() * fromInteger<T>(arg.b());
     }
 
     template <typename T>
@@ -398,7 +398,7 @@ namespace ring
     template <typename T>
     T fromDRootTwo(DRootTwo arg)
     {
-        return fromDyadic<T>(arg.a) + rootTwo<T>() * fromDyadic<T>(arg.b);
+        return fromDyadic<T>(arg.a()) + rootTwo<T>() * fromDyadic<T>(arg.b());
     }
 
     template <typename T>
@@ -471,9 +471,9 @@ namespace ring
 
     Integer floor_of(QRootTwo arg)
     {
-        Integer a = floor_of(arg.a);
-        Integer b = intsqrt(floor_of(2 * arg.b * arg.b));
-        Integer rInt = (arg.b >= 0) ? (Integer(a + b)) : (Integer(a - b));
+        Integer a = floor_of(arg.a());
+        Integer b = intsqrt(floor_of(2 * arg.b() * arg.b()));
+        Integer rInt = (arg.b() >= 0) ? (Integer(a + b)) : (Integer(a - b));
         QRootTwo r = QRootTwo(Rational(rInt), 0);
         if (r + ring::fromInteger<QRootTwo>(1) <= arg)
         {
@@ -517,8 +517,8 @@ namespace ring
     template <typename T, typename U>
     std::optional<RootTwo<U>> maybeDyadic(RootTwo<T> arg)
     {
-        std::optional<U> aDyadic = ring::maybeDyadic<T, U>(arg.a);
-        std::optional<U> bDyadic = ring::maybeDyadic<T, U>(arg.b);
+        std::optional<U> aDyadic = ring::maybeDyadic<T, U>(arg.a());
+        std::optional<U> bDyadic = ring::maybeDyadic<T, U>(arg.b());
         if (aDyadic.has_value() && bDyadic.has_value())
         {
             return RootTwo<U>(aDyadic.value(), bDyadic.value());
@@ -529,8 +529,8 @@ namespace ring
     template <typename T, typename U>
     std::optional<Complex<U>> maybeDyadic(Complex<T> arg)
     {
-        std::optional<U> aDyadic = ring::maybeDyadic<T, U>(arg.a);
-        std::optional<U> bDyadic = ring::maybeDyadic<T, U>(arg.b);
+        std::optional<U> aDyadic = ring::maybeDyadic<T, U>(arg.a());
+        std::optional<U> bDyadic = ring::maybeDyadic<T, U>(arg.b());
         if (aDyadic.has_value() && bDyadic.has_value())
         {
             return Complex<U>(aDyadic.value(), bDyadic.value());
@@ -541,10 +541,10 @@ namespace ring
     template <typename T, typename U>
     std::optional<Omega<U>> maybeDyadic(Omega<T> arg)
     {
-        std::optional<U> aDyadic = ring::maybeDyadic<T, U>(arg.a);
-        std::optional<U> bDyadic = ring::maybeDyadic<T, U>(arg.b);
-        std::optional<U> cDyadic = ring::maybeDyadic<T, U>(arg.c);
-        std::optional<U> dDyadic = ring::maybeDyadic<T, U>(arg.d);
+        std::optional<U> aDyadic = ring::maybeDyadic<T, U>(arg.a());
+        std::optional<U> bDyadic = ring::maybeDyadic<T, U>(arg.b());
+        std::optional<U> cDyadic = ring::maybeDyadic<T, U>(arg.c());
+        std::optional<U> dDyadic = ring::maybeDyadic<T, U>(arg.d());
         if (aDyadic.has_value() && bDyadic.has_value() && cDyadic.has_value() && dDyadic.has_value())
         {
             return Omega<U>(aDyadic.value(), bDyadic.value(), cDyadic.value(), dDyadic.value());
@@ -616,13 +616,13 @@ namespace ring
     template <typename T>
     T real(Complex<T> arg)
     {
-        return arg.a;
+        return arg.a();
     }
 
     template <typename T>
     RootTwo<T> real(Omega<T> arg)
     {
-        return RootTwo<T>(arg.d, half<T>() * (arg.c - arg.a));
+        return RootTwo<T>(arg.d(), half<T>() * (arg.c() - arg.a()));
     }
 
     template <typename T, typename U>
@@ -664,18 +664,18 @@ namespace ring
     template <>
     ZOmega toWhole(DOmega arg)
     {
-        Integer a2 = toWhole<ZDyadic, Integer>(arg.a);
-        Integer b2 = toWhole<ZDyadic, Integer>(arg.b);
-        Integer c2 = toWhole<ZDyadic, Integer>(arg.c);
-        Integer d2 = toWhole<ZDyadic, Integer>(arg.d);
+        Integer a2 = toWhole<ZDyadic, Integer>(arg.a());
+        Integer b2 = toWhole<ZDyadic, Integer>(arg.b());
+        Integer c2 = toWhole<ZDyadic, Integer>(arg.c());
+        Integer d2 = toWhole<ZDyadic, Integer>(arg.d());
         return ZOmega(a2, b2, c2, d2);
     }
 
     template <>
     ZRootTwo toWhole(DRootTwo arg)
     {
-        Integer a2 = toWhole<ZDyadic, Integer>(arg.a);
-        Integer b2 = toWhole<ZDyadic, Integer>(arg.b);
+        Integer a2 = toWhole<ZDyadic, Integer>(arg.a());
+        Integer b2 = toWhole<ZDyadic, Integer>(arg.b());
         return ZRootTwo(a2, b2);
     }
 
@@ -689,10 +689,10 @@ namespace ring
     Integer denomExp(DOmega arg)
     {
         Integer a, ak, b, bk, c, ck, d, dk;
-        std::tie(a, ak) = arg.a.decomposeDyadic();
-        std::tie(b, bk) = arg.b.decomposeDyadic();
-        std::tie(c, ck) = arg.c.decomposeDyadic();
-        std::tie(d, dk) = arg.d.decomposeDyadic();
+        std::tie(a, ak) = arg.a().decomposeDyadic();
+        std::tie(b, bk) = arg.b().decomposeDyadic();
+        std::tie(c, ck) = arg.c().decomposeDyadic();
+        std::tie(d, dk) = arg.d().decomposeDyadic();
         Integer maxK = std::max({ak, bk, ck, ck});
         Integer a2 = (maxK == ak) ? a : 0;
         Integer b2 = (maxK == bk) ? b : 0;
@@ -710,8 +710,8 @@ namespace ring
     Integer denomExp(DRootTwo arg)
     {
         Integer a, ak, b, bk;
-        std::tie(a, ak) = arg.a.decomposeDyadic();
-        std::tie(b, bk) = arg.b.decomposeDyadic();
+        std::tie(a, ak) = arg.a().decomposeDyadic();
+        std::tie(b, bk) = arg.b().decomposeDyadic();
         Integer x1 = 2 * ak;
         Integer x2 = 2 * bk - 1;
         return (x1 > x2) ? x1 : x2;
@@ -762,43 +762,43 @@ namespace ring
 
     Z2 parity(ZRootTwo arg)
     {
-        return parity(arg.a);
+        return parity(arg.a());
     }
 
     template <typename T>
     T fromQRootTwo(QRootTwo q)
     {
-        return fromRational<T>(q.a) + rootTwo<T>() * fromRational<T>(q.b);
+        return fromRational<T>(q.a()) + rootTwo<T>() * fromRational<T>(q.b());
     }
 
     template <typename T>
     T fromZComplex(ZComplex z)
     {
-        return fromInteger<T>(z.a) + i<T>() * fromInteger<T>(z.b);
+        return fromInteger<T>(z.a()) + i<T>() * fromInteger<T>(z.b());
     }
 
     template <typename T>
     T fromDComplex(DComplex d)
     {
-        return fromDyadic<T>(d.a) + i<T>() * fromDyadic<T>(d.b);
+        return fromDyadic<T>(d.a()) + i<T>() * fromDyadic<T>(d.b());
     }
 
     template <typename T>
     T fromQComplex(QComplex q)
     {
-        return fromRational<T>(q.a) + i<T>() * fromRational<T>(q.b);
+        return fromRational<T>(q.a()) + i<T>() * fromRational<T>(q.b());
     }
 
     template <typename T>
     T fromDRComplex(DRComplex d)
     {
-        return fromDRootTwo<T>(d.a) + i<T>() * fromDRootTwo<T>(d.b);
+        return fromDRootTwo<T>(d.a()) + i<T>() * fromDRootTwo<T>(d.b());
     }
 
     template <typename T>
     T fromQRComplex(QRComplex q)
     {
-        return fromQRootTwo<T>(q.a) + i<T>() * fromQRootTwo<T>(q.b);
+        return fromQRootTwo<T>(q.a()) + i<T>() * fromQRootTwo<T>(q.b());
     }
 
     template <typename T>
@@ -807,7 +807,7 @@ namespace ring
         T o = omega<T>();
         T o2 = o * o;
         T o3 = o2 * o;
-        return fromInteger<T>(z.a) * o3 + fromInteger<T>(z.b) * o2 + fromInteger<T>(z.c) * o + fromInteger<T>(z.d);
+        return fromInteger<T>(z.a()) * o3 + fromInteger<T>(z.b()) * o2 + fromInteger<T>(z.c()) * o + fromInteger<T>(z.d());
     }
 
     template <typename T>
@@ -816,7 +816,7 @@ namespace ring
         T o = omega<T>();
         T o2 = o * o;
         T o3 = o2 * o;
-        return fromDyadic<T>(z.a) * o3 + fromDyadic<T>(z.b) * o2 + fromDyadic<T>(z.c) * o + fromDyadic<T>(z.d);
+        return fromDyadic<T>(z.a()) * o3 + fromDyadic<T>(z.b()) * o2 + fromDyadic<T>(z.c()) * o + fromDyadic<T>(z.d());
     }
 
     template <typename T>
@@ -825,15 +825,15 @@ namespace ring
         T o = omega<T>();
         T o2 = o * o;
         T o3 = o2 * o;
-        return fromRational<T>(z.a) * o3 + fromRational<T>(z.b) * o2 + fromRational<T>(z.c) * o + fromRational<T>(z.d);
+        return fromRational<T>(z.a()) * o3 + fromRational<T>(z.b()) * o2 + fromRational<T>(z.c()) * o + fromRational<T>(z.d());
     }
 
     std::optional<ZRootTwo> zRootTwoRoot(ZRootTwo arg)
     {
-        Integer d = arg.a * arg.a - 2 * arg.b * arg.b;
+        Integer d = arg.a() * arg.a() - 2 * arg.b() * arg.b();
         Integer r = intsqrt(d);
-        Integer sum = arg.a + r;
-        Integer diff = arg.a - r;
+        Integer sum = arg.a() + r;
+        Integer diff = arg.a() - r;
         Integer div1, div2, div3, div4;
         Integer integer2 = 2;
         Integer integer4 = 4;
@@ -870,9 +870,9 @@ namespace ring
 
     ZRootTwo zRootTwoOfZOmega(ZOmega arg)
     {
-        if ((arg.a == -arg.c) && (arg.b == 0))
+        if ((arg.a() == -arg.c()) && (arg.b() == 0))
         {
-            return ZRootTwo(arg.d, arg.c);
+            return ZRootTwo(arg.d(), arg.c());
         }
         throw std::invalid_argument("Could not convert ZOmega value to ZRootTwo");
     }
@@ -899,37 +899,49 @@ namespace ring
 template <typename T>
 Dyadic<T>::Dyadic()
 {
-    this->a = 0;
-    this->n = 0;
+    a_ = 0;
+    n_ = 0;
 }
 
 template <typename T>
 Dyadic<T>::Dyadic(int arg)
 {
-    this->a = arg;
-    this->n = 0;
+    a_ = arg;
+    n_ = 0;
 }
 
 template <typename T>
 Dyadic<T>::Dyadic(T a, T n)
 {
-    this->a = a;
-    this->n = n;
+    a_ = a;
+    n_ = n;
+}
+
+template <typename T>
+T Dyadic<T>::a() const
+{
+    return a_;
+}
+
+template <typename T>
+T Dyadic<T>::n() const
+{
+    return n_;
 }
 
 template <typename T>
 Dyadic<T> Dyadic<T>::copy() const
 {
-    return Dyadic<T>(a, n);
+    return Dyadic<T>(a(), n());
 }
 
 template <typename T>
 bool Dyadic<T>::operator==(const Dyadic &d) const
 {
-    T b = d.a;
-    T m = d.n;
-    T k = (m > n) ? m : n;
-    return (a * ring::exp2<T>(k - n)) == (b * ring::exp2<T>(k - m));
+    T b = d.a();
+    T m = d.n();
+    T k = (m > n()) ? m : n();
+    return (a() * ring::exp2<T>(k - n())) == (b * ring::exp2<T>(k - m));
 }
 
 template <typename T>
@@ -941,10 +953,10 @@ bool Dyadic<T>::operator!=(const Dyadic &d) const
 template <typename T>
 Ordering Dyadic<T>::compare(const Dyadic &d) const
 {
-    T b = d.a;
-    T m = d.n;
-    T k = (n > m) ? n : m;
-    T size1 = a * ring::exp2<T>(k - n);
+    T b = d.a();
+    T m = d.n();
+    T k = (n() > m) ? n() : m;
+    T size1 = a() * ring::exp2<T>(k - n());
     T size2 = b * ring::exp2<T>(k - m);
     if (size1 > size2)
     {
@@ -960,43 +972,43 @@ Ordering Dyadic<T>::compare(const Dyadic &d) const
 template <typename T>
 bool Dyadic<T>::operator<(const Dyadic &d) const
 {
-    return this->compare(d) == LT;
+    return compare(d) == LT;
 }
 
 template <typename T>
 bool Dyadic<T>::operator>(const Dyadic &d) const
 {
-    return this->compare(d) == GT;
+    return compare(d) == GT;
 }
 
 template <typename T>
 bool Dyadic<T>::operator<=(const Dyadic &d) const
 {
-    Ordering c = this->compare(d);
+    Ordering c = compare(d);
     return (c == LT) || (c == EQ);
 }
 
 template <typename T>
 bool Dyadic<T>::operator>=(const Dyadic &d) const
 {
-    Ordering c = this->compare(d);
+    Ordering c = compare(d);
     return (c == GT) || (c == EQ);
 }
 
 template <typename T>
 Dyadic<T> Dyadic<T>::operator+(const Dyadic &d) const
 {
-    T b = d.a;
-    T m = d.n;
-    if (n < m)
+    T b = d.a();
+    T m = d.n();
+    if (n() < m)
     {
-        T c = ring::shiftL(a, m - n) + b;
+        T c = ring::shiftL(a(), m - n()) + b;
         return Dyadic(c, m);
     }
     else
     {
-        T d = a + ring::shiftL(b, n - m);
-        return Dyadic(d, n);
+        T d = a() + ring::shiftL(b, n() - m);
+        return Dyadic(d, n());
     }
 }
 
@@ -1009,31 +1021,31 @@ Dyadic<T> Dyadic<T>::operator-(const Dyadic &d) const
 template <typename T>
 Dyadic<T> Dyadic<T>::operator*(const Dyadic &d) const
 {
-    T b = d.a;
-    T m = d.n;
-    return Dyadic(a * b, m + n);
+    T b = d.a();
+    T m = d.n();
+    return Dyadic(a() * b, m + n());
 }
 
 template <typename T>
 Dyadic<T> Dyadic<T>::operator-() const
 {
-    return Dyadic(-a, n);
+    return Dyadic(-a(), n());
 }
 
 template <typename T>
 Dyadic<T> Dyadic<T>::abs() const
 {
-    if (this->compare(ring::fromInteger<Dyadic<T>>(0)) != LT)
+    if (compare(ring::fromInteger<Dyadic<T>>(0)) != LT)
     {
-        return this->copy();
+        return copy();
     }
-    return -this->copy();
+    return -copy();
 }
 
 template <typename T>
 int Dyadic<T>::signum() const
 {
-    Ordering comp = this->compare(ring::fromInteger<Dyadic<T>>(0));
+    Ordering comp = compare(ring::fromInteger<Dyadic<T>>(0));
     if (comp == LT)
     {
         return -1;
@@ -1048,32 +1060,32 @@ int Dyadic<T>::signum() const
 template <typename T>
 Dyadic<T> Dyadic<T>::adj() const
 {
-    return this->copy();
+    return copy();
 }
 
 template <typename T>
 Dyadic<T> Dyadic<T>::adj2() const
 {
-    return this->copy();
+    return copy();
 }
 
 template <typename T>
 std::tuple<T, T> Dyadic<T>::decomposeDyadic() const
 {
-    if (a == 0)
+    if (a() == 0)
     {
         return std::make_tuple(0, 0);
     }
     else
     {
-        int k = ring::lobit(a);
-        if (n >= k)
+        int k = ring::lobit(a());
+        if (n() >= k)
         {
-            return std::make_tuple(ring::shiftR(a, k), n - k);
+            return std::make_tuple(ring::shiftR(a(), k), n() - k);
         }
         else
         {
-            return std::make_tuple(ring::shiftR(a, n), 0);
+            return std::make_tuple(ring::shiftR(a(), n()), 0);
         }
     }
 }
@@ -1081,29 +1093,29 @@ std::tuple<T, T> Dyadic<T>::decomposeDyadic() const
 template <typename T>
 T Dyadic<T>::integerOfDyadic(T k) const
 {
-    return ring::shift(a, (k - n));
+    return ring::shift(a(), (k - n()));
 }
 
 template <typename T>
 QOmega Dyadic<T>::toQOmega() const
 {
-    if (n >= 0)
+    if (n() >= 0)
     {
-        return ring::toQOmega<T>(a) * ring::powNonNeg<QOmega>(ring::half<QOmega>(), ring::mpzToInt(n));
+        return ring::toQOmega<T>(a()) * ring::powNonNeg<QOmega>(ring::half<QOmega>(), ring::mpzToInt(n()));
     }
-    return ring::toQOmega<T>(a) * ring::powNonNeg<QOmega>(QOmega(2), ring::mpzToInt(-n));
+    return ring::toQOmega<T>(a()) * ring::powNonNeg<QOmega>(QOmega(2), ring::mpzToInt(-n()));
 }
 
 template <typename T>
 std::string Dyadic<T>::toString() const
 {
-    return "Dyadic(" + ring::toString(a) + ", " + ring::toString(n) + ")";
+    return "Dyadic(" + ring::toString(a()) + ", " + ring::toString(n()) + ")";
 }
 
 template <typename T>
 void Dyadic<T>::print(std::string prefix) const
 {
-    std::cout << prefix << ": " << this->toString() << std::endl;
+    std::cout << prefix << ": " << toString() << std::endl;
 }
 
 template <typename T>
@@ -1139,34 +1151,46 @@ Dyadic<Integer> ring::half()
 template <typename T>
 RootTwo<T>::RootTwo()
 {
-    this->a = 0;
-    this->b = 0;
+    a_ = 0;
+    b_ = 0;
 }
 
 template <typename T>
 RootTwo<T>::RootTwo(int arg)
 {
-    this->a = arg;
-    this->b = 0;
+    a_ = arg;
+    b_ = 0;
 }
 
 template <typename T>
 RootTwo<T>::RootTwo(T a, T b)
 {
-    this->a = a;
-    this->b = b;
+    a_ = a;
+    b_ = b;
+}
+
+template <typename T>
+T RootTwo<T>::a() const
+{
+    return a_;
+}
+
+template <typename T>
+T RootTwo<T>::b() const
+{
+    return b_;
 }
 
 template <typename T>
 RootTwo<T> RootTwo<T>::copy() const
 {
-    return RootTwo(a, b);
+    return RootTwo(a(), b());
 }
 
 template <typename T>
 bool RootTwo<T>::operator==(const RootTwo &r) const
 {
-    return (this->a == r.a) && (this->b == r.b);
+    return (a() == r.a()) && (b() == r.b());
 }
 
 template <typename T>
@@ -1202,36 +1226,36 @@ bool RootTwo<T>::operator>(const RootTwo &r) const
 template <typename T>
 RootTwo<T> RootTwo<T>::operator+(const RootTwo &r) const
 {
-    return RootTwo(this->a + r.a, this->b + r.b);
+    return RootTwo(a() + r.a(), b() + r.b());
 }
 
 template <typename T>
 RootTwo<T> RootTwo<T>::operator-(const RootTwo &r) const
 {
-    return RootTwo(this->a - r.a, this->b - r.b);
+    return RootTwo(a() - r.a(), b() - r.b());
 }
 
 template <typename T>
 RootTwo<T> RootTwo<T>::operator*(const RootTwo &r) const
 {
-    T newA = this->a * r.a + (this->b * r.b) + (this->b * r.b);
-    T newB = this->a * r.b + r.a * this->b;
+    T newA = a() * r.a() + (b() * r.b()) + (b() * r.b());
+    T newB = a() * r.b() + r.a() * b();
     return RootTwo(newA, newB);
 }
 
 template <typename T>
 RootTwo<T> RootTwo<T>::operator-() const
 {
-    return RootTwo(-this->a, -this->b);
+    return RootTwo(-a(), -b());
 }
 
 template <typename T>
 RootTwo<T> RootTwo<T>::abs() const
 {
-    int sign = this->signum();
+    int sign = signum();
     if (sign != -1)
     {
-        return this->copy();
+        return copy();
     }
     return -(*this);
 }
@@ -1239,8 +1263,8 @@ RootTwo<T> RootTwo<T>::abs() const
 template <typename T>
 int RootTwo<T>::signum() const
 {
-    int sa = ring::sign(a);
-    int sb = ring::sign(b);
+    int sa = ring::sign(a());
+    int sb = ring::sign(b());
     if (sa == 0 && sb == 0)
     {
         return 0;
@@ -1253,11 +1277,11 @@ int RootTwo<T>::signum() const
     {
         return -1;
     }
-    else if (sa != -1 && sb != 1 && ring::sign<T>(a * a - b * b - b * b) != -1)
+    else if (sa != -1 && sb != 1 && ring::sign<T>(a() * a() - T(2) * b() * b()) != -1)
     {
         return 1;
     }
-    else if (sa != 1 && sb != -1 && ring::sign<T>(a * a - b * b - b * b) != 1)
+    else if (sa != 1 && sb != -1 && ring::sign<T>(a() * a() - T(2) * b() * b()) != 1)
     {
         return 1;
     }
@@ -1267,46 +1291,46 @@ int RootTwo<T>::signum() const
 template <typename T>
 RootTwo<T> RootTwo<T>::adj() const
 {
-    return RootTwo(ring::adj(a), ring::adj(b));
+    return RootTwo(ring::adj(a()), ring::adj(b()));
 }
 
 template <typename T>
 RootTwo<T> RootTwo<T>::adj2() const
 {
-    return RootTwo(ring::adj2(a), -ring::adj2(b));
+    return RootTwo(ring::adj2(a()), -ring::adj2(b()));
 }
 
 template <typename T>
 RootTwo<T> RootTwo<T>::recip() const
 {
-    T k = a * a - 2 * b * b;
-    return RootTwo(a * ring::recip(k), -b * ring::recip(k));
+    T k = a() * a() - 2 * b() * b();
+    return RootTwo(a() * ring::recip(k), -b() * ring::recip(k));
 }
 
 template <typename T>
 Integer RootTwo<T>::norm() const
 {
-    Integer normA = ring::norm<T>(a);
-    Integer normB = ring::norm<T>(b);
+    Integer normA = ring::norm<T>(a());
+    Integer normB = ring::norm<T>(b());
     return normA * normA - 2 * normB * normB;
 }
 
 template <typename T>
 QOmega RootTwo<T>::toQOmega() const
 {
-    return ring::toQOmega<T>(a) + ring::rootTwo<QOmega>() * ring::toQOmega<T>(b);
+    return ring::toQOmega<T>(a()) + ring::rootTwo<QOmega>() * ring::toQOmega<T>(b());
 }
 
 template <typename T>
 std::string RootTwo<T>::toString() const
 {
-    return "RootTwo(" + ring::toString(a) + ", " + ring::toString(b) + ")";
+    return "RootTwo(" + ring::toString(a()) + ", " + ring::toString(b()) + ")";
 }
 
 template <typename T>
 void RootTwo<T>::print(std::string prefix) const
 {
-    std::cout << prefix << ": " << this->toString() << std::endl;
+    std::cout << prefix << ": " << toString() << std::endl;
 }
 
 template <typename T>
@@ -1357,41 +1381,53 @@ RootTwo<Rational>::RootTwo(Rational a, Rational b)
     // Make sure numerator and denominator are in canonical form.
     a.canonicalize();
     b.canonicalize();
-    this->a = a;
-    this->b = b;
+    a_ = a;
+    b_ = b;
 }
 
 template <typename T>
 Complex<T>::Complex()
 {
-    this->a = 0;
-    this->b = 0;
+    a_ = 0;
+    b_ = 0;
 }
 
 template <typename T>
 Complex<T>::Complex(int arg)
 {
-    this->a = arg;
-    this->b = 0;
+    a_ = arg;
+    b_ = 0;
 }
 
 template <typename T>
 Complex<T>::Complex(T a, T b)
 {
-    this->a = a;
-    this->b = b;
+    a_ = a;
+    b_ = b;
+}
+
+template <typename T>
+T Complex<T>::a() const
+{
+    return a_;
+}
+
+template <typename T>
+T Complex<T>::b() const
+{
+    return b_;
 }
 
 template <typename T>
 Complex<T> Complex<T>::copy() const
 {
-    return Complex(a, b);
+    return Complex(a(), b());
 }
 
 template <typename T>
 bool Complex<T>::operator==(const Complex &c) const
 {
-    return (this->a == c.a) && (this->b == c.b);
+    return (a() == c.a()) && (b() == c.b());
 }
 
 template <typename T>
@@ -1403,33 +1439,33 @@ bool Complex<T>::operator!=(const Complex &c) const
 template <typename T>
 Complex<T> Complex<T>::operator+(const Complex &c) const
 {
-    return Complex(this->a + c.a, this->b + c.b);
+    return Complex(a() + c.a(), b() + c.b());
 }
 
 template <typename T>
 Complex<T> Complex<T>::operator-(const Complex &c) const
 {
-    return Complex(this->a - c.a, this->b - c.b);
+    return Complex(a() - c.a(), b() - c.b());
 }
 
 template <typename T>
 Complex<T> Complex<T>::operator*(const Complex &c) const
 {
-    T newA = this->a * c.a - this->b * c.b;
-    T newB = this->a * c.b + c.a * this->b;
+    T newA = a() * c.a() - b() * c.b();
+    T newB = a() * c.b() + c.a() * b();
     return Complex(newA, newB);
 }
 
 template <typename T>
 Complex<T> Complex<T>::operator-() const
 {
-    return Complex(-this->a, -this->b);
+    return Complex(-a(), -b());
 }
 
 template <typename T>
 Complex<T> Complex<T>::abs() const
 {
-    return this->copy();
+    return copy();
 }
 
 template <typename T>
@@ -1441,60 +1477,60 @@ int Complex<T>::signum() const
 template <typename T>
 Complex<T> Complex<T>::adj() const
 {
-    return Complex(ring::adj(a), -ring::adj(b));
+    return Complex(ring::adj(a()), -ring::adj(b()));
 }
 
 template <typename T>
 Complex<T> Complex<T>::adj2() const
 {
-    return Complex(ring::adj2(a), ring::adj2(b));
+    return Complex(ring::adj2(a()), ring::adj2(b()));
 }
 
 template <typename T>
 Complex<T> Complex<T>::recip() const
 {
-    T d = a * a + b * b;
-    return Complex(a * ring::recip(d), -b * ring::recip(d));
+    T d = a() * a() + b() * b();
+    return Complex(a() * ring::recip(d), -b() * ring::recip(d));
 }
 
 template <typename T>
 Integer Complex<T>::norm() const
 {
-    Integer normA = ring::norm<T>(a);
-    Integer normB = ring::norm<T>(b);
+    Integer normA = ring::norm<T>(a());
+    Integer normB = ring::norm<T>(b());
     return normA * normA + normB * normB;
 }
 
 template <typename T>
 Integer Complex<T>::denomExp() const
 {
-    Integer expA = ring::denomExp<T>(a);
-    Integer expB = ring::denomExp<T>(b);
+    Integer expA = ring::denomExp<T>(a());
+    Integer expB = ring::denomExp<T>(b());
     return (expA > expB) ? expA : expB;
 }
 
 template <typename T>
 Complex<T> Complex<T>::denomExpFactor(Integer k) const
 {
-    return Complex<T>(ring::denomExpFactor<T>(a, k), ring::denomExpFactor<T>(b, k));
+    return Complex<T>(ring::denomExpFactor<T>(a(), k), ring::denomExpFactor<T>(b(), k));
 }
 
 template <typename T>
 QOmega Complex<T>::toQOmega() const
 {
-    return ring::toQOmega(a) + ring::i<QOmega>() * ring::toQOmega<T>(b);
+    return ring::toQOmega(a()) + ring::i<QOmega>() * ring::toQOmega<T>(b());
 }
 
 template <typename T>
 std::string Complex<T>::toString() const
 {
-    return "Complex(" + ring::toString(a) + ", " + ring::toString(b) + ")";
+    return "Complex(" + ring::toString(a()) + ", " + ring::toString(b()) + ")";
 }
 
 template <typename T>
 void Complex<T>::print(std::string prefix) const
 {
-    std::cout << prefix << ": " << this->toString() << std::endl;
+    std::cout << prefix << ": " << toString() << std::endl;
 }
 
 template <typename T>
@@ -1541,27 +1577,32 @@ Complex<T> Complex<T>::fromRational(Rational r)
 
 Z2::Z2()
 {
-    this->mod2 = 0;
+    mod2_ = 0;
 }
 
 Z2::Z2(int arg)
 {
-    this->mod2 = (arg % 2) != 0;
+    mod2_ = (arg % 2) != 0;
 }
 
 Z2::Z2(bool mod2)
 {
-    this->mod2 = mod2;
+    mod2_ = mod2;
+}
+
+bool Z2::mod2() const
+{
+    return mod2_;
 }
 
 Z2 Z2::copy() const
 {
-    return Z2(this->mod2);
+    return Z2(mod2());
 }
 
 bool Z2::operator==(const Z2 &z) const
 {
-    return this->mod2 == z.mod2;
+    return mod2() == z.mod2();
 }
 
 bool Z2::operator!=(const Z2 &z) const
@@ -1571,7 +1612,7 @@ bool Z2::operator!=(const Z2 &z) const
 
 Z2 Z2::operator+(const Z2 &z) const
 {
-    return Z2(this->mod2 != z.mod2);
+    return Z2(mod2() != z.mod2());
 }
 
 Z2 Z2::operator-(const Z2 &z) const
@@ -1581,20 +1622,20 @@ Z2 Z2::operator-(const Z2 &z) const
 
 Z2 Z2::operator*(const Z2 &z) const
 {
-    if (this->mod2 == 0)
+    if (mod2() == 0)
     {
         return Z2(0);
     }
-    return z.mod2;
+    return z.mod2();
 }
 
 Z2 Z2::operator-() const
 {
-    return this->copy();
+    return copy();
 }
 Z2 Z2::abs() const
 {
-    return this->copy();
+    return copy();
 }
 
 int Z2::signum() const
@@ -1604,22 +1645,22 @@ int Z2::signum() const
 
 Z2 Z2::adj() const
 {
-    return this->copy();
+    return copy();
 }
 
 Z2 Z2::adj2() const
 {
-    return this->copy();
+    return copy();
 }
 
 std::string Z2::toString() const
 {
-    return "Z2(" + std::to_string(this->mod2) + ")";
+    return "Z2(" + std::to_string(mod2()) + ")";
 }
 
 void Z2::print(std::string prefix) const
 {
-    std::cout << prefix << ": " << this->toString() << std::endl;
+    std::cout << prefix << ": " << toString() << std::endl;
 }
 
 Z2 Z2::fromInteger(int n)
@@ -1630,40 +1671,64 @@ Z2 Z2::fromInteger(int n)
 template <typename T>
 Omega<T>::Omega()
 {
-    this->a = 0;
-    this->b = 0;
-    this->c = 0;
-    this->d = 0;
+    a_ = 0;
+    b_ = 0;
+    c_ = 0;
+    d_ = 0;
 }
 
 template <typename T>
 Omega<T>::Omega(int arg)
 {
-    this->a = 0;
-    this->b = 0;
-    this->c = 0;
-    this->d = arg;
+    a_ = 0;
+    b_ = 0;
+    c_ = 0;
+    d_ = arg;
 }
 
 template <typename T>
 Omega<T>::Omega(T a, T b, T c, T d)
 {
-    this->a = a;
-    this->b = b;
-    this->c = c;
-    this->d = d;
+    a_ = a;
+    b_ = b;
+    c_ = c;
+    d_ = d;
+}
+
+template <typename T>
+T Omega<T>::a() const
+{
+    return a_;
+}
+
+template <typename T>
+T Omega<T>::b() const
+{
+    return b_;
+}
+
+template <typename T>
+T Omega<T>::c() const
+{
+    return c_;
+}
+
+template <typename T>
+T Omega<T>::d() const
+{
+    return d_;
 }
 
 template <typename T>
 Omega<T> Omega<T>::copy() const
 {
-    return Omega<T>(a, b, c, d);
+    return Omega<T>(a(), b(), c(), d());
 }
 
 template <typename T>
 bool Omega<T>::operator==(const Omega &o) const
 {
-    return (a == o.a) && (b == o.b) && (c == o.c) && (d == o.d);
+    return (a() == o.a()) && (b() == o.b()) && (c() == o.c()) && (d() == o.d());
 }
 
 template <typename T>
@@ -1675,35 +1740,36 @@ bool Omega<T>::operator!=(const Omega &o) const
 template <typename T>
 Omega<T> Omega<T>::operator+(const Omega &o) const
 {
-    return Omega<T>(a + o.a, b + o.b, c + o.c, d + o.d);
+    return Omega<T>(a() + o.a(), b() + o.b(), c() + o.c(), d() + o.d());
 }
 
 template <typename T>
 Omega<T> Omega<T>::operator-(const Omega &o) const
 {
-    return Omega<T>(a - o.a, b - o.b, c - o.c, d - o.d);
+    return Omega<T>(a() - o.a(), b() - o.b(), c() - o.c(), d() - o.d());
 }
 
 template <typename T>
 Omega<T> Omega<T>::operator*(const Omega &o) const
 {
     return Omega<T>(
-        a * o.d + b * o.c + c * o.b + d * o.a,
-        b * o.d + c * o.c + d * o.b - a * o.a,
-        c * o.d + d * o.c - a * o.b - b * o.a,
-        d * o.d - a * o.c - b * o.b - c * o.a);
+        a() * o.d() + b() * o.c() + c() * o.b() + d() * o.a(),
+        b() * o.d() + c() * o.c() + d() * o.b() - a() * o.a(),
+        c() * o.d() + d() * o.c() - a() * o.b() - b() * o.a(),
+        d() * o.d() - a() * o.c() - b() * o.b() - c() * o.a());
 }
 
 template <typename T>
 Omega<T> Omega<T>::operator-() const
 {
-    return Omega<T>(-a, -b, -c, -d);
+
+    return Omega<T>(-a(), -b(), -c(), -d());
 }
 
 template <typename T>
 Omega<T> Omega<T>::abs() const
 {
-    return this->copy();
+    return copy();
 }
 
 template <typename T>
@@ -1715,13 +1781,13 @@ int Omega<T>::signum() const
 template <typename T>
 Omega<T> Omega<T>::adj() const
 {
-    return Omega(-ring::adj<T>(c), -ring::adj<T>(b), -ring::adj<T>(a), ring::adj<T>(d));
+    return Omega(-ring::adj<T>(c()), -ring::adj<T>(b()), -ring::adj<T>(a()), ring::adj<T>(d()));
 }
 
 template <typename T>
 Omega<T> Omega<T>::adj2() const
 {
-    return Omega(-ring::adj2<T>(a), ring::adj2<T>(b), -ring::adj2<T>(c), ring::adj2<T>(d));
+    return Omega(-ring::adj2<T>(a()), ring::adj2<T>(b()), -ring::adj2<T>(c()), ring::adj2<T>(d()));
 }
 
 template <typename T>
@@ -1729,11 +1795,11 @@ Omega<T> Omega<T>::recip() const
 {
     static_assert(std::is_same<T, double>::value || std::is_same<T, Rational>::value,
                   "recip can only be called with T = double or T = Rational.");
-    Omega<T> x1 = Omega<T>(-c, -b, -a, d);
-    Omega<T> x2 = Omega<T>(-a, b, -c, d);
-    Omega<T> x3 = Omega<T>(c, -b, a, d);
-    T sumSquares = a * a + b * b + c * c + d * d;
-    T sumProds = a * b + b * c + c * d - d * a;
+    Omega<T> x1 = Omega<T>(-c(), -b(), -a(), d());
+    Omega<T> x2 = Omega<T>(-a(), b(), -c(), d());
+    Omega<T> x3 = Omega<T>(c(), -b(), a(), d());
+    T sumSquares = a() * a() + b() * b() + c() * c() + d() * d();
+    T sumProds = a() * b() + b() * c() + c() * d() - d() * a();
     T denom = sumSquares * sumSquares - 2 * sumProds * sumProds;
     return x1 * x2 * x3 * Omega(0, 0, 0, ring::recip(denom));
 }
@@ -1741,10 +1807,10 @@ Omega<T> Omega<T>::recip() const
 template <typename T>
 Integer Omega<T>::norm() const
 {
-    Integer nA = ring::norm<T>(a);
-    Integer nB = ring::norm<T>(b);
-    Integer nC = ring::norm<T>(c);
-    Integer nD = ring::norm<T>(d);
+    Integer nA = ring::norm<T>(a());
+    Integer nB = ring::norm<T>(b());
+    Integer nC = ring::norm<T>(c());
+    Integer nD = ring::norm<T>(d());
     Integer sum1 = nA * nA + nB * nB + nC * nC + nD * nD;
     Integer sum2 = nA * nB + nB * nC + nC * nD - nD * nA;
     return sum1 * sum1 - 2 * sum2 * sum2;
@@ -1756,19 +1822,19 @@ QOmega Omega<T>::toQOmega() const
     QOmega o = ring::omega<QOmega>();
     QOmega o2 = o * o;
     QOmega o3 = o2 * o;
-    return o3 * ring::toQOmega(a) + o2 * ring::toQOmega(b) + o * ring::toQOmega(c) + ring::toQOmega(d);
+    return o3 * ring::toQOmega(a()) + o2 * ring::toQOmega(b()) + o * ring::toQOmega(c()) + ring::toQOmega(d());
 }
 
 template <typename T>
 std::string Omega<T>::toString() const
 {
-    return "Omega(" + ring::toString(a) + ", " + ring::toString(b) + ", " + ring::toString(c) + ", " + ring::toString(d) + ")";
+    return "Omega(" + ring::toString(a()) + ", " + ring::toString(b()) + ", " + ring::toString(c()) + ", " + ring::toString(d()) + ")";
 }
 
 template <typename T>
 void Omega<T>::print(std::string prefix) const
 {
-    std::cout << prefix << ": " << this->toString() << std::endl;
+    std::cout << prefix << ": " << toString() << std::endl;
 }
 
 template <typename T>

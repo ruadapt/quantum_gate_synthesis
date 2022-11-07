@@ -934,10 +934,10 @@ void testRootTwoRational()
     // Make sure that we're converting the rational numbers to the standard,
     // canonical form.
     QRootTwo rNonCanonical = QRootTwo(2_mpq / 4, -3_mpq / 9);
-    assert(rNonCanonical.a.get_num() == 1);
-    assert(rNonCanonical.a.get_den() == 2);
-    assert(rNonCanonical.b.get_num() == -1);
-    assert(rNonCanonical.b.get_den() == 3);
+    assert(rNonCanonical.a().get_num() == 1);
+    assert(rNonCanonical.a().get_den() == 2);
+    assert(rNonCanonical.b().get_num() == -1);
+    assert(rNonCanonical.b().get_den() == 3);
     std::cout << "\tcanonicalization test passed" << std::endl;
 
     assert(r1 == r1equal);

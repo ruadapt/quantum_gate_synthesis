@@ -48,11 +48,11 @@ template <typename T>
 class Dyadic
 {
 public:
-    T a;
-    T n;
     Dyadic();
     Dyadic(int arg);
     Dyadic(T a, T n);
+    T a() const;
+    T n() const;
     Dyadic copy() const;
     bool operator==(const Dyadic &d) const;
     bool operator!=(const Dyadic &d) const;
@@ -77,17 +77,21 @@ public:
     static Dyadic fromInteger(int n);
     static Dyadic fromDyadic(const Dyadic &d);
     static Dyadic half();
+
+private:
+    T a_;
+    T n_;
 };
 
 template <typename T>
 class RootTwo
 {
 public:
-    T a;
-    T b;
     RootTwo();
     RootTwo(int arg);
     RootTwo(T a, T b);
+    T a() const;
+    T b() const;
     RootTwo copy() const;
     bool operator==(const RootTwo &r) const;
     bool operator!=(const RootTwo &r) const;
@@ -115,6 +119,10 @@ public:
     static RootTwo omega();
     static RootTwo fromInteger(int n);
     static RootTwo fromRational(Rational r);
+
+private:
+    T a_;
+    T b_;
 };
 
 template <>
@@ -124,11 +132,11 @@ template <typename T>
 class Complex
 {
 public:
-    T a;
-    T b;
     Complex();
     Complex(int arg);
     Complex(T a, T b);
+    T a() const;
+    T b() const;
     Complex copy() const;
     bool operator==(const Complex &c) const;
     bool operator!=(const Complex &c) const;
@@ -154,14 +162,18 @@ public:
     static Complex omega();
     static Complex fromInteger(int n);
     static Complex fromRational(Rational r);
+
+private:
+    T a_;
+    T b_;
 };
 class Z2
 {
 public:
-    bool mod2;
     Z2();
     Z2(int arg);
     Z2(bool mod2);
+    bool mod2() const;
     Z2 copy() const;
     bool operator==(const Z2 &z) const;
     bool operator!=(const Z2 &z) const;
@@ -176,19 +188,22 @@ public:
     std::string toString() const;
     void print(std::string prefix) const;
     static Z2 fromInteger(int n);
+
+private:
+    bool mod2_;
 };
 
 template <typename T>
 class Omega
 {
 public:
-    T a;
-    T b;
-    T c;
-    T d;
     Omega();
     Omega(int arg);
     Omega(T a, T b, T c, T d);
+    T a() const;
+    T b() const;
+    T c() const;
+    T d() const;
     Omega copy() const;
     bool operator==(const Omega &o) const;
     bool operator!=(const Omega &o) const;
@@ -212,6 +227,12 @@ public:
     static Omega omega();
     static Omega fromInteger(int n);
     static Omega fromRational(Rational r);
+
+private:
+    T a_;
+    T b_;
+    T c_;
+    T d_;
 };
 
 namespace ring
