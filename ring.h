@@ -521,7 +521,13 @@ namespace ring
 
     template <typename T>
     T fromZOmega(ZOmega z);
-    
+
+    template <typename T>
+    T fromDOmega(DOmega z);
+
+    template <typename T>
+    T fromQOmega(QOmega z);
+
     std::optional<ZRootTwo> zRootTwoRoot(ZRootTwo arg);
 
     ZRootTwo zRootTwoOfZOmega(ZOmega arg);

@@ -810,6 +810,24 @@ namespace ring
         return fromInteger<T>(z.a) * o3 + fromInteger<T>(z.b) * o2 + fromInteger<T>(z.c) * o + fromInteger<T>(z.d);
     }
 
+    template <typename T>
+    T fromDOmega(DOmega z)
+    {
+        T o = omega<T>();
+        T o2 = o * o;
+        T o3 = o2 * o;
+        return fromDyadic<T>(z.a) * o3 + fromDyadic<T>(z.b) * o2 + fromDyadic<T>(z.c) * o + fromDyadic<T>(z.d);
+    }
+
+    template <typename T>
+    T fromQOmega(QOmega z)
+    {
+        T o = omega<T>();
+        T o2 = o * o;
+        T o3 = o2 * o;
+        return fromRational<T>(z.a) * o3 + fromRational<T>(z.b) * o2 + fromRational<T>(z.c) * o + fromRational<T>(z.d);
+    }
+
     std::optional<ZRootTwo> zRootTwoRoot(ZRootTwo arg)
     {
         Integer d = arg.a * arg.a - 2 * arg.b * arg.b;

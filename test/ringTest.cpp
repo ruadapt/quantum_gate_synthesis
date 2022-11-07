@@ -102,6 +102,69 @@ void testTypeConversions()
     Omega<ZDyadic> oDyadicInteger = Omega<ZDyadic>(2);
     assert(Omega<ZDyadic>(ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(2, 0)) == oDyadicInteger);
     std::cout << "\tconversion from int tests passed" << std::endl;
+
+    assert(QRootTwo(2) == ring::fromQRootTwo<QRootTwo>(2));
+    assert(QRComplex(2) == ring::fromQRootTwo<QRComplex>(2));
+    assert(QOmega(2) == ring::fromQRootTwo<QOmega>(2));
+    std::cout << "\tfromQRootTwo tests passed" << std::endl;
+
+    assert(ZComplex(2) == ring::fromZComplex<ZComplex>(2));
+    assert(DComplex(2) == ring::fromZComplex<DComplex>(2));
+    assert(QComplex(2) == ring::fromZComplex<QComplex>(2));
+    assert(DRComplex(2) == ring::fromZComplex<DRComplex>(2));
+    assert(QRComplex(2) == ring::fromZComplex<QRComplex>(2));
+    assert(CDouble(2) == ring::fromZComplex<CDouble>(2));
+    assert(ZOmega(2) == ring::fromZComplex<ZOmega>(2));
+    assert(DOmega(2) == ring::fromZComplex<DOmega>(2));
+    assert(QOmega(2) == ring::fromZComplex<QOmega>(2));
+    std::cout << "\tfromZComplex tests passed" << std::endl;
+
+    assert(DComplex(2) == ring::fromDComplex<DComplex>(2));
+    assert(QComplex(2) == ring::fromDComplex<QComplex>(2));
+    assert(DRComplex(2) == ring::fromDComplex<DRComplex>(2));
+    assert(QRComplex(2) == ring::fromDComplex<QRComplex>(2));
+    assert(CDouble(2) == ring::fromDComplex<CDouble>(2));
+    assert(DOmega(2) == ring::fromDComplex<DOmega>(2));
+    assert(QOmega(2) == ring::fromDComplex<QOmega>(2));
+    std::cout << "\tfromDComplex tests passed" << std::endl;
+
+    assert(QComplex(2) == ring::fromQComplex<QComplex>(2));
+    assert(QRComplex(2) == ring::fromQComplex<QRComplex>(2));
+    assert(CDouble(2) == ring::fromQComplex<CDouble>(2));
+    assert(QOmega(2) == ring::fromQComplex<QOmega>(2));
+    std::cout << "\tfromQComplex tests passed" << std::endl;
+
+    assert(DRComplex(2) == ring::fromDRComplex<DRComplex>(2));
+    assert(QRComplex(2) == ring::fromDRComplex<QRComplex>(2));
+    assert(CDouble(2) == ring::fromDRComplex<CDouble>(2));
+    assert(DOmega(2) == ring::fromDRComplex<DOmega>(2));
+    assert(QOmega(2) == ring::fromDRComplex<QOmega>(2));
+    std::cout << "\tfromDRComplex tests passed" << std::endl;
+
+    assert(QRComplex(2) == ring::fromQRComplex<QRComplex>(2));
+    assert(CDouble(2) == ring::fromQRComplex<CDouble>(2));
+    assert(QOmega(2) == ring::fromQRComplex<QOmega>(2));
+    std::cout << "\tfromQRComplex tests passed" << std::endl;
+
+    assert(DRComplex(2) == ring::fromZOmega<DRComplex>(2));
+    assert(QRComplex(2) == ring::fromZOmega<QRComplex>(2));
+    assert(CDouble(2) == ring::fromZOmega<CDouble>(2));
+    assert(ZOmega(2) == ring::fromZOmega<ZOmega>(2));
+    assert(DOmega(2) == ring::fromZOmega<DOmega>(2));
+    assert(QOmega(2) == ring::fromZOmega<QOmega>(2));
+    std::cout << "\tfromZOmega tests passed" << std::endl;
+
+    assert(DRComplex(2) == ring::fromDOmega<DRComplex>(2));
+    assert(QRComplex(2) == ring::fromDOmega<QRComplex>(2));
+    assert(CDouble(2) == ring::fromDOmega<CDouble>(2));
+    assert(DOmega(2) == ring::fromDOmega<DOmega>(2));
+    assert(QOmega(2) == ring::fromDOmega<QOmega>(2));
+    std::cout << "\tfromDOmega tests passed" << std::endl;
+
+    assert(QRComplex(2) == ring::fromQOmega<QRComplex>(2));
+    assert(CDouble(2) == ring::fromQOmega<CDouble>(2));
+    assert(QOmega(2) == ring::fromQOmega<QOmega>(2));
+    std::cout << "\tfromQOmega tests passed" << std::endl;
 }
 
 void testFractional()
