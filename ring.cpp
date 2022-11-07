@@ -215,7 +215,10 @@ namespace ring
      */
     Integer intsqrt(Integer n)
     {
-        assert(n >= 0);
+        if (n <= 0)
+        {
+            return 0;
+        }
         Integer sqrt;
         // This computes the square root truncated to an integer, and since the square
         // root is non-negative, truncating it is equivalent to taking the floor.
@@ -805,6 +808,55 @@ namespace ring
         T o2 = o * o;
         T o3 = o2 * o;
         return fromInteger<T>(z.a) * o3 + fromInteger<T>(z.b) * o2 + fromInteger<T>(z.c) * o + fromInteger<T>(z.d);
+    }
+
+    std::optional<ZRootTwo> zRootTwoRoot(ZRootTwo arg)
+    {
+        Integer d = arg.a * arg.a - 2 * arg.b * arg.b;
+        Integer r = intsqrt(d);
+        Integer sum = arg.a + r;
+        Integer diff = arg.a - r;
+        Integer div1, div2, div3, div4;
+        Integer integer2 = 2;
+        Integer integer4 = 4;
+        mpz_fdiv_q(div1.get_mpz_t(), sum.get_mpz_t(), integer2.get_mpz_t());
+        mpz_fdiv_q(div2.get_mpz_t(), diff.get_mpz_t(), integer2.get_mpz_t());
+        mpz_fdiv_q(div3.get_mpz_t(), diff.get_mpz_t(), integer4.get_mpz_t());
+        mpz_fdiv_q(div4.get_mpz_t(), sum.get_mpz_t(), integer4.get_mpz_t());
+        Integer x1 = intsqrt(div1);
+        Integer x2 = intsqrt(div2);
+        Integer y1 = intsqrt(div3);
+        Integer y2 = intsqrt(div4);
+        ZRootTwo w1 = ZRootTwo(x1, y1);
+        ZRootTwo w2 = ZRootTwo(x2, y2);
+        ZRootTwo w3 = ZRootTwo(x1, -y1);
+        ZRootTwo w4 = ZRootTwo(x2, -y2);
+        if (w1 * w1 == arg)
+        {
+            return w1;
+        }
+        if (w2 * w2 == arg)
+        {
+            return w2;
+        }
+        if (w3 * w3 == arg)
+        {
+            return w3;
+        }
+        if (w4 * w4 == arg)
+        {
+            return w4;
+        }
+        return std::nullopt;
+    }
+
+    ZRootTwo zRootTwoOfZOmega(ZOmega arg)
+    {
+        if ((arg.a == -arg.c) && (arg.b == 0))
+        {
+            return ZRootTwo(arg.d, arg.c);
+        }
+        throw std::invalid_argument("Could not convert ZOmega value to ZRootTwo");
     }
 
     template <typename T>

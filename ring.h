@@ -521,6 +521,10 @@ namespace ring
 
     template <typename T>
     T fromZOmega(ZOmega z);
+    
+    std::optional<ZRootTwo> zRootTwoRoot(ZRootTwo arg);
+
+    ZRootTwo zRootTwoOfZOmega(ZOmega arg);
 
     template <typename T>
     std::string toString(const T &arg);

@@ -995,6 +995,18 @@ void testRootTwoRational()
     std::cout << "\tfromInteger tests passed" << std::endl;
 }
 
+void testZRootTwoRoot()
+{
+    std::cout << "zRootTwoRoot Testing:" << std::endl;
+
+    assert(!ring::zRootTwoRoot(ZRootTwo(1, 2)).has_value());
+    assert(ZRootTwo(5, 9) == ring::zRootTwoRoot(ZRootTwo(187, 90)));
+    assert(ZRootTwo(5, 9) == ring::zRootTwoRoot(ZRootTwo(187, 90)));
+    assert(ZRootTwo(12345678912345, 98765432198765) ==
+           ring::zRootTwoRoot(ZRootTwo(19661636982624412467128449475_mpz, 2438652627129865854104507850_mpz)));
+    std::cout << "\tzRootTwoRoot tests passed" << std::endl;
+}
+
 void testZ2()
 {
     Z2 x = Z2(0);
@@ -1244,6 +1256,15 @@ void testOmega()
     std::cout << "\tadj tests passed" << std::endl;
 }
 
+void testZRootTwoOfZOmega()
+{
+    std::cout << "zRootTwoOfZOmega Testing:" << std::endl;
+
+    assert(ZRootTwo(4, -3) == ring::zRootTwoOfZOmega(ZOmega(3, 0, -3, 4)));
+    assert(ZRootTwo(25, 7) == ring::zRootTwoOfZOmega(ZOmega(-7, 0, 7, 25)));
+    std::cout << "\tzRootTwoOfZOmega tests passed" << std::endl;
+}
+
 int main()
 {
     testUtilityFunctions();
@@ -1295,6 +1316,9 @@ int main()
     testRootTwoRational();
     std::cout << std::endl;
 
+    testZRootTwoRoot();
+    std::cout << std::endl;
+
     testComplex<int>();
     std::cout << std::endl;
     testComplex<Integer>();
@@ -1327,6 +1351,9 @@ int main()
     testOmega<Rational>();
     std::cout << std::endl;
     testOmega<ZDyadic>();
+    std::cout << std::endl;
+
+    testZRootTwoOfZOmega();
     std::cout << std::endl;
 
     return 0;
