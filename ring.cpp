@@ -262,8 +262,17 @@ namespace ring
     template <typename T>
     T fromInteger(Integer arg)
     {
-        return fromInteger<T>(mpzToInt(arg));
+        return T::fromInteger(arg);
     }
+
+    template <>
+    Integer fromInteger(Integer arg) { return arg; }
+
+    template <>
+    double fromInteger(Integer arg) { return arg.get_d(); }
+
+    template <>
+    Rational fromInteger(Integer arg) { return Rational(arg); }
 
     template <typename T>
     T recip(T arg);
@@ -910,6 +919,13 @@ Dyadic<T>::Dyadic(int arg)
     n_ = 0;
 }
 
+template<>
+ZDyadic::Dyadic(Integer arg)
+{
+    a_ = arg;
+    n_ = 0;
+}
+
 template <typename T>
 Dyadic<T>::Dyadic(T a, T n)
 {
@@ -1125,6 +1141,12 @@ Dyadic<T> Dyadic<T>::fromInteger(int n)
 }
 
 template <typename T>
+Dyadic<T> Dyadic<T>::fromInteger(Integer n)
+{
+    return Dyadic(ring::fromInteger<T>(n), 0);
+}
+
+template <typename T>
 Dyadic<T> Dyadic<T>::fromDyadic(const Dyadic &d)
 {
     return d.copy();
@@ -1157,6 +1179,13 @@ RootTwo<T>::RootTwo()
 
 template <typename T>
 RootTwo<T>::RootTwo(int arg)
+{
+    a_ = arg;
+    b_ = 0;
+}
+
+template <typename T>
+RootTwo<T>::RootTwo(Integer arg)
 {
     a_ = arg;
     b_ = 0;
@@ -1370,6 +1399,12 @@ RootTwo<T> RootTwo<T>::fromInteger(int n)
 }
 
 template <typename T>
+RootTwo<T> RootTwo<T>::fromInteger(Integer n)
+{
+    return RootTwo<T>(ring::fromInteger<T>(n), 0);
+}
+
+template <typename T>
 RootTwo<T> RootTwo<T>::fromRational(Rational r)
 {
     return RootTwo<T>(ring::fromRational<T>(r), 0);
@@ -1394,6 +1429,13 @@ Complex<T>::Complex()
 
 template <typename T>
 Complex<T>::Complex(int arg)
+{
+    a_ = arg;
+    b_ = 0;
+}
+
+template <typename T>
+Complex<T>::Complex(Integer arg)
 {
     a_ = arg;
     b_ = 0;
@@ -1570,6 +1612,12 @@ Complex<T> Complex<T>::fromInteger(int n)
 }
 
 template <typename T>
+Complex<T> Complex<T>::fromInteger(Integer n)
+{
+    return Complex<T>(ring::fromInteger<T>(n), 0);
+}
+
+template <typename T>
 Complex<T> Complex<T>::fromRational(Rational r)
 {
     return Complex<T>(ring::fromRational<T>(r), 0);
@@ -1593,6 +1641,11 @@ Z2::Z2()
 Z2::Z2(int arg)
 {
     mod2_ = (arg % 2) != 0;
+}
+
+Z2::Z2(Integer arg)
+{
+    mod2_ = mpz_odd_p(arg.get_mpz_t());
 }
 
 Z2::Z2(bool mod2)
@@ -1675,7 +1728,12 @@ void Z2::print(std::string prefix) const
 
 Z2 Z2::fromInteger(int n)
 {
-    return Z2((bool)(n % 2));
+    return Z2(n);
+}
+
+Z2 Z2::fromInteger(Integer n)
+{
+    return Z2(n);
 }
 
 template <typename T>
@@ -1689,6 +1747,15 @@ Omega<T>::Omega()
 
 template <typename T>
 Omega<T>::Omega(int arg)
+{
+    a_ = 0;
+    b_ = 0;
+    c_ = 0;
+    d_ = arg;
+}
+
+template <typename T>
+Omega<T>::Omega(Integer arg)
 {
     a_ = 0;
     b_ = 0;
@@ -1881,6 +1948,12 @@ template <typename T>
 Omega<T> Omega<T>::fromInteger(int n)
 {
     return Omega<T>(0, 0, 0, n);
+}
+
+template <typename T>
+Omega<T> Omega<T>::fromInteger(Integer n)
+{
+    return Omega<T>(0, 0, 0, ring::fromInteger<T>(n));
 }
 
 template <typename T>

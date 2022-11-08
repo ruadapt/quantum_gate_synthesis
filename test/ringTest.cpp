@@ -103,6 +103,36 @@ void testTypeConversions()
     assert(DOmega(ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(2, 0)) == oDyadicInteger);
     std::cout << "\tconversion from int tests passed" << std::endl;
 
+    Integer n = 123412341234123412341234123412341234123412341234123412341234123412341234_mpz;
+
+    // Make a new variable scope to avoid name collisions.
+    {
+        Integer i = Integer(n);
+        assert(n == i);
+        Rational r = Rational(n);
+        assert(n == r);
+        ZDyadic dInteger = ZDyadic(n);
+        assert(ZDyadic(n, 0) == dInteger);
+        ZRootTwo rInteger = ZRootTwo(n);
+        assert(ZRootTwo(n, 0) == rInteger);
+        QRootTwo rRational = QRootTwo(n);
+        assert(QRootTwo(n, 0) == rRational);
+        DRootTwo rDyadicInteger = DRootTwo(n);
+        assert(DRootTwo(ZDyadic(n, 0), ZDyadic(0, 0)) == rDyadicInteger);
+        QRComplex cQRootTwo = QRComplex(n);
+        assert(QRComplex(QRootTwo(n, 0), QRootTwo(0, 0)) == cQRootTwo);
+        DRComplex cDRootTwo = DRComplex(n);
+        assert(DRComplex(DRootTwo(ZDyadic(n, 0), ZDyadic(0, 0)), DRootTwo(ZDyadic(0, 0), ZDyadic(0, 0))) == cDRootTwo);
+        ZOmega oInteger = ZOmega(n);
+        assert(ZOmega(0, 0, 0, n) == oInteger);
+        QOmega oRational = QOmega(n);
+        assert(QOmega(0, 0, 0, n) == oRational);
+        DOmega oDyadicInteger = DOmega(n);
+        assert(DOmega(ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(n, 0)) == oDyadicInteger);
+        std::cout << "\tconversion from Integer tests passed" << std::endl;
+    }
+    return;
+
     assert(QRootTwo(2) == ring::fromQRootTwo<QRootTwo>(2));
     assert(QRComplex(2) == ring::fromQRootTwo<QRComplex>(2));
     assert(QOmega(2) == ring::fromQRootTwo<QOmega>(2));
@@ -1370,6 +1400,7 @@ int main()
     std::cout << std::endl;
     testTypeConversions();
     std::cout << std::endl;
+    return 0;
 
     testFractional();
     std::cout << std::endl;

@@ -50,6 +50,7 @@ class Dyadic
 public:
     Dyadic();
     Dyadic(int arg);
+    Dyadic(Integer arg);
     Dyadic(T a, T n);
     T a() const;
     T n() const;
@@ -75,6 +76,7 @@ public:
     std::string toString() const;
     void print(std::string prefix) const;
     static Dyadic fromInteger(int n);
+    static Dyadic fromInteger(Integer n);
     static Dyadic fromDyadic(const Dyadic &d);
     static Dyadic half();
 
@@ -89,6 +91,7 @@ class RootTwo
 public:
     RootTwo();
     RootTwo(int arg);
+    RootTwo(Integer arg);
     RootTwo(T a, T b);
     T a() const;
     T b() const;
@@ -118,6 +121,7 @@ public:
     static RootTwo i();
     static RootTwo omega();
     static RootTwo fromInteger(int n);
+    static RootTwo fromInteger(Integer n);
     static RootTwo fromRational(Rational r);
 
 private:
@@ -134,6 +138,7 @@ class Complex
 public:
     Complex();
     Complex(int arg);
+    Complex(Integer arg);
     Complex(T a, T b);
     T a() const;
     T b() const;
@@ -161,6 +166,7 @@ public:
     static Complex i();
     static Complex omega();
     static Complex fromInteger(int n);
+    static Complex fromInteger(Integer n);
     static Complex fromRational(Rational r);
 
 private:
@@ -176,6 +182,7 @@ class Z2
 public:
     Z2();
     Z2(int arg);
+    Z2(Integer arg);
     Z2(bool mod2);
     bool mod2() const;
     Z2 copy() const;
@@ -192,6 +199,7 @@ public:
     std::string toString() const;
     void print(std::string prefix) const;
     static Z2 fromInteger(int n);
+    static Z2 fromInteger(Integer n);
 
 private:
     bool mod2_;
@@ -203,6 +211,7 @@ class Omega
 public:
     Omega();
     Omega(int arg);
+    Omega(Integer arg);
     Omega(T a, T b, T c, T d);
     T a() const;
     T b() const;
@@ -230,6 +239,7 @@ public:
     static Omega i();
     static Omega omega();
     static Omega fromInteger(int n);
+    static Omega fromInteger(Integer n);
     static Omega fromRational(Rational r);
 
 private:
@@ -326,6 +336,15 @@ namespace ring
 
     template <typename T>
     T fromInteger(Integer arg);
+
+    template <>
+    Integer fromInteger(Integer arg);
+
+    template <>
+    double fromInteger(Integer arg);
+
+    template <>
+    Rational fromInteger(Integer arg);
 
     template <typename T>
     T fromRational(Rational r);
