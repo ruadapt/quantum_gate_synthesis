@@ -167,6 +167,10 @@ private:
     T a_;
     T b_;
 };
+
+template <>
+Complex<Rational>::Complex(Rational a, Rational b);
+
 class Z2
 {
 public:
@@ -234,6 +238,9 @@ private:
     T c_;
     T d_;
 };
+
+template <>
+Omega<Rational>::Omega(Rational a, Rational b, Rational c, Rational d);
 
 namespace ring
 {

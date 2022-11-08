@@ -1328,6 +1328,42 @@ void testZRootTwoOfZOmega()
     std::cout << "\tzRootTwoOfZOmega tests passed" << std::endl;
 }
 
+void testCanonicalization()
+{
+    std::cout << "Canonicalization Testing:" << std::endl;
+
+    // Make sure Rational values are being reduced to simplest form.
+    QComplex c = QComplex(555_mpq / 1665, 22_mpq / 110);
+    assert(1 == c.a().get_num());
+    assert(3 == c.a().get_den());
+    assert(1 == c.b().get_num());
+    assert(5 == c.b().get_den());
+    QRootTwo r = QRootTwo(492_mpq / 1230, 66_mpq / 99);
+    assert(2 == r.a().get_num());
+    assert(5 == r.a().get_den());
+    assert(2 == r.b().get_num());
+    assert(3 == r.b().get_den());
+    QOmega o = QOmega(0, 12_mpq / 24, 33_mpq / 44, 21_mpq / 49);
+    assert(0 == o.a().get_num());
+    assert(1 == o.a().get_den());
+    assert(1 == o.b().get_num());
+    assert(2 == o.b().get_den());
+    assert(3 == o.c().get_num());
+    assert(4 == o.c().get_den());
+    assert(3 == o.d().get_num());
+    assert(7 == o.d().get_den());
+    QRComplex qr = QRComplex(QRootTwo(88_mpq / 99, 55_mpq / -66), QRootTwo(2, -3));
+    assert(8 == qr.a().a().get_num());
+    assert(9 == qr.a().a().get_den());
+    assert(-5 == qr.a().b().get_num());
+    assert(6 == qr.a().b().get_den());
+    assert(2 == qr.b().a().get_num());
+    assert(1 == qr.b().a().get_den());
+    assert(-3 == qr.b().b().get_num());
+    assert(1 == qr.b().b().get_den());
+    std::cout << "\tcanonicalization tests passed" << std::endl;
+}
+
 int main()
 {
     testUtilityFunctions();
@@ -1417,6 +1453,9 @@ int main()
     std::cout << std::endl;
 
     testZRootTwoOfZOmega();
+    std::cout << std::endl;
+
+    testCanonicalization();
     std::cout << std::endl;
 
     return 0;

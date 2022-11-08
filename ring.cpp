@@ -1378,7 +1378,7 @@ RootTwo<T> RootTwo<T>::fromRational(Rational r)
 template <>
 RootTwo<Rational>::RootTwo(Rational a, Rational b)
 {
-    // Make sure numerator and denominator are in canonical form.
+    // Make sure Rationals are in canonical form.
     a.canonicalize();
     b.canonicalize();
     a_ = a;
@@ -1573,6 +1573,16 @@ template <typename T>
 Complex<T> Complex<T>::fromRational(Rational r)
 {
     return Complex<T>(ring::fromRational<T>(r), 0);
+}
+
+template <>
+Complex<Rational>::Complex(Rational a, Rational b)
+{
+    // Make sure Rationals are in canonical form.
+    a.canonicalize();
+    b.canonicalize();
+    a_ = a;
+    b_ = b;
 }
 
 Z2::Z2()
@@ -1879,4 +1889,18 @@ Omega<T> Omega<T>::fromRational(Rational r)
     Integer numerator = r.get_num();
     Integer denominator = r.get_den();
     return ring::fromInteger<Omega<T>>(numerator) * ring::fromInteger<Omega<T>>(denominator).recip();
+}
+
+template <>
+Omega<Rational>::Omega(Rational a, Rational b, Rational c, Rational d)
+{
+    // Make sure Rationals are in canonical form.
+    a.canonicalize();
+    b.canonicalize();
+    c.canonicalize();
+    d.canonicalize();
+    a_ = a;
+    b_ = b;
+    c_ = c;
+    d_ = d;
 }
