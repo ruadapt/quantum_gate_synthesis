@@ -75,32 +75,32 @@ void testTypeConversions()
     assert(2_mpq == r);
     Dyadic<int> dInt = Dyadic<int>(2);
     assert(Dyadic<int>(2, 0) == dInt);
-    Dyadic<Integer> dInteger = Dyadic<Integer>(2);
-    assert(Dyadic<Integer>(2_mpz, 0_mpz) == dInteger);
+    ZDyadic dInteger = ZDyadic(2);
+    assert(ZDyadic(2_mpz, 0_mpz) == dInteger);
     RootTwo<int> rInt = RootTwo<int>(2);
     assert(RootTwo<int>(2, 0) == rInt);
-    RootTwo<Integer> rInteger = RootTwo<Integer>(2);
-    assert(RootTwo<Integer>(2_mpz, 0_mpz) == rInteger);
+    ZRootTwo rInteger = ZRootTwo(2);
+    assert(ZRootTwo(2_mpz, 0_mpz) == rInteger);
     RootTwo<double> rDouble = RootTwo<double>(2);
     assert(RootTwo<double>(2.0, 0.0) == rDouble);
-    RootTwo<Rational> rRational = RootTwo<Rational>(2);
-    assert(RootTwo<Rational>(2_mpq, 0_mpq) == rRational);
+    QRootTwo rRational = QRootTwo(2);
+    assert(QRootTwo(2_mpq, 0_mpq) == rRational);
     RootTwo<Dyadic<int>> rDyadicInt = RootTwo<Dyadic<int>>(2);
     assert(RootTwo<Dyadic<int>>(Dyadic<int>(2, 0), Dyadic<int>(0, 0)) == rDyadicInt);
-    RootTwo<Dyadic<Integer>> rDyadicInteger = RootTwo<Dyadic<Integer>>(2);
-    assert(RootTwo<Dyadic<Integer>>(Dyadic<Integer>(2_mpz, 0_mpz), Dyadic<Integer>(0_mpz, 0_mpz)) == rDyadicInteger);
-    Complex<QRootTwo> cQRootTwo = Complex<QRootTwo>(2);
-    assert(Complex<QRootTwo>(QRootTwo(2_mpq, 0_mpq), QRootTwo(0_mpq, 0_mpq)) == cQRootTwo);
-    Complex<DRootTwo> cDRootTwo = Complex<DRootTwo>(2);
-    assert(Complex<DRootTwo>(DRootTwo(ZDyadic(2, 0), ZDyadic(0, 0)), DRootTwo(ZDyadic(0, 0), ZDyadic(0, 0))) == cDRootTwo);
+    DRootTwo rDyadicInteger = DRootTwo(2);
+    assert(DRootTwo(ZDyadic(2_mpz, 0_mpz), ZDyadic(0_mpz, 0_mpz)) == rDyadicInteger);
+    QRComplex cQRootTwo = QRComplex(2);
+    assert(QRComplex(QRootTwo(2_mpq, 0_mpq), QRootTwo(0_mpq, 0_mpq)) == cQRootTwo);
+    DRComplex cDRootTwo = DRComplex(2);
+    assert(DRComplex(DRootTwo(ZDyadic(2, 0), ZDyadic(0, 0)), DRootTwo(ZDyadic(0, 0), ZDyadic(0, 0))) == cDRootTwo);
     Omega<int> oInt = Omega<int>(2);
     assert(Omega<int>(0, 0, 0, 2) == oInt);
-    Omega<Integer> oInteger = Omega<Integer>(2);
-    assert(Omega<Integer>(0_mpz, 0_mpz, 0_mpz, 2_mpz) == oInteger);
-    Omega<Rational> oRational = Omega<Rational>(2);
-    assert(Omega<Rational>(0_mpq, 0_mpq, 0_mpq, 2_mpq) == oRational);
-    Omega<ZDyadic> oDyadicInteger = Omega<ZDyadic>(2);
-    assert(Omega<ZDyadic>(ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(2, 0)) == oDyadicInteger);
+    ZOmega oInteger = ZOmega(2);
+    assert(ZOmega(0_mpz, 0_mpz, 0_mpz, 2_mpz) == oInteger);
+    QOmega oRational = QOmega(2);
+    assert(QOmega(0_mpq, 0_mpq, 0_mpq, 2_mpq) == oRational);
+    DOmega oDyadicInteger = DOmega(2);
+    assert(DOmega(ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(2, 0)) == oDyadicInteger);
     std::cout << "\tconversion from int tests passed" << std::endl;
 
     assert(QRootTwo(2) == ring::fromQRootTwo<QRootTwo>(2));
@@ -172,11 +172,11 @@ void testFractional()
     std::cout << "Fractional testing:" << std::endl;
 
     assert(RootTwo<double>(-0.119703136222169, -0.23461814699545125) == RootTwo<double>(1.25, -2.45).recip());
-    assert(RootTwo<Rational>(-431061208_mpq / 951316543, 923605504_mpq / 951316543) ==
-           RootTwo<Rational>(123_mpq / 456, 456_mpq / 789).recip());
+    assert(QRootTwo(-431061208_mpq / 951316543, 923605504_mpq / 951316543) ==
+           QRootTwo(123_mpq / 456, 456_mpq / 789).recip());
 
-    assert(Complex<Rational>(431061208_mpq / 650067905, -923605504_mpq / 650067905) ==
-           Complex<Rational>(123_mpq / 456, 456_mpq / 789).recip());
+    assert(QComplex(431061208_mpq / 650067905, -923605504_mpq / 650067905) ==
+           QComplex(123_mpq / 456, 456_mpq / 789).recip());
 
     assert(Omega<double>(1.7114914425427872e-2, 3.0562347188264057e-2, -5.256723716381418e-2, -0.1295843520782396) ==
            Omega<double>(1, -3, 3, -7).recip());
@@ -185,17 +185,17 @@ void testFractional()
     assert(Omega<double>(3.2468311407893156e-2, -6.945499620136751e-2, 2.419129113519133e-2, -4.066536047023071e-2) ==
            Omega<double>(5, 9, -4, -9).recip());
 
-    assert(Omega<Rational>(7_mpq / 409, 25_mpq / 818, -43_mpq / 818, -53_mpq / 409) ==
-           Omega<Rational>(1, -3, 3, -7).recip());
-    assert(Omega<Rational>(-1365_mpq / 12178, 403_mpq / 12178, -3_mpq / 12178, -695_mpq / 12178) ==
-           Omega<Rational>(3, 7, 12, 2).recip());
-    assert(Omega<Rational>(812_mpq / 25009, -1737_mpq / 25009, 605_mpq / 25009, -1017_mpq / 25009) ==
-           Omega<Rational>(5, 9, -4, -9).recip());
+    assert(QOmega(7_mpq / 409, 25_mpq / 818, -43_mpq / 818, -53_mpq / 409) ==
+           QOmega(1, -3, 3, -7).recip());
+    assert(QOmega(-1365_mpq / 12178, 403_mpq / 12178, -3_mpq / 12178, -695_mpq / 12178) ==
+           QOmega(3, 7, 12, 2).recip());
+    assert(QOmega(812_mpq / 25009, -1737_mpq / 25009, 605_mpq / 25009, -1017_mpq / 25009) ==
+           QOmega(5, 9, -4, -9).recip());
     std::cout << "\trecip tests passed" << std::endl;
 
-    assert(RootTwo<Rational>(123_mpq / 456, 0) == ring::fromRational<RootTwo<Rational>>(123_mpq / 456));
-    assert(Complex<Rational>(123_mpq / 456, 0) == ring::fromRational<Complex<Rational>>(123_mpq / 456));
-    assert(Omega<Rational>(0, 0, 0, 41_mpq / 152) == ring::fromRational<Omega<Rational>>(123_mpq / 456));
+    assert(QRootTwo(123_mpq / 456, 0) == ring::fromRational<QRootTwo>(123_mpq / 456));
+    assert(QComplex(123_mpq / 456, 0) == ring::fromRational<QComplex>(123_mpq / 456));
+    assert(QOmega(0, 0, 0, 41_mpq / 152) == ring::fromRational<QOmega>(123_mpq / 456));
     std::cout << "\tfromRational tests passed" << std::endl;
 }
 
@@ -206,53 +206,53 @@ void testHalfRing()
     assert(0.5 == ring::half<double>());
     assert(1_mpq / 2 == ring::half<Rational>());
     assert(Dyadic<int>(1, 1) == ring::half<Dyadic<int>>());
-    assert(Dyadic<Integer>(1, 1) == ring::half<Dyadic<Integer>>());
-    assert(RootTwo<Rational>(1_mpq / 2, 0_mpq) == ring::half<RootTwo<Rational>>());
-    assert(Complex<double>(0.5, 0) == ring::half<Complex<double>>());
+    assert(ZDyadic(1, 1) == ring::half<ZDyadic>());
+    assert(QRootTwo(1_mpq / 2, 0_mpq) == ring::half<QRootTwo>());
+    assert(CDouble(0.5, 0) == ring::half<CDouble>());
     assert(Omega<double>(0, 0, 0, 0.5) == ring::half<Omega<double>>());
-    assert(Omega<Rational>(0_mpq, 0_mpq, 0_mpq, 1_mpq / 2) == ring::half<Omega<Rational>>());
-    assert(Omega<ZDyadic>(ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(1, 1)) == ring::half<Omega<ZDyadic>>());
+    assert(QOmega(0_mpq, 0_mpq, 0_mpq, 1_mpq / 2) == ring::half<QOmega>());
+    assert(DOmega(ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(1, 1)) == ring::half<DOmega>());
     std::cout << "\thalf tests passed" << std::endl;
 
     assert(0.625 == ring::fromDyadic<double>(Dyadic<int>(5, 3)));
     assert(40 == ring::fromDyadic<double>(Dyadic<int>(5, -3)));
     assert(5_mpq / 8 == ring::fromDyadic<Rational>(Dyadic<int>(5, 3)));
     assert(40_mpq == ring::fromDyadic<Rational>(Dyadic<int>(5, -3)));
-    assert(RootTwo<Rational>(5_mpq / 8, 0_mpq) == ring::fromDyadic<RootTwo<Rational>>(Dyadic<int>(5, 3)));
-    assert(RootTwo<Rational>(40_mpq, 0_mpq) == ring::fromDyadic<RootTwo<Rational>>(Dyadic<int>(5, -3)));
-    assert(Complex<double>(0.625, 0) == ring::fromDyadic<Complex<double>>(Dyadic<int>(5, 3)));
-    assert(Complex<double>(40, 0) == ring::fromDyadic<Complex<double>>(Dyadic<int>(5, -3)));
+    assert(QRootTwo(5_mpq / 8, 0_mpq) == ring::fromDyadic<QRootTwo>(Dyadic<int>(5, 3)));
+    assert(QRootTwo(40_mpq, 0_mpq) == ring::fromDyadic<QRootTwo>(Dyadic<int>(5, -3)));
+    assert(CDouble(0.625, 0) == ring::fromDyadic<CDouble>(Dyadic<int>(5, 3)));
+    assert(CDouble(40, 0) == ring::fromDyadic<CDouble>(Dyadic<int>(5, -3)));
     assert(Omega<double>(0, 0, 0, 0.625) == ring::fromDyadic<Omega<double>>(Dyadic<int>(5, 3)));
     assert(Omega<double>(0, 0, 0, 40) == ring::fromDyadic<Omega<double>>(Dyadic<int>(5, -3)));
-    assert(Omega<Rational>(0_mpq, 0_mpq, 0_mpq, 5_mpq / 8) ==
-           ring::fromDyadic<Omega<Rational>>(Dyadic<int>(5, 3)));
-    assert(Omega<Rational>(0_mpq, 0_mpq, 0_mpq, 40_mpq) ==
-           ring::fromDyadic<Omega<Rational>>(Dyadic<int>(5, -3)));
-    assert(Omega<ZDyadic>(ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(5, 3)) ==
-           ring::fromDyadic<Omega<ZDyadic>>(Dyadic<int>(5, 3)));
-    assert(Omega<ZDyadic>(ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(5, -3)) ==
-           ring::fromDyadic<Omega<ZDyadic>>(Dyadic<int>(5, -3)));
+    assert(QOmega(0_mpq, 0_mpq, 0_mpq, 5_mpq / 8) ==
+           ring::fromDyadic<QOmega>(Dyadic<int>(5, 3)));
+    assert(QOmega(0_mpq, 0_mpq, 0_mpq, 40_mpq) ==
+           ring::fromDyadic<QOmega>(Dyadic<int>(5, -3)));
+    assert(DOmega(ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(5, 3)) ==
+           ring::fromDyadic<DOmega>(Dyadic<int>(5, 3)));
+    assert(DOmega(ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(5, -3)) ==
+           ring::fromDyadic<DOmega>(Dyadic<int>(5, -3)));
     std::cout << "\tfromDyadic for Dyadic<int> passed" << std::endl;
 
     assert(0.625 == ring::fromDyadic<double>(ZDyadic(5, 3)));
     assert(40 == ring::fromDyadic<double>(ZDyadic(5, -3)));
     assert(5_mpq / 8 == ring::fromDyadic<Rational>(ZDyadic(5, 3)));
     assert(40_mpq == ring::fromDyadic<Rational>(ZDyadic(5, -3)));
-    assert(RootTwo<Rational>(5_mpq / 8, 0_mpq) == ring::fromDyadic<RootTwo<Rational>>(ZDyadic(5, 3)));
-    assert(RootTwo<Rational>(40_mpq, 0_mpq) == ring::fromDyadic<RootTwo<Rational>>(ZDyadic(5, -3)));
-    assert(Complex<double>(0.625, 0) == ring::fromDyadic<Complex<double>>(ZDyadic(5, 3)));
-    assert(Complex<double>(40, 0) == ring::fromDyadic<Complex<double>>(ZDyadic(5, -3)));
+    assert(QRootTwo(5_mpq / 8, 0_mpq) == ring::fromDyadic<QRootTwo>(ZDyadic(5, 3)));
+    assert(QRootTwo(40_mpq, 0_mpq) == ring::fromDyadic<QRootTwo>(ZDyadic(5, -3)));
+    assert(CDouble(0.625, 0) == ring::fromDyadic<CDouble>(ZDyadic(5, 3)));
+    assert(CDouble(40, 0) == ring::fromDyadic<CDouble>(ZDyadic(5, -3)));
     assert(Omega<double>(0, 0, 0, 0.625) == ring::fromDyadic<Omega<double>>(ZDyadic(5, 3)));
     assert(Omega<double>(0, 0, 0, 40) == ring::fromDyadic<Omega<double>>(ZDyadic(5, -3)));
-    assert(Omega<Rational>(0_mpq, 0_mpq, 0_mpq, 5_mpq / 8) ==
-           ring::fromDyadic<Omega<Rational>>(ZDyadic(5, 3)));
-    assert(Omega<Rational>(0_mpq, 0_mpq, 0_mpq, 40_mpq) ==
-           ring::fromDyadic<Omega<Rational>>(ZDyadic(5, -3)));
-    assert(Omega<ZDyadic>(ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(5, 3)) ==
-           ring::fromDyadic<Omega<ZDyadic>>(ZDyadic(5, 3)));
-    assert(Omega<ZDyadic>(ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(5, -3)) ==
-           ring::fromDyadic<Omega<ZDyadic>>(ZDyadic(5, -3)));
-    std::cout << "\tfromDyadic for Dyadic<Integer> (ZDyadic) passed" << std::endl;
+    assert(QOmega(0_mpq, 0_mpq, 0_mpq, 5_mpq / 8) ==
+           ring::fromDyadic<QOmega>(ZDyadic(5, 3)));
+    assert(QOmega(0_mpq, 0_mpq, 0_mpq, 40_mpq) ==
+           ring::fromDyadic<QOmega>(ZDyadic(5, -3)));
+    assert(DOmega(ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(5, 3)) ==
+           ring::fromDyadic<DOmega>(ZDyadic(5, 3)));
+    assert(DOmega(ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(5, -3)) ==
+           ring::fromDyadic<DOmega>(ZDyadic(5, -3)));
+    std::cout << "\tfromDyadic for ZDyadic (ZDyadic) passed" << std::endl;
 }
 
 void testRootTwoRing()
@@ -260,22 +260,22 @@ void testRootTwoRing()
     std::cout << "RootTwoRing testing:" << std::endl;
 
     assert(1.4142135623730951 == ring::rootTwo<double>());
-    assert(Complex<double>(1.4142135623730951, 0) == ring::rootTwo<Complex<double>>());
-    assert(RootTwo<Integer>(0, 1) == ring::rootTwo<RootTwo<Integer>>());
-    assert(RootTwo<Rational>(0_mpq, 1_mpq) == ring::rootTwo<RootTwo<Rational>>());
-    assert(Omega<Integer>(-1, 0, 1, 0) == ring::rootTwo<Omega<Integer>>());
-    assert(Omega<ZDyadic>(-1, 0, 1, 0) == ring::rootTwo<Omega<ZDyadic>>());
-    assert(Omega<Rational>(-1, 0, 1, 0) == ring::rootTwo<Omega<Rational>>());
+    assert(CDouble(1.4142135623730951, 0) == ring::rootTwo<CDouble>());
+    assert(ZRootTwo(0, 1) == ring::rootTwo<ZRootTwo>());
+    assert(QRootTwo(0_mpq, 1_mpq) == ring::rootTwo<QRootTwo>());
+    assert(ZOmega(-1, 0, 1, 0) == ring::rootTwo<ZOmega>());
+    assert(DOmega(-1, 0, 1, 0) == ring::rootTwo<DOmega>());
+    assert(QOmega(-1, 0, 1, 0) == ring::rootTwo<QOmega>());
     std::cout << "\trootTwo tests passed" << std::endl;
 
     ZRootTwo z = ZRootTwo(10, -7);
     assert(0.10050506338833465 == ring::fromZRootTwo<double>(z));
-    assert(Complex<double>(0.10050506338833465, 0) == ring::fromZRootTwo<Complex<double>>(z));
-    assert(RootTwo<Integer>(10, -7) == ring::fromZRootTwo<RootTwo<Integer>>(z));
-    assert(RootTwo<Rational>(10_mpq, -7_mpq) == ring::fromZRootTwo<RootTwo<Rational>>(z));
-    assert(Omega<Integer>(7, 0, -7, 10) == ring::fromZRootTwo<Omega<Integer>>(z));
-    assert(Omega<ZDyadic>(7, 0, -7, 10) == ring::fromZRootTwo<Omega<ZDyadic>>(z));
-    assert(Omega<Rational>(7, 0, -7, 10) == ring::fromZRootTwo<Omega<Rational>>(z));
+    assert(CDouble(0.10050506338833465, 0) == ring::fromZRootTwo<CDouble>(z));
+    assert(ZRootTwo(10, -7) == ring::fromZRootTwo<ZRootTwo>(z));
+    assert(QRootTwo(10_mpq, -7_mpq) == ring::fromZRootTwo<QRootTwo>(z));
+    assert(ZOmega(7, 0, -7, 10) == ring::fromZRootTwo<ZOmega>(z));
+    assert(DOmega(7, 0, -7, 10) == ring::fromZRootTwo<DOmega>(z));
+    assert(QOmega(7, 0, -7, 10) == ring::fromZRootTwo<QOmega>(z));
     std::cout << "\tfromZRootTwo tests passed" << std::endl;
 }
 
@@ -284,18 +284,18 @@ void testRootHalfRing()
     std::cout << "RootHalfRing testing:" << std::endl;
 
     assert(0.7071067811865476 == ring::rootHalf<double>());
-    assert(Complex<double>(0.7071067811865476, 0) == ring::rootHalf<Complex<double>>());
-    assert(RootTwo<Rational>(0, 1_mpq / 2) == ring::rootHalf<RootTwo<Rational>>());
-    assert(Omega<ZDyadic>(ZDyadic(-1, 1), 0, ZDyadic(1, 1), 0) == ring::rootHalf<Omega<ZDyadic>>());
-    assert(Omega<Rational>(-1_mpq / 2, 0, 1_mpq / 2, 0) == ring::rootHalf<Omega<Rational>>());
+    assert(CDouble(0.7071067811865476, 0) == ring::rootHalf<CDouble>());
+    assert(QRootTwo(0, 1_mpq / 2) == ring::rootHalf<QRootTwo>());
+    assert(DOmega(ZDyadic(-1, 1), 0, ZDyadic(1, 1), 0) == ring::rootHalf<DOmega>());
+    assert(QOmega(-1_mpq / 2, 0, 1_mpq / 2, 0) == ring::rootHalf<QOmega>());
     std::cout << "\trootHalf tests passed" << std::endl;
 
-    DRootTwo d = DRootTwo(Dyadic<Integer>(5, 2), Dyadic<Integer>(-3, 5));
+    DRootTwo d = DRootTwo(ZDyadic(5, 2), ZDyadic(-3, 5));
     assert(1.1174174785275224 == ring::fromDRootTwo<double>(d));
-    assert(Complex<double>(1.1174174785275224, 0) == ring::fromDRootTwo<Complex<double>>(d));
-    assert(RootTwo<Rational>(5_mpq / 4, -3_mpq / 32) == ring::fromDRootTwo<RootTwo<Rational>>(d));
-    assert(Omega<ZDyadic>(ZDyadic(3, 5), 0, ZDyadic(-3, 5), ZDyadic(5, 2)) == ring::fromDRootTwo<Omega<ZDyadic>>(d));
-    assert(Omega<Rational>(3_mpq / 32, 0, -3_mpq / 32, 5_mpq / 4) == ring::fromDRootTwo<Omega<Rational>>(d));
+    assert(CDouble(1.1174174785275224, 0) == ring::fromDRootTwo<CDouble>(d));
+    assert(QRootTwo(5_mpq / 4, -3_mpq / 32) == ring::fromDRootTwo<QRootTwo>(d));
+    assert(DOmega(ZDyadic(3, 5), 0, ZDyadic(-3, 5), ZDyadic(5, 2)) == ring::fromDRootTwo<DOmega>(d));
+    assert(QOmega(3_mpq / 32, 0, -3_mpq / 32, 5_mpq / 4) == ring::fromDRootTwo<QOmega>(d));
     std::cout << "\tfromDRootTwo tests passed" << std::endl;
 }
 
@@ -304,13 +304,13 @@ void testComplexRing()
     std::cout << "ComplexRing testing:" << std::endl;
 
     assert(Complex<int>(0, 1) == ring::i<Complex<int>>());
-    assert(Complex<Integer>(0, 1) == ring::i<Complex<Integer>>());
+    assert(ZComplex(0, 1) == ring::i<ZComplex>());
     assert(Complex<Complex<int>>(Complex<int>(0, 0), Complex<int>(1, 0)) == ring::i<Complex<Complex<int>>>());
     assert(RootTwo<Complex<int>>(Complex<int>(0, 1), Complex<int>(0, 0)) == ring::i<RootTwo<Complex<int>>>());
-    assert(RootTwo<Complex<Integer>>(Complex<Integer>(0, 1), Complex<Integer>(0, 0)) == ring::i<RootTwo<Complex<Integer>>>());
-    assert(Omega<Integer>(0, 1, 0, 0) == ring::i<Omega<Integer>>());
-    assert(Omega<ZDyadic>(0, 1, 0, 0) == ring::i<Omega<ZDyadic>>());
-    assert(Omega<Rational>(0, 1, 0, 0) == ring::i<Omega<Rational>>());
+    assert(RootTwo<ZComplex>(ZComplex(0, 1), ZComplex(0, 0)) == ring::i<RootTwo<ZComplex>>());
+    assert(ZOmega(0, 1, 0, 0) == ring::i<ZOmega>());
+    assert(DOmega(0, 1, 0, 0) == ring::i<DOmega>());
+    assert(QOmega(0, 1, 0, 0) == ring::i<QOmega>());
     std::cout << "\ti tests passed" << std::endl;
 }
 
@@ -320,9 +320,9 @@ void testOmegaRing()
 
     assert(CDouble(0.7071067811865476, 0.7071067811865476) == ring::omega<CDouble>());
     assert(DRComplex(DRootTwo(0, ZDyadic(1, 1)), DRootTwo(0, ZDyadic(1, 1))) ==
-           ring::omega<Complex<DRootTwo>>());
+           ring::omega<DRComplex>());
     assert(QRComplex(QRootTwo(0, 1_mpq / 2), QRootTwo(0, 1_mpq / 2)) ==
-           ring::omega<Complex<QRootTwo>>());
+           ring::omega<QRComplex>());
 
     assert(RootTwo<DComplex>(DComplex(0, 0), DComplex(ZDyadic(1, 1), ZDyadic(1, 1))) ==
            ring::omega<RootTwo<DComplex>>());
@@ -341,9 +341,9 @@ void testNormedRing()
     assert(10_mpz == ring::norm<int>(10));
     assert(10_mpz == ring::norm<Integer>(10));
     assert(85_mpz == ring::norm<Complex<int>>(Complex<int>(6, -7)));
-    assert(85_mpz == ring::norm<Complex<Integer>>(Complex<Integer>(6, -7)));
+    assert(85_mpz == ring::norm<ZComplex>(ZComplex(6, -7)));
     assert(-62_mpz == ring::norm<RootTwo<int>>(RootTwo<int>(6, -7)));
-    assert(-62_mpz == ring::norm<RootTwo<Integer>>(RootTwo<Integer>(6, -7)));
+    assert(-62_mpz == ring::norm<ZRootTwo>(ZRootTwo(6, -7)));
     // norm = (3^2 + 4^2)^2 - 2 * (5^2 + 2^2)^2 = 35^2 - 2 * 29^2 = -1057.
     assert(-1057_mpz == ring::norm<RootTwo<Complex<int>>>(
                             RootTwo<Complex<int>>(Complex<int>(3, 4), Complex<int>(5, 2))));
@@ -351,7 +351,7 @@ void testNormedRing()
     assert(818_mpq == ring::norm<Complex<RootTwo<int>>>(
                           Complex<RootTwo<int>>(RootTwo<int>(3, 4), RootTwo<int>(5, 2))));
     assert(6562_mpq == ring::norm<Omega<int>>(Omega<int>(7, 3, -2, 6)));
-    assert(6562_mpq == ring::norm<Omega<Integer>>(Omega<Integer>(7, 3, -2, 6)));
+    assert(6562_mpq == ring::norm<ZOmega>(ZOmega(7, 3, -2, 6)));
     std::cout << "\tnorm tests passed" << std::endl;
 }
 
@@ -366,17 +366,17 @@ void testAdjoint()
     assert(Z2(0) == ring::adj<Z2>(0));
     assert(Z2(1) == ring::adj<Z2>(1));
     assert(Dyadic<int>(2, 7) == ring::adj<Dyadic<int>>(Dyadic<int>(2, 7)));
-    assert(Dyadic<Integer>(2, 7) == ring::adj<Dyadic<Integer>>(Dyadic<Integer>(2, 7)));
+    assert(ZDyadic(2, 7) == ring::adj<ZDyadic>(ZDyadic(2, 7)));
     assert(Complex<int>(3, -4) == ring::adj<Complex<int>>(Complex<int>(3, 4)));
-    assert(Complex<Integer>(3, -4) == ring::adj<Complex<Integer>>(Complex<Integer>(3, 4)));
+    assert(ZComplex(3, -4) == ring::adj<ZComplex>(ZComplex(3, 4)));
     assert(RootTwo<int>(4, 7) == ring::adj<RootTwo<int>>(RootTwo<int>(4, 7)));
-    assert(RootTwo<Integer>(4, 7) == ring::adj<RootTwo<Integer>>(RootTwo<Integer>(4, 7)));
+    assert(ZRootTwo(4, 7) == ring::adj<ZRootTwo>(ZRootTwo(4, 7)));
     assert(
         RootTwo<Complex<int>>(Complex<int>(4, -5), Complex<int>(6, -7)) ==
         ring::adj<RootTwo<Complex<int>>>(RootTwo<Complex<int>>(Complex<int>(4, 5), Complex<int>(6, 7))));
     assert(
-        RootTwo<Complex<Integer>>(Complex<Integer>(4, -5), Complex<Integer>(6, -7)) ==
-        ring::adj<RootTwo<Complex<Integer>>>(RootTwo<Complex<Integer>>(Complex<Integer>(4, 5), Complex<Integer>(6, 7))));
+        RootTwo<ZComplex>(ZComplex(4, -5), ZComplex(6, -7)) ==
+        ring::adj<RootTwo<ZComplex>>(RootTwo<ZComplex>(ZComplex(4, 5), ZComplex(6, 7))));
     assert(
         Complex<RootTwo<Dyadic<int>>>(
             RootTwo<Dyadic<int>>(Dyadic<int>(5, 7), Dyadic<int>(9, 4)),
@@ -402,17 +402,17 @@ void testAdjoint2()
     assert(Z2(0) == ring::adj2<Z2>(0));
     assert(Z2(1) == ring::adj2<Z2>(1));
     assert(Dyadic<int>(2, 7) == ring::adj2<Dyadic<int>>(Dyadic<int>(2, 7)));
-    assert(Dyadic<Integer>(2, 7) == ring::adj2<Dyadic<Integer>>(Dyadic<Integer>(2, 7)));
+    assert(ZDyadic(2, 7) == ring::adj2<ZDyadic>(ZDyadic(2, 7)));
     assert(Complex<int>(3, 4) == ring::adj2<Complex<int>>(Complex<int>(3, 4)));
-    assert(Complex<Integer>(3, 4) == ring::adj2<Complex<Integer>>(Complex<Integer>(3, 4)));
+    assert(ZComplex(3, 4) == ring::adj2<ZComplex>(ZComplex(3, 4)));
     assert(RootTwo<int>(4, -7) == ring::adj2<RootTwo<int>>(RootTwo<int>(4, 7)));
-    assert(RootTwo<Integer>(4, -7) == ring::adj2<RootTwo<Integer>>(RootTwo<Integer>(4, 7)));
+    assert(ZRootTwo(4, -7) == ring::adj2<ZRootTwo>(ZRootTwo(4, 7)));
     assert(
         RootTwo<Complex<int>>(Complex<int>(4, 5), Complex<int>(-6, -7)) ==
         ring::adj2<RootTwo<Complex<int>>>(RootTwo<Complex<int>>(Complex<int>(4, 5), Complex<int>(6, 7))));
     assert(
-        RootTwo<Complex<Integer>>(Complex<Integer>(4, 5), Complex<Integer>(-6, -7)) ==
-        ring::adj2<RootTwo<Complex<Integer>>>(RootTwo<Complex<Integer>>(Complex<Integer>(4, 5), Complex<Integer>(6, 7))));
+        RootTwo<ZComplex>(ZComplex(4, 5), ZComplex(-6, -7)) ==
+        ring::adj2<RootTwo<ZComplex>>(RootTwo<ZComplex>(ZComplex(4, 5), ZComplex(6, 7))));
     assert(
         Complex<RootTwo<Dyadic<int>>>(
             RootTwo<Dyadic<int>>(Dyadic<int>(5, 7), Dyadic<int>(-9, 4)),
@@ -510,7 +510,7 @@ void testRealPart()
     std::cout << "RealPart testing:" << std::endl;
 
     assert(2 == ring::real(Complex<int>(2, 3)));
-    assert(2 == ring::real(Complex<Integer>(2, 3)));
+    assert(2 == ring::real(ZComplex(2, 3)));
     assert(ZDyadic(2) == ring::real(DComplex(2, 3)));
     assert(QRootTwo(2) == ring::real(QRComplex(2, 3)));
     assert(QRootTwo(7_mpq / 8, 1_mpq / 6) == ring::real(QOmega(1_mpq / 2, 3_mpq / 4, 5_mpq / 6, 7_mpq / 8)));

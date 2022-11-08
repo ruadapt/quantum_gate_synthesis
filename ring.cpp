@@ -353,7 +353,7 @@ namespace ring
     }
 
     template <typename T>
-    T fromDyadic(Dyadic<Integer> d)
+    T fromDyadic(ZDyadic d)
     {
         std::tuple<Integer, Integer> decomposed = d.decomposeDyadic();
         Integer a = std::get<0>(decomposed);
@@ -742,13 +742,13 @@ namespace ring
     }
 
     template <>
-    QOmega toQOmega<int>(int arg) { return fromInteger<Omega<Rational>>(arg); }
+    QOmega toQOmega(int arg) { return fromInteger<QOmega>(arg); }
 
     template <>
-    QOmega toQOmega<Integer>(Integer arg) { return fromInteger<Omega<Rational>>(arg); }
+    QOmega toQOmega(Integer arg) { return fromInteger<QOmega>(arg); }
 
     template <>
-    QOmega toQOmega<Rational>(Rational arg) { return fromRational<Omega<Rational>>(arg); }
+    QOmega toQOmega(Rational arg) { return fromRational<QOmega>(arg); }
 
     Z2 parity(int arg)
     {
@@ -1143,9 +1143,9 @@ Dyadic<int> ring::half()
 }
 
 template <>
-Dyadic<Integer> ring::half()
+ZDyadic ring::half()
 {
-    return Dyadic<Integer>(1, 1);
+    return ZDyadic(1, 1);
 }
 
 template <typename T>
@@ -1376,7 +1376,7 @@ RootTwo<T> RootTwo<T>::fromRational(Rational r)
 }
 
 template <>
-RootTwo<Rational>::RootTwo(Rational a, Rational b)
+QRootTwo::RootTwo(Rational a, Rational b)
 {
     // Make sure Rationals are in canonical form.
     a.canonicalize();
@@ -1576,7 +1576,7 @@ Complex<T> Complex<T>::fromRational(Rational r)
 }
 
 template <>
-Complex<Rational>::Complex(Rational a, Rational b)
+QComplex::Complex(Rational a, Rational b)
 {
     // Make sure Rationals are in canonical form.
     a.canonicalize();
@@ -1892,7 +1892,7 @@ Omega<T> Omega<T>::fromRational(Rational r)
 }
 
 template <>
-Omega<Rational>::Omega(Rational a, Rational b, Rational c, Rational d)
+QOmega::Omega(Rational a, Rational b, Rational c, Rational d)
 {
     // Make sure Rationals are in canonical form.
     a.canonicalize();

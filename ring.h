@@ -27,7 +27,7 @@ using DRootTwo = RootTwo<ZDyadic>;
 using QRootTwo = RootTwo<Rational>;
 
 using ZComplex = Complex<Integer>;
-using DComplex = Complex<Dyadic<Integer>>;
+using DComplex = Complex<ZDyadic>;
 using QComplex = Complex<Rational>;
 using DRComplex = Complex<DRootTwo>;
 using QRComplex = Complex<QRootTwo>;
@@ -169,7 +169,7 @@ private:
 };
 
 template <>
-Complex<Rational>::Complex(Rational a, Rational b);
+QComplex::Complex(Rational a, Rational b);
 
 class Z2
 {
@@ -240,7 +240,7 @@ private:
 };
 
 template <>
-Omega<Rational>::Omega(Rational a, Rational b, Rational c, Rational d);
+QOmega::Omega(Rational a, Rational b, Rational c, Rational d);
 
 namespace ring
 {
@@ -349,13 +349,13 @@ namespace ring
     Dyadic<int> half();
 
     template <>
-    Dyadic<Integer> half();
+    ZDyadic half();
 
     template <typename T>
     T fromDyadic(Dyadic<int> d);
 
     template <typename T>
-    T fromDyadic(Dyadic<Integer> d);
+    T fromDyadic(ZDyadic d);
 
     template <typename T>
     T rootTwo();
