@@ -306,7 +306,7 @@ namespace ring
     template <>
     double fromRational(Rational r)
     {
-        return mpq_get_d(r.get_mpq_t());
+        return r.get_d();
     }
 
     template <typename T>
@@ -1332,6 +1332,7 @@ RootTwo<T> RootTwo<T>::adj2() const
 template <typename T>
 RootTwo<T> RootTwo<T>::recip() const
 {
+    assert((*this) != 0);
     T k = a() * a() - 2 * b() * b();
     return RootTwo(a() * ring::recip(k), -b() * ring::recip(k));
 }
@@ -1531,6 +1532,7 @@ Complex<T> Complex<T>::adj2() const
 template <typename T>
 Complex<T> Complex<T>::recip() const
 {
+    assert((*this) != 0);
     T d = a() * a() + b() * b();
     return Complex(a() * ring::recip(d), -b() * ring::recip(d));
 }
@@ -1872,6 +1874,7 @@ Omega<T> Omega<T>::recip() const
 {
     static_assert(std::is_same<T, double>::value || std::is_same<T, Rational>::value,
                   "recip can only be called with T = double or T = Rational.");
+    assert((*this) != 0);
     Omega<T> x1 = Omega<T>(-c(), -b(), -a(), d());
     Omega<T> x2 = Omega<T>(-a(), b(), -c(), d());
     Omega<T> x3 = Omega<T>(c(), -b(), a(), d());

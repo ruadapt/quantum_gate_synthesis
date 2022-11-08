@@ -1400,7 +1400,6 @@ int main()
     std::cout << std::endl;
     testTypeConversions();
     std::cout << std::endl;
-    return 0;
 
     testFractional();
     std::cout << std::endl;
