@@ -1,20 +1,22 @@
 CXX=g++
 CPPFLAGS=-Werror -std=c++17
 
-all: main ringTest
+all: main ringTest gridProblemsTest
 
 main: main.o
 	$(CXX) $(CPPFLAGS) -lgmp -lgmpxx -o main main.o
 
 main.o: ring.h ring.cpp
 
-# Use c++17 for tests.
+gridProblemsTest: test/gridproblemsTest.o
+	$(CXX) $(CPPFLAGS) -lgmp -lgmpxx -o gridProblemsTest test/gridProblemsTest.o
+
+test/gridproblemsTest.o: ring.h ring.cpp gridproblems.h gridproblems.cpp
+
 ringTest: test/ringTest.o
 	$(CXX) $(CPPFLAGS) -lgmp -lgmpxx -o ringTest test/ringTest.o
 
-# Use c++17 for tests.
-test/ringTest.o: ring.h ring.cpp test/ringTest.cpp
-	$(CXX) $(CPPFLAGS) -c -o test/ringTest.o test/ringTest.cpp
+test/ringTest.o: ring.h ring.cpp
 
 clean:
 	rm -f *.o test/*.o main ringTest
