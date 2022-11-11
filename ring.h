@@ -258,6 +258,10 @@ namespace ring
 
     bool even(Integer n);
 
+    bool odd(int n);
+
+    bool odd(Integer n);
+
     int mpzToInt(Integer z);
 
     template <typename Integral>
@@ -354,6 +358,9 @@ namespace ring
 
     template <typename T>
     T powNonNeg(T base, int exp);
+
+    template <typename T>
+    T powInt(T base, int exp);
 
     template <typename T>
     T half();

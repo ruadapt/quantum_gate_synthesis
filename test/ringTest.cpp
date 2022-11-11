@@ -61,6 +61,16 @@ void testUtilityFunctions()
     assert(200 == ring::log2(1606938044258990275541962092341162602522202993782792835301376_mpz).value());
     assert(!ring::log2(1606938044258990275541962092341162602522202993782792835301377_mpz).has_value());
     std::cout << "\tlog2 tests passed" << std::endl;
+
+    assert(QRootTwo(32) == ring::powNonNeg(QRootTwo(2), 5));
+    assert(ZOmega(0) == ring::powNonNeg(ZOmega(0), 5));
+    assert(ZDyadic(1099511627776_mpz) == ring::powNonNeg(ZDyadic(2), 40));
+    assert(1 == ring::powNonNeg(3, 0));
+    std::cout << "\tpowNonNeg tests passed" << std::endl;
+
+    assert(QRootTwo(32) == ring::powInt(QRootTwo(2), 5));
+    assert(QRootTwo(1_mpq / 27, 0) == ring::powInt(QRootTwo(3), -3));
+    std::cout << "\tpowInt tests passed" << std::endl;
 }
 
 void testTypeConversions()
@@ -1102,11 +1112,6 @@ void testZRootTwoRoot()
 
 void testZ2()
 {
-    Z2 x = Z2(0);
-    Z2 x2 = Z2(0);
-    Z2 y = Z2(1);
-    Z2 y2 = Z2(1);
-
     std::cout << "Z2 testing:" << std::endl;
 
     assert(Z2(0) == Z2(0));

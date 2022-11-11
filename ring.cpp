@@ -10,6 +10,10 @@ namespace ring
 
     bool even(Integer n) { return n % 2 == 0; }
 
+    bool odd(int n) { return n % 2 != 0; }
+
+    bool odd(Integer n) { return n % 2 != 0; }
+
     int mpzToInt(Integer z)
     {
         assert(z.fits_sint_p());
@@ -275,7 +279,10 @@ namespace ring
     Rational fromInteger(Integer arg) { return Rational(arg); }
 
     template <typename T>
-    T recip(T arg);
+    T recip(T arg)
+    {
+        return arg.recip();
+    }
 
     template <>
     double recip(double arg)
@@ -317,7 +324,6 @@ namespace ring
         {
             return 1;
         }
-        T result = base;
         if (exp == 1)
         {
             return base;
@@ -331,6 +337,15 @@ namespace ring
         T newBase = base * base;
         int newExp = (exp - 1) / 2;
         return base * powNonNeg(newBase, newExp);
+    }
+
+    /**
+     * This will only work for types that have recip defined.
+     */
+    template <typename T>
+    T powInt(T base, int exp)
+    {
+        return (exp >= 0) ? powNonNeg<T>(base, exp) : powNonNeg<T>(recip(base), -exp);
     }
 
     template <typename T>
@@ -919,7 +934,7 @@ Dyadic<T>::Dyadic(int arg)
     n_ = 0;
 }
 
-template<>
+template <>
 ZDyadic::Dyadic(Integer arg)
 {
     a_ = arg;
