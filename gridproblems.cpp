@@ -45,7 +45,46 @@ namespace gridprob
     {
         T dx = x1 - x0;
         T dy = y1 - y0;
-        // We're using n as an exponent, so it should be within the range of an int.
+
+        if (dy < 0 || dx < 0)
+        {
+            return std::vector<ZRootTwo>{};
+        }
+
+        auto baseCase = [=]
+        {
+            Integer amin = ring::ceiling_of((x0 + y0) * ring::recip<T>(2));
+            Integer amax = ring::floor_of((x1 + y1) * ring::recip<T>(2));
+            std::vector<ZRootTwo> results;
+            for (Integer a = amin; a <= amax; a++)
+            {
+                T aT = ring::fromInteger<T>(a);
+                Integer bmin = ring::ceiling_of((aT - y1) * ring::recip(ring::rootTwo<T>()));
+                Integer bmax = ring::floor_of((aT - y0) * ring::recip(ring::rootTwo<T>()));
+                for (Integer b = bmin; b <= bmax; b++)
+                {
+                    results.push_back(ZRootTwo(a, b));
+                }
+            }
+            return results;
+        };
+
+        if (dy == 0 && dx == 0)
+        {
+            return baseCase();
+        }
+
+        if (dy == 0 && dx > 0)
+        {
+            std::vector<ZRootTwo> subResults = gridpointsInternal(y0, y1, x0, x1);
+            std::vector<ZRootTwo> results(subResults.size());
+            std::transform(subResults.begin(), subResults.end(), results.begin(), [](ZRootTwo z)
+                           { return z.adj2(); });
+            return results;
+        }
+
+        // floorlog requires a positive argument, so we don't compute it until
+        // we've ruled out the possibility that dy <= 0.
         int n = ring::mpzToInt(std::get<0>(floorlog<T>(lambda<T>(), dy)));
         int m = -n;
 
@@ -55,19 +94,11 @@ namespace gridprob
         T lambdaNT = ring::powInt(lT, n);
         T lambdaBulNT = ring::powInt(-lInvT, n);
         T lambdaInvMT = ring::powInt(lInvT, m);
-        T lambdaBulInvMT = ring::powInt(lT, m);
+        T lambdaBulInvMT = ring::powInt(-lT, m);
         T lambdaInvNT = ring::powInt(lInvT, n);
         ZRootTwo lZ = lambda<ZRootTwo>();
         ZRootTwo lInvZ = lambdaInv<ZRootTwo>();
 
-        if (dy <= 0 && dx > 0)
-        {
-            std::vector<ZRootTwo> subResults = gridpointsInternal(y0, y1, x0, x1);
-            std::vector<ZRootTwo> results(subResults.size());
-            std::transform(subResults.begin(), subResults.end(), results.begin(), [](ZRootTwo z)
-                           { return z.adj2(); });
-            return results;
-        }
         if (dy >= lT && ring::even(n))
         {
             std::vector<ZRootTwo> subResults = gridpointsInternal(
@@ -79,6 +110,7 @@ namespace gridprob
                            { return lambdaInvNZ * z; });
             return results;
         }
+
         if (dy >= lT && ring::odd(n))
         {
             std::vector<ZRootTwo> subResults = gridpointsInternal(
@@ -90,6 +122,7 @@ namespace gridprob
                            { return lambdaInvNZ * z; });
             return results;
         }
+
         if (dy > 0 && dy < 1 && ring::even(n))
         {
             std::vector<ZRootTwo> subResults = gridpointsInternal(
@@ -101,6 +134,7 @@ namespace gridprob
                            { return lambdaMZ * z; });
             return results;
         }
+
         if (dy > 0 && dy < 1 && ring::odd(n))
         {
             std::vector<ZRootTwo> subResults = gridpointsInternal(
@@ -112,19 +146,7 @@ namespace gridprob
                            { return lambdaMZ * z; });
             return results;
         }
-        Integer amin = ring::ceiling_of((x0 + y0) * ring::recip<T>(2));
-        Integer amax = ring::floor_of((x1 + y1) * ring::recip<T>(2));
-        std::vector<ZRootTwo> results;
-        for (Integer a = amin; a <= amax; a++)
-        {
-            T aT = ring::fromInteger<T>(a);
-            Integer bmin = ring::ceiling_of((aT - y1) * ring::recip(ring::rootTwo<T>()));
-            Integer bmax = ring::floor_of((aT - y0) * ring::recip(ring::rootTwo<T>()));
-            for (Integer b = bmin; b <= bmax; b++)
-            {
-                results.push_back(ZRootTwo(a, b));
-            }
-        }
-        return results;
+
+        return baseCase();
     }
 }

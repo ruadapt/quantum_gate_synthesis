@@ -19,4 +19,4 @@ ringTest: test/ringTest.o
 test/ringTest.o: ring.h ring.cpp
 
 clean:
-	rm -f *.o test/*.o main ringTest
+	rm -f *.o test/*.o main ringTest gridProblemsTest
