@@ -14,6 +14,27 @@ namespace ring
 
     bool odd(Integer n) { return n % 2 != 0; }
 
+    int div(int a, int b)
+    {
+        if (b == 0)
+        {
+            throw std::invalid_argument("Division by 0");
+        }
+        return mpzToInt(div(Integer(a), Integer(b)));
+    }
+
+    Integer div(Integer a, Integer b)
+    {
+        if (b == 0)
+        {
+            throw std::invalid_argument("Division by 0");
+        }
+        Integer result;
+        // mpz_fdiv_q always rounds down.
+        mpz_fdiv_q(result.get_mpz_t(), a.get_mpz_t(), b.get_mpz_t());
+        return result;
+    }
+
     int mpzToInt(Integer z)
     {
         assert(z.fits_sint_p());
@@ -483,9 +504,7 @@ namespace ring
 
     Integer floor_of(Rational arg)
     {
-        Integer result;
-        mpz_fdiv_q(result.get_mpz_t(), arg.get_num_mpz_t(), arg.get_den_mpz_t());
-        return result;
+        return div(arg.get_num(), arg.get_den());
     }
 
     Integer floor_of(Integer arg)
@@ -858,13 +877,12 @@ namespace ring
         Integer r = intsqrt(d);
         Integer sum = arg.a() + r;
         Integer diff = arg.a() - r;
-        Integer div1, div2, div3, div4;
         Integer integer2 = 2;
         Integer integer4 = 4;
-        mpz_fdiv_q(div1.get_mpz_t(), sum.get_mpz_t(), integer2.get_mpz_t());
-        mpz_fdiv_q(div2.get_mpz_t(), diff.get_mpz_t(), integer2.get_mpz_t());
-        mpz_fdiv_q(div3.get_mpz_t(), diff.get_mpz_t(), integer4.get_mpz_t());
-        mpz_fdiv_q(div4.get_mpz_t(), sum.get_mpz_t(), integer4.get_mpz_t());
+        Integer div1 = div(sum, integer2);
+        Integer div2 = div(diff, integer2);
+        Integer div3 = div(diff, integer4);
+        Integer div4 = div(sum, integer4);
         Integer x1 = intsqrt(div1);
         Integer x2 = intsqrt(div2);
         Integer y1 = intsqrt(div3);

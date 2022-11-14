@@ -109,6 +109,84 @@ void testGridpointsInternal()
     std::cout << "\tgridpointsInternal tests passed" << std::endl;
 }
 
+void testGridpoints()
+{
+    std::cout << "gridpoints testing:" << std::endl;
+
+    assert(std::vector<ZRootTwo>{3} == gridprob::gridpoints<QRootTwo>(2, 3, 3, 4));
+    assert(std::vector<ZRootTwo>{3} == gridprob::gridpoints<QRootTwo>(3, 3, 3, 4));
+    assert(std::vector<ZRootTwo>{3} == gridprob::gridpoints<QRootTwo>(2, 3, 3, 3));
+    assert(std::vector<ZRootTwo>{3} == gridprob::gridpoints<QRootTwo>(3, 3, 3, 3));
+
+    {
+        QRootTwo x0 = QRootTwo(1, -7);
+        QRootTwo x1 = QRootTwo(2, 6);
+        QRootTwo y0 = QRootTwo(100, -6);
+        QRootTwo y1 = QRootTwo(200, 0);
+        std::vector<ZRootTwo> points = gridprob::gridpoints<QRootTwo>(x0, x1, y0, y1);
+        std::sort(points.begin(), points.end());
+        assert(742 == points.size());
+        assert(ZRootTwo(59, -48) == points[0]);
+        assert(ZRootTwo(59, -38) == points[543]);
+        assert(ZRootTwo(84, -52) == points[741]);
+    }
+
+    {
+        QRootTwo x0 = QRootTwo(1, -7);
+        QRootTwo x1 = QRootTwo(2, 6);
+        QRootTwo y0 = QRootTwo(100, -6);
+        QRootTwo y1 = QRootTwo(50, 0);
+        std::vector<ZRootTwo> points = gridprob::gridpoints<QRootTwo>(x0, x1, y0, y1);
+        std::sort(points.begin(), points.end());
+        assert(std::vector<ZRootTwo>{} == points); // There are no points returned.
+    }
+
+    {
+        QRootTwo x0 = QRootTwo(1, -7);
+        QRootTwo x1 = QRootTwo(2, 2);
+        QRootTwo y0 = QRootTwo(1, 2);
+        QRootTwo y1 = QRootTwo(7, 2);
+        std::vector<ZRootTwo> points = gridprob::gridpoints<QRootTwo>(x0, x1, y0, y1);
+        std::sort(points.begin(), points.end());
+        assert(30 == points.size());
+        assert(ZRootTwo(0, -6) == points[0]);
+        assert(ZRootTwo(2, -2) == points[17]);
+        assert(ZRootTwo(6, -1) == points[29]);
+    }
+
+    {
+        QRootTwo x0 = QRootTwo(3, -6);
+        QRootTwo x1 = QRootTwo(2, 2);
+        QRootTwo y0 = QRootTwo(2, 4);
+        QRootTwo y1 = QRootTwo(1, 5);
+        std::vector<ZRootTwo> points = gridprob::gridpoints<QRootTwo>(x0, x1, y0, y1);
+        std::sort(points.begin(), points.end());
+        assert((std::vector<ZRootTwo>{ZRootTwo(2, -4), ZRootTwo(5, -2)} == points));
+    }
+
+    {
+        QRootTwo x0 = QRootTwo(4, -2);
+        QRootTwo x1 = QRootTwo(2, 4);
+        QRootTwo y0 = QRootTwo(2, 7);
+        QRootTwo y1 = QRootTwo(15, -2);
+        std::vector<ZRootTwo> points = gridprob::gridpoints<QRootTwo>(x0, x1, y0, y1);
+        std::sort(points.begin(), points.end());
+        assert((std::vector<ZRootTwo>{} == points));
+    }
+
+    {
+        QRootTwo x0 = 10;
+        QRootTwo x1 = 5;
+        QRootTwo y0 = 9;
+        QRootTwo y1 = 8;
+        std::vector<ZRootTwo> points = gridprob::gridpoints<QRootTwo>(x0, x1, y0, y1);
+        std::sort(points.begin(), points.end());
+        assert((std::vector<ZRootTwo>{} == points));
+    }
+
+    std::cout << "\tgridpoints tests passed" << std::endl;
+}
+
 int main()
 {
     testLambda();
@@ -118,5 +196,7 @@ int main()
     testFloorlog();
     std::cout << std::endl;
     testGridpointsInternal();
+    std::cout << std::endl;
+    testGridpoints();
     std::cout << std::endl;
 }

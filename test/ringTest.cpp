@@ -71,6 +71,16 @@ void testUtilityFunctions()
     assert(QRootTwo(32) == ring::powInt(QRootTwo(2), 5));
     assert(QRootTwo(1_mpq / 27, 0) == ring::powInt(QRootTwo(3), -3));
     std::cout << "\tpowInt tests passed" << std::endl;
+
+    assert(3_mpz == ring::div(10_mpz, 3_mpz));
+    assert(3_mpz == ring::div(-10_mpz, -3_mpz));
+    assert(-4_mpz == ring::div(10_mpz, -3_mpz));
+    assert(-4_mpz == ring::div(-10_mpz, 3_mpz));
+    assert(3 == ring::div(10, 3));
+    assert(3 == ring::div(-10, -3));
+    assert(-4 == ring::div(10, -3));
+    assert(-4 == ring::div(-10, 3));
+    std::cout << "\tdiv tests passed" << std::endl;
 }
 
 void testTypeConversions()

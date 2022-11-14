@@ -16,6 +16,12 @@ namespace gridprob
     }
 
     template <typename T>
+    bool within(const T x, const T low, const T high)
+    {
+        return (low <= x && x <= high);
+    }
+
+    template <typename T>
     std::tuple<Integer, T> floorlog(T b, T x)
     {
         if (x <= T(0))
@@ -148,5 +154,30 @@ namespace gridprob
         }
 
         return baseCase();
+    }
+
+    template <typename T>
+    std::vector<ZRootTwo> gridpoints(T x0, T x1, T y0, T y1)
+    {
+        Integer a = ring::div(ring::floor_of(x0 + y0), 2_mpz);
+        Integer b = ring::div(ring::floor_of(ring::rootTwo<T>() * (x0 - y0)), 4_mpz);
+        ZRootTwo alpha = ZRootTwo(a, b);
+        T xoff = ring::fromZRootTwo<T>(alpha);
+        T yoff = ring::fromZRootTwo<T>(ring::adj2(alpha));
+        T x0new = x0 - xoff;
+        T x1new = x1 - xoff;
+        T y0new = y0 - yoff;
+        T y1new = y1 - yoff;
+
+        std::vector<ZRootTwo> rawPoints = gridpointsInternal(x0new, x1new, y0new, y1new);
+        std::vector<ZRootTwo> shifted(rawPoints.size());
+        std::transform(rawPoints.begin(), rawPoints.end(), shifted.begin(), [=](ZRootTwo z)
+                       { return z + alpha; });
+        std::vector<ZRootTwo> results;
+        std::copy_if(shifted.begin(), shifted.end(), std::back_inserter(results), [=](ZRootTwo z)
+                     { 
+                        T zz = ring::fromZRootTwo<T>(z);
+                        return within<T>(zz, x0, x1) && within<T>(ring::adj2(zz), y0, y1); });
+        return results;
     }
 }

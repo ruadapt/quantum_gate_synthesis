@@ -262,6 +262,10 @@ namespace ring
 
     bool odd(Integer n);
 
+    int div(int a, int b);
+
+    Integer div(Integer a, Integer b);
+
     int mpzToInt(Integer z);
 
     template <typename Integral>
@@ -349,6 +353,15 @@ namespace ring
 
     template <>
     Rational fromInteger(Integer arg);
+
+    template <typename T>
+    T recip(T arg);
+
+    template <>
+    double recip(double arg);
+
+    template <>
+    Rational recip(Rational arg);
 
     template <typename T>
     T fromRational(Rational r);
