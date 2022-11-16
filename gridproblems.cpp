@@ -180,4 +180,27 @@ namespace gridprob
                         return within<T>(zz, x0, x1) && within<T>(ring::adj2(zz), y0, y1); });
         return results;
     }
+
+    template <typename T>
+    std::vector<DRootTwo> gridpointsScaled(T x0, T x1, T y0, T y1, Integer k)
+    {
+        if (k < 0)
+        {
+            throw std::invalid_argument("k >= 0 is required");
+        }
+        int kInt = ring::mpzToInt(k);
+        T scaleT = ring::powNonNeg(ring::rootHalf<T>(), kInt);
+        T scaleInvT = ring::powNonNeg(ring::rootTwo<T>(), kInt);
+        DRootTwo scaleD = ring::powNonNeg(ring::rootHalf<DRootTwo>(), kInt);
+        DRootTwo scaleInvD = ring::powNonNeg(ring::rootTwo<DRootTwo>(), kInt);
+        T x0new = scaleInvT * x0;
+        T x1new = scaleInvT * x1;
+        T y0new = ring::even(k) ? (scaleInvT * y0) : (-scaleInvT * y1);
+        T y1new = ring::even(k) ? (scaleInvT * y1) : (-scaleInvT * y0);
+        std::vector<ZRootTwo> w = gridpoints(x0new, x1new, y0new, y1new);
+        std::vector<DRootTwo> results(w.size());
+        std::transform(w.begin(), w.end(), results.begin(), [=](ZRootTwo z)
+                       { return scaleD * ring::fromZRootTwo<DRootTwo>(z); });
+        return results;
+    }
 }

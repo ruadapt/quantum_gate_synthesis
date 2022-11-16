@@ -187,6 +187,31 @@ void testGridpoints()
     std::cout << "\tgridpoints tests passed" << std::endl;
 }
 
+void testGridpointsScaled()
+{
+    std::cout << "gridpointsScaled testing:" << std::endl;
+
+    assert(std::vector<DRootTwo>{3} == gridprob::gridpointsScaled<QRootTwo>(2, 3, 3, 4, 0));
+    assert(std::vector<DRootTwo>{3} == gridprob::gridpointsScaled<QRootTwo>(3, 3, 3, 4, 0));
+    assert(std::vector<DRootTwo>{3} == gridprob::gridpointsScaled<QRootTwo>(2, 3, 3, 3, 0));
+    assert(std::vector<DRootTwo>{3} == gridprob::gridpointsScaled<QRootTwo>(3, 3, 3, 3, 0));
+    
+    {
+        QRootTwo x0 = QRootTwo(1, -8);
+        QRootTwo x1 = QRootTwo(2, 6);
+        QRootTwo y0 = QRootTwo(0, 3);
+        QRootTwo y1 = QRootTwo(10, 2);
+        std::vector<DRootTwo> points = gridprob::gridpointsScaled<QRootTwo>(x0, x1, y0, y1, 7);
+        std::sort(points.begin(), points.end());
+        assert(8084 == points.size());
+        assert(DRootTwo(1, -8) == points[0]);
+        assert(DRootTwo(ZDyadic(3, 3), ZDyadic(-85, 4)) == points[1234]);
+        assert(DRootTwo(ZDyadic(43, 2), ZDyadic(-3, 4)) == points[8083]);
+    }
+
+    std::cout << "\tgridpointsScaled tests passed" << std::endl;
+}
+
 int main()
 {
     testLambda();
@@ -198,5 +223,7 @@ int main()
     testGridpointsInternal();
     std::cout << std::endl;
     testGridpoints();
+    std::cout << std::endl;
+    testGridpointsScaled();
     std::cout << std::endl;
 }

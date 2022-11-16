@@ -21,6 +21,9 @@ namespace gridprob
 
     template <typename T>
     std::vector<ZRootTwo> gridpoints(T x0, T x1, T y0, T y1);
+
+    template <typename T>
+    std::vector<DRootTwo> gridpointsScaled(T x0, T x1, T y0, T y1, Integer k);
 }
 
 #include "gridproblems.cpp"
