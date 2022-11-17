@@ -373,7 +373,13 @@ namespace ring
     T powNonNeg(T base, int exp);
 
     template <typename T>
+    T powNonNeg(T base, Integer exp);
+
+    template <typename T>
     T powInt(T base, int exp);
+
+    template <typename T>
+    T powInt(T base, Integer exp);
 
     template <typename T>
     T half();

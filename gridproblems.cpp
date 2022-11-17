@@ -186,13 +186,12 @@ namespace gridprob
     {
         if (k < 0)
         {
-            throw std::invalid_argument("k >= 0 is required");
+            throw std::invalid_argument("gridpointsScaled: k >= 0 is required");
         }
-        int kInt = ring::mpzToInt(k);
-        T scaleT = ring::powNonNeg(ring::rootHalf<T>(), kInt);
-        T scaleInvT = ring::powNonNeg(ring::rootTwo<T>(), kInt);
-        DRootTwo scaleD = ring::powNonNeg(ring::rootHalf<DRootTwo>(), kInt);
-        DRootTwo scaleInvD = ring::powNonNeg(ring::rootTwo<DRootTwo>(), kInt);
+        T scaleT = ring::powNonNeg(ring::rootHalf<T>(), k);
+        T scaleInvT = ring::powNonNeg(ring::rootTwo<T>(), k);
+        DRootTwo scaleD = ring::powNonNeg(ring::rootHalf<DRootTwo>(), k);
+        DRootTwo scaleInvD = ring::powNonNeg(ring::rootTwo<DRootTwo>(), k);
         T x0new = scaleInvT * x0;
         T x1new = scaleInvT * x1;
         T y0new = ring::even(k) ? (scaleInvT * y0) : (-scaleInvT * y1);
@@ -201,6 +200,28 @@ namespace gridprob
         std::vector<DRootTwo> results(w.size());
         std::transform(w.begin(), w.end(), results.begin(), [=](ZRootTwo z)
                        { return scaleD * ring::fromZRootTwo<DRootTwo>(z); });
+        return results;
+    }
+
+    template <typename T>
+    std::vector<DRootTwo> gridpointsScaledParity(DRootTwo beta, T x0, T x1, T y0, T y1, Integer k)
+    {
+        if (k < 1)
+        {
+            throw std::invalid_argument("gridpointsScaledParity: k >= 1 is required");
+        }
+        if (ring::denomExp(beta) <= k - 1)
+        {
+            return gridpointsScaled(x0, x1, y0, y1, k - 1);
+        }
+        DRootTwo offs = ring::powNonNeg(ring::rootHalf<DRootTwo>(), k);
+        DRootTwo offsBul = ring::adj2(offs);
+        T offsPrime = ring::fromDRootTwo<T>(offs);
+        T offsBulPrime = ring::fromDRootTwo<T>(offsBul);
+        std::vector<DRootTwo> z = gridpointsScaled(x0 + offsPrime, x1 + offsPrime, y0 + offsBulPrime, y1 + offsBulPrime, k - 1);
+        std::vector<DRootTwo> results(z.size());
+        std::transform(z.begin(), z.end(), results.begin(), [=](DRootTwo d)
+                       { return d - offs; });
         return results;
     }
 }

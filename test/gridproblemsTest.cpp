@@ -212,6 +212,43 @@ void testGridpointsScaled()
     std::cout << "\tgridpointsScaled tests passed" << std::endl;
 }
 
+void testGridpointsScaledParity()
+{
+    std::cout << "gridpointsScaledParity testing:" << std::endl;
+    
+    {
+        DRootTwo beta = DRootTwo(3, -5);
+        QRootTwo x0 = QRootTwo(1, -8);
+        QRootTwo x1 = QRootTwo(2, 6);
+        QRootTwo y0 = QRootTwo(0, 3);
+        QRootTwo y1 = QRootTwo(5, 2);
+        Integer k = 4;
+        std::vector<DRootTwo> points = gridprob::gridpointsScaledParity<QRootTwo>(beta, x0, x1, y0, y1, k);
+        std::sort(points.begin(), points.end());
+        assert(211 == points.size());
+        assert(DRootTwo(ZDyadic(-5, 1), ZDyadic(-11, 1)) == points[0]);
+        assert(DRootTwo(ZDyadic(7, 1), ZDyadic(-11, 2)) == points[100]);
+        assert(DRootTwo(8, ZDyadic(7, 2)) == points[210]);
+    }
+
+    {
+        DRootTwo beta = DRootTwo(ZDyadic(3, 2), ZDyadic(7, 9));
+        QRootTwo x0 = QRootTwo(1, -8);
+        QRootTwo x1 = QRootTwo(4, 1);
+        QRootTwo y0 = QRootTwo(0, 3);
+        QRootTwo y1 = QRootTwo(5, 2);
+        Integer k = 6;
+        std::vector<DRootTwo> points = gridprob::gridpointsScaledParity<QRootTwo>(beta, x0, x1, y0, y1, k);
+        std::sort(points.begin(), points.end());
+        assert(638 == points.size());
+        assert(DRootTwo(ZDyadic(-23, 3), ZDyadic(-21, 2)) == points[0]);
+        assert(DRootTwo(ZDyadic(29, 3), ZDyadic(-9, 3)) == points[500]);
+        assert(DRootTwo(ZDyadic(39, 3), ZDyadic(3, 3)) == points[637]);
+    }
+
+    std::cout << "\tgridpointsScaledParity tests passed" << std::endl;
+}
+
 int main()
 {
     testLambda();
@@ -225,5 +262,7 @@ int main()
     testGridpoints();
     std::cout << std::endl;
     testGridpointsScaled();
+    std::cout << std::endl;
+    testGridpointsScaledParity();
     std::cout << std::endl;
 }

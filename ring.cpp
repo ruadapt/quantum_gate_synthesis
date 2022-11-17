@@ -360,6 +360,14 @@ namespace ring
         return base * powNonNeg(newBase, newExp);
     }
 
+    template <typename T>
+    T powNonNeg(T base, Integer exp)
+    {
+        // Any exponent should be able to fit in an int, or else the result would
+        // be too large.
+        return powNonNeg<T>(base, mpzToInt(exp));
+    }
+
     /**
      * This will only work for types that have recip defined.
      */
@@ -367,6 +375,14 @@ namespace ring
     T powInt(T base, int exp)
     {
         return (exp >= 0) ? powNonNeg<T>(base, exp) : powNonNeg<T>(recip(base), -exp);
+    }
+
+    template <typename T>
+    T powInt(T base, Integer exp)
+    {
+        // Any exponent should be able to fit in an int, or else the result would
+        // be too large.
+        return powInt<T>(base, mpzToInt(exp));
     }
 
     template <typename T>
@@ -405,11 +421,11 @@ namespace ring
         Integer n = std::get<1>(decomposed);
         if (n >= 0)
         {
-            return fromInteger<T>(a) * powNonNeg<T>(half<T>(), mpzToInt(n));
+            return fromInteger<T>(a) * powNonNeg<T>(half<T>(), n);
         }
         else
         {
-            return fromInteger<T>(a) * fromInteger<T>(exp2<Integer>(mpzToInt(-n)));
+            return fromInteger<T>(a) * fromInteger<T>(exp2<Integer>(-n));
         }
     }
 
@@ -769,13 +785,13 @@ namespace ring
     template <>
     DOmega denomExpFactor(DOmega arg, Integer k)
     {
-        return arg * powNonNeg(rootTwo<DOmega>(), mpzToInt(k));
+        return arg * powNonNeg(rootTwo<DOmega>(), k);
     }
 
     template <>
     DRootTwo denomExpFactor(DRootTwo arg, Integer k)
     {
-        return arg * powNonNeg(rootTwo<DRootTwo>(), mpzToInt(k));
+        return arg * powNonNeg(rootTwo<DRootTwo>(), k);
     }
 
     template <typename T>
@@ -1150,9 +1166,9 @@ QOmega Dyadic<T>::toQOmega() const
 {
     if (n() >= 0)
     {
-        return ring::toQOmega<T>(a()) * ring::powNonNeg<QOmega>(ring::half<QOmega>(), ring::mpzToInt(n()));
+        return ring::toQOmega<T>(a()) * ring::powNonNeg<QOmega>(ring::half<QOmega>(), n());
     }
-    return ring::toQOmega<T>(a()) * ring::powNonNeg<QOmega>(QOmega(2), ring::mpzToInt(-n()));
+    return ring::toQOmega<T>(a()) * ring::powNonNeg<QOmega>(QOmega(2), -n());
 }
 
 template <typename T>
