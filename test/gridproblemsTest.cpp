@@ -48,9 +48,9 @@ void testGridpointsInternal()
         std::vector<ZRootTwo> points = gridprob::gridpointsInternal<QRootTwo>(x0, x1, y0, y1);
         std::sort(points.begin(), points.end());
         assert(744 == points.size());
-        assert(ZRootTwo(42, -36) == points[0]);
-        assert(ZRootTwo(100, -67) == points[543]);
-        assert(ZRootTwo(101, -64) == points[743]);
+        assert(ZRootTwo(42, -36) == points.at(0));
+        assert(ZRootTwo(100, -67) == points.at(543));
+        assert(ZRootTwo(101, -64) == points.at(743));
     }
 
     {
@@ -71,9 +71,9 @@ void testGridpointsInternal()
         std::vector<ZRootTwo> points = gridprob::gridpointsInternal<QRootTwo>(x0, x1, y0, y1);
         std::sort(points.begin(), points.end());
         assert(30 == points.size());
-        assert(ZRootTwo(0, -6) == points[0]);
-        assert(ZRootTwo(2, -2) == points[17]);
-        assert(ZRootTwo(6, -1) == points[29]);
+        assert(ZRootTwo(0, -6) == points.at(0));
+        assert(ZRootTwo(2, -2) == points.at(17));
+        assert(ZRootTwo(6, -1) == points.at(29));
     }
 
     {
@@ -126,9 +126,9 @@ void testGridpoints()
         std::vector<ZRootTwo> points = gridprob::gridpoints<QRootTwo>(x0, x1, y0, y1);
         std::sort(points.begin(), points.end());
         assert(742 == points.size());
-        assert(ZRootTwo(59, -48) == points[0]);
-        assert(ZRootTwo(59, -38) == points[543]);
-        assert(ZRootTwo(84, -52) == points[741]);
+        assert(ZRootTwo(59, -48) == points.at(0));
+        assert(ZRootTwo(59, -38) == points.at(543));
+        assert(ZRootTwo(84, -52) == points.at(741));
     }
 
     {
@@ -149,9 +149,9 @@ void testGridpoints()
         std::vector<ZRootTwo> points = gridprob::gridpoints<QRootTwo>(x0, x1, y0, y1);
         std::sort(points.begin(), points.end());
         assert(30 == points.size());
-        assert(ZRootTwo(0, -6) == points[0]);
-        assert(ZRootTwo(2, -2) == points[17]);
-        assert(ZRootTwo(6, -1) == points[29]);
+        assert(ZRootTwo(0, -6) == points.at(0));
+        assert(ZRootTwo(2, -2) == points.at(17));
+        assert(ZRootTwo(6, -1) == points.at(29));
     }
 
     {
@@ -204,9 +204,9 @@ void testGridpointsScaled()
         std::vector<DRootTwo> points = gridprob::gridpointsScaled<QRootTwo>(x0, x1, y0, y1, 7);
         std::sort(points.begin(), points.end());
         assert(8084 == points.size());
-        assert(DRootTwo(1, -8) == points[0]);
-        assert(DRootTwo(ZDyadic(3, 3), ZDyadic(-85, 4)) == points[1234]);
-        assert(DRootTwo(ZDyadic(43, 2), ZDyadic(-3, 4)) == points[8083]);
+        assert(DRootTwo(1, -8) == points.at(0));
+        assert(DRootTwo(ZDyadic(3, 3), ZDyadic(-85, 4)) == points.at(1234));
+        assert(DRootTwo(ZDyadic(43, 2), ZDyadic(-3, 4)) == points.at(8083));
     }
 
     std::cout << "\tgridpointsScaled tests passed" << std::endl;
@@ -226,9 +226,9 @@ void testGridpointsScaledParity()
         std::vector<DRootTwo> points = gridprob::gridpointsScaledParity<QRootTwo>(beta, x0, x1, y0, y1, k);
         std::sort(points.begin(), points.end());
         assert(211 == points.size());
-        assert(DRootTwo(ZDyadic(-5, 1), ZDyadic(-11, 1)) == points[0]);
-        assert(DRootTwo(ZDyadic(7, 1), ZDyadic(-11, 2)) == points[100]);
-        assert(DRootTwo(8, ZDyadic(7, 2)) == points[210]);
+        assert(DRootTwo(ZDyadic(-5, 1), ZDyadic(-11, 1)) == points.at(0));
+        assert(DRootTwo(ZDyadic(7, 1), ZDyadic(-11, 2)) == points.at(100));
+        assert(DRootTwo(8, ZDyadic(7, 2)) == points.at(210));
     }
 
     {
@@ -241,9 +241,9 @@ void testGridpointsScaledParity()
         std::vector<DRootTwo> points = gridprob::gridpointsScaledParity<QRootTwo>(beta, x0, x1, y0, y1, k);
         std::sort(points.begin(), points.end());
         assert(638 == points.size());
-        assert(DRootTwo(ZDyadic(-23, 3), ZDyadic(-21, 2)) == points[0]);
-        assert(DRootTwo(ZDyadic(29, 3), ZDyadic(-9, 3)) == points[500]);
-        assert(DRootTwo(ZDyadic(39, 3), ZDyadic(3, 3)) == points[637]);
+        assert(DRootTwo(ZDyadic(-23, 3), ZDyadic(-21, 2)) == points.at(0));
+        assert(DRootTwo(ZDyadic(29, 3), ZDyadic(-9, 3)) == points.at(500));
+        assert(DRootTwo(ZDyadic(39, 3), ZDyadic(3, 3)) == points.at(637));
     }
 
     std::cout << "\tgridpointsScaledParity tests passed" << std::endl;
