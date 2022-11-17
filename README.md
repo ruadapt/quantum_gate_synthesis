@@ -2,5 +2,4 @@
 
 ## Instructions
 
-Run `make` to create the `ringTest` executable, then use `./ringTest` to run
-the tests.
+Run `make`, then run any of the test executables in the `test` directory.

@@ -1,22 +1,26 @@
-CXX=g++
-CPPFLAGS=-Werror -Wall -Wextra -Wpedantic -std=c++17
+CC = g++
+CXX = g++
+CPPFLAGS= -isystem /usr/local/include -std=c++17 -Werror -Wall -Wextra -Wpedantic
+LDLIBS = -lgmp -lgmpxx
 
-all: main ringTest gridProblemsTest
+headers = ring.h gridproblems.h matrix.h
+modules = ring.cpp gridproblems.cpp matrix.cpp
+tests = test/ringTest test/gridproblemsTest test/matrixTest
+
+all: main tests
+
+tests: $(tests)
 
 main: main.o
-	$(CXX) $(CPPFLAGS) -lgmp -lgmpxx -o main main.o
+main.o: $(headers) $(modules)
 
-main.o: ring.h ring.cpp gridproblems.h gridproblems.cpp
+test/ringTest: test/ringTest.o
+test/gridproblemsTest: test/gridproblemsTest.o
+test/matrixTest: test/matrixTest.o
 
-gridProblemsTest: test/gridproblemsTest.o
-	$(CXX) $(CPPFLAGS) -lgmp -lgmpxx -o gridProblemsTest test/gridProblemsTest.o
-
-test/gridproblemsTest.o: ring.h ring.cpp gridproblems.h gridproblems.cpp
-
-ringTest: test/ringTest.o
-	$(CXX) $(CPPFLAGS) -lgmp -lgmpxx -o ringTest test/ringTest.o
-
-test/ringTest.o: ring.h ring.cpp
+test/ringTest.o: $(headers) $(modules)
+test/gridproblemsTest.o: $(headers) $(modules)
+test/matrixTest.o: $(headers) $(modules)
 
 clean:
-	rm -f *.o test/*.o main ringTest gridProblemsTest
+	rm -f *.o test/*.o main $(tests)
