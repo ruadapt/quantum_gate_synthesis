@@ -1,6 +1,36 @@
 #include "ring.h"
 #include <vector>
 
+template <typename T>
+T fst(Point<T> p)
+{
+    return std::get<0>(p);
+}
+
+template <typename T>
+T snd(Point<T> p)
+{
+    return std::get<1>(p);
+}
+
+template <typename T>
+Ellipse<T>::Ellipse(Operator<T> op, Point<T> p)
+{
+    op_ = op;
+    p_ = p;
+}
+
+template <typename T>
+Operator<T> Ellipse<T>::op() const
+{
+    return op_;
+}
+
+template <typename T>
+Point<T> Ellipse<T>::p() const
+{
+    return p_;
+}
 namespace gridprob
 {
     template <typename T>
@@ -223,5 +253,22 @@ namespace gridprob
         std::transform(z.begin(), z.end(), results.begin(), [=](DRootTwo d)
                        { return d - offs; });
         return results;
+    }
+
+    template <typename T>
+    Point<T> pointFromDRootTwo(Point<DRootTwo> p)
+    {
+        return std::make_tuple(ring::fromDRootTwo<T>(fst(p)), ring::fromDRootTwo<T>(snd(p)));
+    }
+
+    template <typename T>
+    Operator<T> makeOperator(T x0, T x1, T x2, T x3)
+    {
+        Operator<T> op;
+        op(0, 0) = x0;
+        op(0, 1) = x1;
+        op(1, 0) = x2;
+        op(1, 1) = x3;
+        return op;
     }
 }

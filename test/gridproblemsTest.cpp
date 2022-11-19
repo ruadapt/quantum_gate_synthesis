@@ -1,5 +1,6 @@
 #include "../gridproblems.h"
 #include <iostream>
+#include <tuple>
 
 void testLambda()
 {
@@ -195,7 +196,7 @@ void testGridpointsScaled()
     assert(std::vector<DRootTwo>{3} == gridprob::gridpointsScaled<QRootTwo>(3, 3, 3, 4, 0));
     assert(std::vector<DRootTwo>{3} == gridprob::gridpointsScaled<QRootTwo>(2, 3, 3, 3, 0));
     assert(std::vector<DRootTwo>{3} == gridprob::gridpointsScaled<QRootTwo>(3, 3, 3, 3, 0));
-    
+
     {
         QRootTwo x0 = QRootTwo(1, -8);
         QRootTwo x1 = QRootTwo(2, 6);
@@ -215,7 +216,7 @@ void testGridpointsScaled()
 void testGridpointsScaledParity()
 {
     std::cout << "gridpointsScaledParity testing:" << std::endl;
-    
+
     {
         DRootTwo beta = DRootTwo(3, -5);
         QRootTwo x0 = QRootTwo(1, -8);
@@ -249,6 +250,43 @@ void testGridpointsScaledParity()
     std::cout << "\tgridpointsScaledParity tests passed" << std::endl;
 }
 
+void testConvexSets()
+{
+    std::cout << "Convex sets testing:" << std::endl;
+
+    {
+        Point<ZRootTwo> p = Point<ZRootTwo>(4, 5);
+        assert(ZRootTwo(4) == std::get<0>(p));
+        assert(ZRootTwo(5) == std::get<1>(p));
+        std::cout << "\tpoint construction test passed" << std::endl;
+    }
+
+    {
+        Operator<Integer> op = gridprob::makeOperator<Integer>(6, 7, 8, 9);
+        assert(op(0, 0) == 6);
+        assert(op(0, 1) == 7);
+        assert(op(1, 0) == 8);
+        assert(op(1, 1) == 9);
+        std::cout << "\tmakeOperator test passed" << std::endl;
+    }
+
+    {
+        Point<DRootTwo> p = std::make_tuple(DRootTwo(1, 2), DRootTwo(ZDyadic(1, 2), ZDyadic(3, 4)));
+        Point<QRootTwo> pQ = gridprob::pointFromDRootTwo<QRootTwo>(p);
+        assert(std::make_tuple(QRootTwo(1, 2), QRootTwo(1_mpq / 4, 3_mpq / 16)) == pQ);
+        std::cout << "\tpointFromDRootTwo test passed" << std::endl;
+    }
+
+    {
+        Point<Integer> p = std::make_tuple(10, 12);
+        Operator<Integer> op = gridprob::makeOperator<Integer>(6, 7, 8, 9);
+        Ellipse<Integer> e = Ellipse<Integer>(op, p);
+        Operator<Integer> op2 = e.op();
+        Point<Integer> p2 = e.p();
+        std::cout << "\tEllipse construct test passed" << std::endl;
+    }
+}
+
 int main()
 {
     testLambda();
@@ -264,5 +302,7 @@ int main()
     testGridpointsScaled();
     std::cout << std::endl;
     testGridpointsScaledParity();
+    std::cout << std::endl;
+    testConvexSets();
     std::cout << std::endl;
 }
