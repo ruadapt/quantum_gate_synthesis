@@ -1,4 +1,5 @@
 #include "ring.h"
+#include "quadratic.h"
 #include <vector>
 
 template <typename T>
@@ -74,6 +75,12 @@ namespace gridprob
             return std::make_tuple(2 * n, r);
         }
         return std::make_tuple(2 * n + 1, r * ring::recip<T>(b));
+    }
+
+    template <typename T>
+    T iprod(Point<T> p1, Point<T> p2)
+    {
+        return fst(p1) * fst(p2) + snd(p1) * snd(p2);
     }
 
     template <typename T>
@@ -270,5 +277,32 @@ namespace gridprob
         op(1, 0) = x2;
         op(1, 1) = x3;
         return op;
+    }
+
+    template <typename T>
+    ConvexSet<T> unitDisk()
+    {
+        Operator<T> op = makeOperator(1, 0, 0, 1);
+        Point<T> p = std::make_tuple(0, 0);
+        Ellipse<T> el = Ellipse<T>(op, p);
+
+        std::function<std::optional<std::tuple<T, T>>(Point<DRootTwo>, Point<DRootTwo>)> intersect = [](Point<DRootTwo> p, Point<DRootTwo> v)
+        {
+            QRootTwo a = ring::fromDRootTwo<QRootTwo>(iprod<DRootTwo>(v, v));
+            QRootTwo b = ring::fromDRootTwo<QRootTwo>(DRootTwo(2) * iprod<DRootTwo>(v, p));
+            QRootTwo c = ring::fromDRootTwo<QRootTwo>(iprod<DRootTwo>(p, p) - 1);
+            // TODO should this always be double?
+            std::optional<std::tuple<double, double>> q = quadratic<QRootTwo>(a, b, c);
+            return q;
+        };
+
+        std::function<bool(Point<DRootTwo>)> test = [](Point<DRootTwo> p)
+        {
+            DRootTwo x, y;
+            std::tie(x, y) = p;
+            return x * x + y * y <= 1;
+        };
+
+        return ConvexSet<T>(el, test, intersect);
     }
 }
