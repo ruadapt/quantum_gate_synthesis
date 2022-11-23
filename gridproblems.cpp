@@ -291,8 +291,7 @@ namespace gridprob
             QRootTwo a = ring::fromDRootTwo<QRootTwo>(iprod<DRootTwo>(v, v));
             QRootTwo b = ring::fromDRootTwo<QRootTwo>(DRootTwo(2) * iprod<DRootTwo>(v, p));
             QRootTwo c = ring::fromDRootTwo<QRootTwo>(iprod<DRootTwo>(p, p) - 1);
-            // TODO should this always be double?
-            std::optional<std::tuple<double, double>> q = quadratic<QRootTwo>(a, b, c);
+            std::optional<std::tuple<Real, Real>> q = quadratic<QRootTwo>(a, b, c);
             return q;
         };
 

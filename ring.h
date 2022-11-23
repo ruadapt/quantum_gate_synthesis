@@ -1,10 +1,8 @@
 #pragma once
+#include "types.h"
 #include <iostream>
 #include <gmpxx.h>
 #include <optional>
-
-typedef mpz_class Integer;
-typedef mpq_class Rational;
 
 template <typename T>
 class Dyadic;
@@ -31,7 +29,7 @@ using DComplex = Complex<ZDyadic>;
 using QComplex = Complex<Rational>;
 using DRComplex = Complex<DRootTwo>;
 using QRComplex = Complex<QRootTwo>;
-using CDouble = Complex<double>;
+using CReal = Complex<Real>;
 
 using ZOmega = Omega<Integer>;
 using DOmega = Omega<ZDyadic>;
@@ -337,7 +335,7 @@ namespace ring
     Integer fromInteger(int arg);
 
     template <>
-    double fromInteger(int arg);
+    Real fromInteger(int arg);
 
     template <>
     Rational fromInteger(int arg);
@@ -349,7 +347,7 @@ namespace ring
     Integer fromInteger(Integer arg);
 
     template <>
-    double fromInteger(Integer arg);
+    Real fromInteger(Integer arg);
 
     template <>
     Rational fromInteger(Integer arg);
@@ -358,7 +356,7 @@ namespace ring
     T recip(T arg);
 
     template <>
-    double recip(double arg);
+    Real recip(Real arg);
 
     template <>
     Rational recip(Rational arg);
@@ -385,7 +383,7 @@ namespace ring
     T half();
 
     template <>
-    double half();
+    Real half();
 
     template <>
     Rational half();
@@ -406,7 +404,7 @@ namespace ring
     T rootTwo();
 
     template <>
-    double rootTwo();
+    Real rootTwo();
 
     template <typename T>
     T fromZRootTwo(ZRootTwo arg);
@@ -415,7 +413,7 @@ namespace ring
     T rootHalf();
 
     template <>
-    double rootHalf();
+    Real rootHalf();
 
     template <typename T>
     T fromDRootTwo(DRootTwo arg);
@@ -433,7 +431,7 @@ namespace ring
     Integer adj(Integer arg);
 
     template <>
-    double adj(double arg);
+    Real adj(Real arg);
 
     template <>
     Rational adj(Rational arg);
@@ -459,7 +457,7 @@ namespace ring
     template <>
     Integer norm(Integer arg);
 
-    Integer floor_of(double arg);
+    Integer floor_of(Real arg);
 
     Integer floor_of(Rational arg);
 
@@ -467,7 +465,7 @@ namespace ring
 
     Integer floor_of(QRootTwo arg);
 
-    Integer ceiling_of(double arg);
+    Integer ceiling_of(Real arg);
 
     Integer ceiling_of(Rational arg);
 
@@ -615,7 +613,7 @@ namespace ring
     std::string toString(const Integer &arg);
 
     template <>
-    std::string toString(const double &arg);
+    std::string toString(const Real &arg);
 
     template <>
     std::string toString(const Rational &arg);

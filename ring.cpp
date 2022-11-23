@@ -158,7 +158,7 @@ namespace ring
     }
 
     template <>
-    int sign(double a)
+    int sign(Real a)
     {
         if (a == 0)
         {
@@ -279,7 +279,7 @@ namespace ring
     Integer fromInteger(int arg) { return Integer(arg); }
 
     template <>
-    double fromInteger(int arg) { return double(arg); }
+    Real fromInteger(int arg) { return Real(arg); }
 
     template <>
     Rational fromInteger(int arg) { return Rational(arg); }
@@ -294,7 +294,7 @@ namespace ring
     Integer fromInteger(Integer arg) { return arg; }
 
     template <>
-    double fromInteger(Integer arg) { return arg.get_d(); }
+    Real fromInteger(Integer arg) { return arg.get_d(); }
 
     template <>
     Rational fromInteger(Integer arg) { return Rational(arg); }
@@ -306,7 +306,7 @@ namespace ring
     }
 
     template <>
-    double recip(double arg)
+    Real recip(Real arg)
     {
         assert(arg != 0);
         return 1 / arg;
@@ -332,7 +332,7 @@ namespace ring
     }
 
     template <>
-    double fromRational(Rational r)
+    Real fromRational(Rational r)
     {
         return r.get_d();
     }
@@ -392,7 +392,7 @@ namespace ring
     }
 
     template <>
-    double half() { return 0.5; }
+    Real half() { return 0.5; }
 
     template <>
     Rational half() { return Rational(1, 2); }
@@ -436,7 +436,7 @@ namespace ring
     }
 
     template <>
-    double rootTwo() { return sqrt(2); }
+    Real rootTwo() { return sqrt(2); }
 
     template <typename T>
     T fromZRootTwo(ZRootTwo arg)
@@ -451,7 +451,7 @@ namespace ring
     }
 
     template <>
-    double rootHalf()
+    Real rootHalf()
     {
         return sqrt(0.5);
     }
@@ -481,7 +481,7 @@ namespace ring
     Integer adj(Integer arg) { return arg; }
 
     template <>
-    double adj(double arg) { return arg; }
+    Real adj(Real arg) { return arg; }
 
     template <>
     Rational adj(Rational arg) { return arg; }
@@ -513,7 +513,7 @@ namespace ring
     template <>
     Integer norm(Integer arg) { return arg; }
 
-    Integer floor_of(double arg)
+    Integer floor_of(Real arg)
     {
         return floor(arg);
     }
@@ -545,7 +545,7 @@ namespace ring
         return rInt - 1;
     }
 
-    Integer ceiling_of(double arg)
+    Integer ceiling_of(Real arg)
     {
         return ceil(arg);
     }
@@ -948,7 +948,7 @@ namespace ring
     std::string toString(const Integer &arg) { return arg.get_str(); }
 
     template <>
-    std::string toString(const double &arg) { return std::to_string(arg); }
+    std::string toString(const Real &arg) { return std::to_string(arg); }
 
     template <>
     std::string toString(const Rational &arg) { return arg.get_str(); }
@@ -1921,8 +1921,8 @@ Omega<T> Omega<T>::adj2() const
 template <typename T>
 Omega<T> Omega<T>::recip() const
 {
-    static_assert(std::is_same<T, double>::value || std::is_same<T, Rational>::value,
-                  "recip can only be called with T = double or T = Rational.");
+    static_assert(std::is_same<T, Real>::value || std::is_same<T, Rational>::value,
+                  "recip can only be called with T = Real or T = Rational.");
     assert((*this) != 0);
     Omega<T> x1 = Omega<T>(-c(), -b(), -a(), d());
     Omega<T> x2 = Omega<T>(-a(), b(), -c(), d());

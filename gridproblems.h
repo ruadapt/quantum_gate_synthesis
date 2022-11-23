@@ -1,4 +1,5 @@
 #pragma once
+#include "types.h"
 #include "ring.h"
 #include "matrix.h"
 #include "gridproblems.h"

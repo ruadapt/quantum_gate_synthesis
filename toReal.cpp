@@ -20,7 +20,7 @@ T toReal(int n)
 }
 
 template <typename T>
-T toReal(double d)
+T toReal(Real d)
 {
     return ring::fromRational<T>(Rational(d));
 }
