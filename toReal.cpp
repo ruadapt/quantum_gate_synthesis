@@ -20,7 +20,31 @@ T toReal(int n)
 }
 
 template <typename T>
-T toReal(Real d)
+T toReal(Real r)
 {
-    return ring::fromRational<T>(Rational(d));
+    return ring::fromRational<T>(Rational(r));
+}
+
+template <typename T>
+T toReal(ZDyadic d)
+{
+    return toReal<T>(d.a()) / toReal<T>(ring::exp2<Integer>(d.n()));
+}
+
+template <typename T>
+T toReal(ZRootTwo r)
+{
+    return toReal<T>(r.a()) + ring::rootTwo<T>() * toReal<T>(r.b());
+}
+
+template <typename T>
+T toReal(DRootTwo r)
+{
+    return toReal<T>(r.a()) + ring::rootTwo<T>() * toReal<T>(r.b());
+}
+
+template <typename T>
+T toReal(QRootTwo r)
+{
+    return toReal<T>(r.a()) + ring::rootTwo<T>() * toReal<T>(r.b());
 }

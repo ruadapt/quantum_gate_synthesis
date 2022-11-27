@@ -1,17 +1,20 @@
+#define BOOST_TEST_MODULE quadratic
 #include "../toReal.h"
+#include <boost/test/included/unit_test.hpp>
 
-void toRealTest()
+namespace tt = boost::test_tools;
+
+BOOST_AUTO_TEST_CASE(simple_types)
 {
-    std::cout << "toReal testing:" << std::endl;
-    assert(1.25 == toReal<Real>(5_mpq / 4));
-    assert(12.0 == toReal<Real>(12_mpz));
-    assert(12.0 == toReal<Real>(12));
-    assert(1.56 == toReal<Real>(1.56));
-    std::cout << "\ttoReal tests passed" << std::endl;
+    BOOST_TEST(1.25 == toReal<Real>(5_mpq / 4));
+    BOOST_TEST(12.0 == toReal<Real>(12_mpz));
+    BOOST_TEST(12.0 == toReal<Real>(12));
+    BOOST_TEST(1.56 == toReal<Real>(1.56));
 }
 
-int main()
+BOOST_AUTO_TEST_CASE(root_two)
 {
-    toRealTest();
-    std::cout << std::endl;
+    BOOST_TEST(2.414 == toReal<Real>(ZRootTwo(1, 1)), tt::tolerance(0.001));
+    BOOST_TEST(3.439 == toReal<Real>(DRootTwo(ZDyadic(9, 1), ZDyadic(-3, 2))), tt::tolerance(0.001));
+    BOOST_TEST(1.3286 == toReal<Real>(QRootTwo(12_mpq / 7, -3_mpq / 11)), tt::tolerance(0.001));
 }
