@@ -283,7 +283,12 @@ void testConvexSets()
         Ellipse<Integer> e = Ellipse<Integer>(op, p);
         Operator<Integer> op2 = e.op();
         Point<Integer> p2 = e.p();
-        std::cout << "\tEllipse construct test passed" << std::endl;
+        std::cout << "\tEllipse construction test passed" << std::endl;
+    }
+
+    {
+        ConvexSet<Real> u = gridprob::unitDisk<Real>();
+        std::cout << "\tunitDisk construction test passed" << std::endl;
     }
 }
 

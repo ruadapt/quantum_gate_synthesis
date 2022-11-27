@@ -15,13 +15,6 @@ T snd(Point<T> p)
 }
 
 template <typename T>
-Ellipse<T>::Ellipse(Operator<T> op, Point<T> p)
-{
-    op_ = op;
-    p_ = p;
-}
-
-template <typename T>
 Operator<T> Ellipse<T>::op() const
 {
     return op_;
@@ -32,6 +25,25 @@ Point<T> Ellipse<T>::p() const
 {
     return p_;
 }
+
+template <typename T>
+Ellipse<T> ConvexSet<T>::el() const
+{
+    return el_;
+}
+
+template <typename T>
+CharFun ConvexSet<T>::test() const
+{
+    return test_;
+}
+
+template <typename T>
+LineIntersector<T> ConvexSet<T>::intersect() const
+{
+    return intersect_;
+}
+
 namespace gridprob
 {
     template <typename T>
@@ -282,8 +294,8 @@ namespace gridprob
     template <typename T>
     ConvexSet<T> unitDisk()
     {
-        Operator<T> op = makeOperator(1, 0, 0, 1);
-        Point<T> p = std::make_tuple(0, 0);
+        Operator<T> op = makeOperator<T>(1, 0, 0, 1);
+        Point<T> p = std::make_tuple<T, T>(0, 0);
         Ellipse<T> el = Ellipse<T>(op, p);
 
         std::function<std::optional<std::tuple<T, T>>(Point<DRootTwo>, Point<DRootTwo>)> intersect = [](Point<DRootTwo> p, Point<DRootTwo> v)

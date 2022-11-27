@@ -21,7 +21,9 @@ template <typename T>
 class Ellipse
 {
 public:
-    Ellipse(Operator<T> op, Point<T> p);
+    Ellipse(Operator<T> op, Point<T> p) : op_{op}, p_{p}
+    {
+    }
     Operator<T> op() const;
     Point<T> p() const;
 
@@ -39,7 +41,9 @@ template <typename T>
 class ConvexSet
 {
 public:
-    ConvexSet(Ellipse<T> el, CharFun test, LineIntersector<T> intersect);
+    ConvexSet(Ellipse<T> el, CharFun test, LineIntersector<T> intersect) : el_{el}, test_{test}, intersect_{intersect}
+    {
+    }
     Ellipse<T> el() const;
     CharFun test() const;
     LineIntersector<T> intersect() const;
