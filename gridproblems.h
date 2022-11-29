@@ -45,8 +45,8 @@ public:
     {
     }
     Ellipse<T> el() const;
-    CharFun test() const;
-    LineIntersector<T> intersect() const;
+    bool test(Point<DRootTwo> p) const;
+    std::optional<std::tuple<T, T>> intersect(Point<DRootTwo> p1, Point<DRootTwo> p2) const;
 
 private:
     Ellipse<T> el_;

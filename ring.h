@@ -315,7 +315,7 @@ namespace ring
 
     int lobit(int n);
 
-    mp_bitcnt_t lobit(Integer n);
+    int lobit(Integer n);
 
     int hibit(int n);
 

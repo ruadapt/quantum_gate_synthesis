@@ -33,15 +33,15 @@ Ellipse<T> ConvexSet<T>::el() const
 }
 
 template <typename T>
-CharFun ConvexSet<T>::test() const
+bool ConvexSet<T>::test(Point<DRootTwo> p) const
 {
-    return test_;
+    return test_(p);
 }
 
 template <typename T>
-LineIntersector<T> ConvexSet<T>::intersect() const
+std::optional<std::tuple<T, T>> ConvexSet<T>::intersect(Point<DRootTwo> p1, Point<DRootTwo> p2) const
 {
-    return intersect_;
+    return intersect_(p1, p2);
 }
 
 namespace gridprob

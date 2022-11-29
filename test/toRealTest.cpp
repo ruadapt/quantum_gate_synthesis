@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE quadratic
+#define BOOST_TEST_MODULE toReal
 #include "../toReal.h"
 #include <boost/test/included/unit_test.hpp>
 

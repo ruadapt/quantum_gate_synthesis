@@ -38,7 +38,7 @@ namespace ring
     int mpzToInt(Integer z)
     {
         assert(z.fits_sint_p());
-        return z.get_si();
+        return static_cast<int>(z.get_si());
     }
 
     template <typename Integral>
@@ -202,13 +202,13 @@ namespace ring
         }
     }
 
-    mp_bitcnt_t lobit(Integer n)
+    int lobit(Integer n)
     {
         if (n == 0)
         {
             return -1;
         }
-        return mpz_scan1(n.get_mpz_t(), 0);
+        return static_cast<int>(mpz_scan1(n.get_mpz_t(), 0));
     }
 
     int hibit(int n)
