@@ -91,6 +91,9 @@ namespace gridprob
 
     template <typename T>
     ConvexSet<T> unitDisk();
+
+    template <typename T>
+    ConvexSet<T> disk(DRootTwo s);
 }
 
 #include "gridproblems.cpp"

@@ -316,4 +316,35 @@ namespace gridprob
 
         return ConvexSet<T>(el, test, intersect);
     }
-}
+
+    template <typename T>
+    ConvexSet<T> disk(DRootTwo s)
+    {
+        if (s <= 0)
+        {
+            throw std::invalid_argument("s > 0 is required");
+        }
+        T r = ring::recip<T>(ring::fromDRootTwo<T>(s));
+        Operator<T> op = makeOperator<T>(r, 0, 0, r);
+        Point<T> p = std::make_tuple<T, T>(0, 0);
+        Ellipse<T> el = Ellipse<T>(op, p);
+
+        std::function<std::optional<std::tuple<T, T>>(Point<DRootTwo>, Point<DRootTwo>)> intersect = [=](Point<DRootTwo> p, Point<DRootTwo> v)
+        {
+            QRootTwo a = ring::fromDRootTwo<QRootTwo>(iprod<DRootTwo>(v, v));
+            QRootTwo b = ring::fromDRootTwo<QRootTwo>(DRootTwo(2) * iprod<DRootTwo>(v, p));
+            QRootTwo c = ring::fromDRootTwo<QRootTwo>(iprod<DRootTwo>(p, p) - s);
+            std::optional<std::tuple<Real, Real>> q = quadratic<QRootTwo>(a, b, c);
+            return q;
+        };
+
+        std::function<bool(Point<DRootTwo>)> test = [=](Point<DRootTwo> p)
+        {
+            DRootTwo x, y;
+            std::tie(x, y) = p;
+            return x * x + y * y <= s;
+        };
+
+        return ConvexSet<T>(el, test, intersect);
+    }
+};

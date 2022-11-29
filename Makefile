@@ -1,6 +1,6 @@
 CC = g++
 CXX = g++
-CPPFLAGS= -isystem /usr/local/include -std=c++17 -Werror -Wall -Wextra -Wpedantic
+CPPFLAGS= -isystem /usr/local/include -std=c++17 -Werror -Wall -Wextra -Wpedantic -Wconversion
 LDLIBS = -lgmp -lgmpxx
 
 headers = types.h ring.h gridproblems.h matrix.h quadratic.h toReal.h
@@ -8,6 +8,9 @@ modules = ring.cpp gridproblems.cpp matrix.cpp quadratic.cpp toReal.cpp
 tests = test/ringTest test/gridproblemsTest test/matrixTest test/quadraticTest test/toRealTest
 
 all: main tests
+
+runtests: $(tests)
+	test/ringTest && test/gridproblemsTest && test/matrixTest && test/quadraticTest && test/toRealTest
 
 tests: $(tests)
 
