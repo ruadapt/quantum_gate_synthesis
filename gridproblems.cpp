@@ -1,6 +1,7 @@
 #include "ring.h"
 #include "quadratic.h"
 #include <vector>
+#include <cmath>
 
 template <typename T>
 T fst(Point<T> p)
@@ -46,6 +47,11 @@ std::optional<std::tuple<T, T>> ConvexSet<T>::intersect(Point<DRootTwo> p1, Poin
 
 namespace gridprob
 {
+    double logBase(double b, double x)
+    {
+        return log(x) / log(b);
+    }
+
     template <typename T>
     T lambda()
     {
@@ -87,6 +93,28 @@ namespace gridprob
             return std::make_tuple(2 * n, r);
         }
         return std::make_tuple(2 * n + 1, r * ring::recip<T>(b));
+    }
+
+    template <typename T>
+    double logBaseDouble(T b, T x)
+    {
+        if (b > 1)
+        {
+            Integer n;
+            T r;
+            std::tie(n, r) = floorlog(b, x);
+            // TODO check the conversions here
+            return ring::fromInteger<double>(n) + logBase(double(b), double(r));
+        }
+        if (b <= 0)
+        {
+            return NAN;
+        }
+        if (b == 1)
+        {
+            return std::numeric_limits<double>::infinity();
+        }
+        return logBaseDouble(ring::recip(b), x);
     }
 
     template <typename T>
@@ -346,5 +374,65 @@ namespace gridprob
         };
 
         return ConvexSet<T>(el, test, intersect);
+    }
+
+    template <typename T>
+    Operator<T> opFromDRootTwo(Operator<DRootTwo> op)
+    {
+        Operator<T> result;
+        for (size_t i = 0; i < op.size1(); i++)
+        {
+            for (size_t j = 0; j < op.size2(); i++)
+            {
+                result(i, j) = ring::fromDRootTwo<T>(op(i, j));
+            }
+        }
+        return result;
+    }
+
+    template <typename T>
+    std::tuple<T, double> operatorToBz(Operator<T> op)
+    {
+        T a = op(0, 0);
+        T b = op(0, 1);
+        T d = op(1, 1);
+        T lz = d * ring::recip<T>(a);
+        return 0.5 * logBaseDouble(lambda<T>(), lz);
+    }
+
+    template <typename T>
+    T det(Operator<T> op)
+    {
+        return op(0, 0) * op(1, 1) - op(0, 1) * op(1, 0);
+    }
+
+    template <typename T>
+    T operatorSkew(Operator<T> op)
+    {
+        return op(0, 1) * op(1, 0);
+    }
+
+    template <typename T>
+    T uprightness(Operator<T> op)
+    {
+        return M_PI / 4 * sqrt(det(op) / (op(0, 0) * op(1, 1)));
+    }
+
+    template <typename T>
+    T skew(OperatorPair<T> pair)
+    {
+        Operator<T> op1 = std::get<0>(pair);
+        Operator<T> op2 = std::get<1>(pair);
+        return operatorSkew(op1) + operatorSkew(op2);
+    }
+
+    template <typename T>
+    double bias(OperatorPair<T> pair)
+    {
+        Operator<T> op1 = std::get<0>(pair);
+        Operator<T> op2 = std::get<1>(pair);
+        double z = std::get<1>(operatorToBz(op1));
+        double zeta = std::get<1>(operatorToBz(op2));
+        return zeta - z;
     }
 };

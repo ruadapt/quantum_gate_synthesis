@@ -18,6 +18,9 @@ template <typename T>
 using Operator = Matrix<T, 2, 2>;
 
 template <typename T>
+using OperatorPair = std::tuple<Operator<T>, Operator<T>>;
+
+template <typename T>
 class Ellipse
 {
 public:
@@ -56,6 +59,8 @@ private:
 
 namespace gridprob
 {
+    double logBase(double b, double x);
+
     template <typename T>
     T lambda();
 
@@ -67,6 +72,9 @@ namespace gridprob
 
     template <typename T>
     std::tuple<Integer, T> floorlog(T b, T x);
+
+    template <typename T>
+    double logBaseDouble(T b, T x);
 
     template <typename T>
     T iprod(Point<T> p1, Point<T> p2);
@@ -94,6 +102,27 @@ namespace gridprob
 
     template <typename T>
     ConvexSet<T> disk(DRootTwo s);
+
+    template <typename T>
+    Operator<T> opFromDRootTwo(Operator<DRootTwo> op);
+
+    template <typename T>
+    std::tuple<T, double> operatorToBz(Operator<T> op);
+
+    template <typename T>
+    T det(Operator<T> op);
+
+    template <typename T>
+    T operatorSkew(Operator<T> op);
+
+    template <typename T>
+    T uprightness(Operator<T> op);
+
+    template <typename T>
+    T skew(OperatorPair<T> pair);
+
+    template <typename T>
+    double bias(OperatorPair<T> pair);
 }
 
 #include "gridproblems.cpp"
