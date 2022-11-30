@@ -47,6 +47,37 @@ std::optional<std::tuple<T, T>> ConvexSet<T>::intersect(Point<DRootTwo> p1, Poin
 
 namespace gridprob
 {
+    template <typename T, int M, int N>
+    Matrix<T, M, N> matrixPow(Matrix<T, M, N> base, int exp)
+    {
+        assert(exp >= 0);
+        Matrix<T, M, N> result;
+        if (exp == 0)
+        {
+            result = 1 + result;
+            return result;
+        }
+        if (exp == 1)
+        {
+            return base;
+        }
+        if (exp % 2 == 0)
+        {
+            T newBase = base * base;
+            int newExp = exp / 2;
+            return matrixPow(newBase, newExp);
+        }
+        T newBase = base * base;
+        int newExp = (exp - 1) / 2;
+        return prod(base, matrixPow(newBase, newExp));
+    }
+
+    template <typename T>
+    Operator<T> operatorPow(Operator<T> base, int exp)
+    {
+        return matrixPow<T, 2, 2>(base, exp);
+    }
+
     double logBase(double b, double x)
     {
         return log(x) / log(b);
@@ -382,7 +413,7 @@ namespace gridprob
         Operator<T> result;
         for (size_t i = 0; i < op.size1(); i++)
         {
-            for (size_t j = 0; j < op.size2(); i++)
+            for (size_t j = 0; j < op.size2(); j++)
             {
                 result(i, j) = ring::fromDRootTwo<T>(op(i, j));
             }
@@ -434,5 +465,53 @@ namespace gridprob
         double z = std::get<1>(operatorToBz(op1));
         double zeta = std::get<1>(operatorToBz(op2));
         return zeta - z;
+    }
+
+    template <typename T>
+    Operator<T> opR() { return ring::rootHalf<T>() * makeOperator<T>(1, -1, 1, 1); }
+
+    template <typename T>
+    Operator<T> opA() { return makeOperator<T>(1, -2, 0, 1); }
+
+    template <typename T>
+    Operator<T> opAInv() { return makeOperator<T>(1, 2, 0, 1); }
+
+    template <typename T>
+    Operator<T> opAPower(Integer k)
+    {
+        return (k >= 0) ? operatorPow<T>(opA<T>(), k) : operatorPow<T>(opAInv<T>(), -k);
+    }
+
+    template <typename T>
+    Operator<T> opB() { return makeOperator<T>(1, ring::rootTwo<T>(), 0, 1); }
+
+    template <typename T>
+    Operator<T> opBInv() { return makeOperator<T>(1, -ring::rootTwo<T>(), 0, 1); }
+
+    template <typename T>
+    Operator<T> opBPower(Integer k)
+    {
+        return (k >= 0) ? operatorPow<T>(opB<T>(), k) : operatorPow<T>(opBInv<T>(), -k);
+    }
+
+    template <typename T>
+    Operator<T> opK() { return ring::rootHalf<T>() * makeOperator<T>(-lambdaInv<T>(), -1, lambda<T>(), 1); }
+
+    template <typename T>
+    Operator<T> opX() { return makeOperator<T>(0, 1, 1, 0); }
+
+    template <typename T>
+    Operator<T> opZ() { return makeOperator<T>(1, 0, 0, -1); }
+
+    template <typename T>
+    Operator<T> opS() { return makeOperator<T>(lambda<T>(), 0, 0, lambdaInv<T>()); }
+
+    template <typename T>
+    Operator<T> opSInv() { return makeOperator<T>(lambdaInv<T>(), 0, 0, lambda<T>()); }
+
+    template <typename T>
+    Operator<T> opSPower(Integer k)
+    {
+        return (k >= 0) ? operatorPow<T>(opS<T>(), k) : operatorPow<T>(opSInv<T>(), -k);
     }
 };
