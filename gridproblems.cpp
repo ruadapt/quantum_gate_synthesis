@@ -78,6 +78,28 @@ namespace gridprob
         return matrixPow<T, 2, 2>(base, exp);
     }
 
+    template <typename T>
+    Operator<T> adj(Operator<T> op)
+    {
+        Operator<T> result;
+        result(0, 0) = ring::adj(op(0, 0));
+        result(0, 1) = ring::adj(op(0, 1));
+        result(1, 0) = ring::adj(op(1, 0));
+        result(1, 1) = ring::adj(op(1, 1));
+        return result;
+    }
+
+    template <typename T>
+    Operator<T> adj2(Operator<T> op)
+    {
+        Operator<T> result;
+        result(0, 0) = ring::adj2(op(0, 0));
+        result(0, 1) = ring::adj2(op(0, 1));
+        result(1, 0) = ring::adj2(op(1, 0));
+        result(1, 1) = ring::adj2(op(1, 1));
+        return result;
+    }
+
     double logBase(double b, double x)
     {
         return log(x) / log(b);
@@ -93,6 +115,22 @@ namespace gridprob
     T lambdaInv()
     {
         return ring::rootTwo<T>() - 1;
+    }
+
+    template <typename T>
+    T lambdaPower(Integer k)
+    {
+        if (k >= 0)
+        {
+            return ring::powNonNeg(lambda<T>(), k);
+        }
+        return ring::powNonNeg(lambdaInv<T>(), -k);
+    }
+
+    template <typename T>
+    T signPower(Integer k)
+    {
+        return ring::even(k) ? T(1) : T(-1);
     }
 
     template <typename T>
@@ -513,5 +551,47 @@ namespace gridprob
     Operator<T> opSPower(Integer k)
     {
         return (k >= 0) ? operatorPow<T>(opS<T>(), k) : operatorPow<T>(opSInv<T>(), -k);
+    }
+
+    template <typename T>
+    OperatorPair<T> action(OperatorPair<T> pair, Operator<DRootTwo> g)
+    {
+        Operator<T> a = std::get<0>(pair);
+        Operator<T> b = std::get<1>(pair);
+        Operator<T> g2 = opFromDRootTwo<T>(g);
+        Operator<T> g4 = opFromDRootTwo<T>(adj2(g));
+        Operator<T> g1 = adj(g2);
+        Operator<T> g3 = adj(g4);
+        return std::make_tuple(prod(prod(g1, a), g2), prod(prod(g3, b), g4));
+    }
+
+    template <typename T>
+    Operator<T> shiftSigma(Integer k, Operator<T> m)
+    {
+        Operator<T> op;
+        op(0, 0) = lambdaPower<T>(k) * m(0, 0);
+        op(0, 1) = m(0, 1);
+        op(1, 0) = m(1, 0);
+        op(1, 1) = lambdaPower<T>(-k) * m(1, 1);
+        return op;
+    }
+
+    template <typename T>
+    Operator<T> shiftTau(Integer k, Operator<T> m)
+    {
+        Operator<T> op;
+        op(0, 0) = lambdaPower<T>(-k) * m(0, 0);
+        op(0, 1) = signPower<T>(k) * m(0, 1);
+        op(1, 0) = m(1, 0) * signPower<T>(k);
+        op(1, 1) = lambdaPower<T>(k) * m(1, 1);
+        return op;
+    }
+
+    template <typename T>
+    OperatorPair<T> shiftState(Integer k, OperatorPair<T> pair)
+    {
+        Operator<T> d = std::get<0>(pair);
+        Operator<T> delta = std::get<1>(pair);
+        return std::make_tuple(shiftSigma(k, d), shiftTau(k, delta));
     }
 };
