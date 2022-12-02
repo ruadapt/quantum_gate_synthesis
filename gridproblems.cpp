@@ -594,4 +594,107 @@ namespace gridprob
         Operator<T> delta = std::get<1>(pair);
         return std::make_tuple(shiftSigma(k, d), shiftTau(k, delta));
     }
+
+    template <typename T>
+    Integer lemma_A(T z, T zeta)
+    {
+        T c = std::min<T>(z, zeta);
+        return std::max<Integer>(1, ring::floor_of(pow(lambda<T>(), c) / T(2)));
+    }
+
+    template <typename T>
+    Integer lemma_B(T z, T zeta)
+    {
+        T c = std::min<T>(z, zeta);
+        return std::max<Integer>(1, ring::floor_of(pow(lambda<T>(), c) / ring::rootTwo<T>()));
+    }
+
+    template <typename T>
+    Integer lemma_A_l2(T l2z, T l2zeta)
+    {
+        T l2c = std::min<T>(l2z, l2zeta);
+        return std::max<Integer>(1, ring::intsqrt(ring::floor_of(l2c / 4)));
+    }
+
+    template <typename T>
+    Integer lemma_B_l2(T l2z, T l2zeta)
+    {
+        T l2c = std::min<T>(l2z, l2zeta);
+        return std::max<Integer>(1, ring::intsqrt(ring::floor_of(l2c / 2)));
+    }
+
+    template <typename T>
+    std::optional<Operator<DRootTwo>> step_lemma(OperatorPair<T> pair)
+    {
+        Operator<T> matA = std::get<0>(pair);
+        Operator<T> matB = std::get<1>(pair);
+        T b, l2z;
+        std::tie(b, l2z) = operatorToBl2z(matA);
+        T beta, l2zeta;
+        std::tie(beta, l2zeta) = operatorToBl2z(matB);
+
+        auto logLambda = [](T a)
+        { return logBaseDouble<T>(lambda<T>(), a); };
+
+        T l2z_minus_zeta = l2z / l2zeta;
+
+        auto wlog_using = [=](Operator<T> op)
+        {
+            Operator<T> matA2, matB2;
+            std::tie(matA2, matB2) = action(matA, matB);
+            std::optional<Operator<DRootTwo>> maybe_op2 = step_lemma(matA2, matB2);
+            return maybe_op2.has_value() ? (prod(op, maybe_op2.value())) : op;
+        };
+
+        auto with_shift = [=](Integer k)
+        {
+            Operator<T> matA2, matB2;
+            std::tie(matA2, matB2) = shiftState(k, matA, matB);
+            std::optional<Operator<DRootTwo>> maybe_op2 = step_lemma(matA2, matB2);
+            if (maybe_op2.has_value())
+            {
+                return shiftSigma(k, maybe_op2.value());
+            }
+            return std::nullopt;
+        };
+
+        if (beta < 0)
+        {
+            return wlog_using(opZ<T>());
+        }
+        if (l2z * l2zeta < 1)
+        {
+            return wlog_using(opX<T>());
+        }
+        if (l2z_minus_zeta > 33.971 || l2z_minus_zeta < 0.029437)
+        {
+            return wlog_using(opSPower<T>(std::round(logLambda(l2z_minus_zeta) / 8)));
+        }
+        if (skew(matA, matB) <= 15)
+        {
+            return std::nullopt;
+        }
+        if (l2z_minus_zeta > 5.8285 || l2z_minus_zeta < 0.17157)
+        {
+            return with_shift(round(logLambda(l2z_minus_zeta) / 4));
+        }
+        if (within(l2z, 0.24410, 4.0968) && within(l2zeta, 0.24410, 4.0968))
+        {
+            return opR<T>();
+        }
+
+        if (b >= 0 && l2z <= 1.6969)
+        {
+            return opK<T>();
+        }
+        if (b >= 0 && l2zeta <= 1.6969)
+        {
+            return adj2<T>(opK<T>);
+        }
+        if (b >= 0)
+        {
+            return opAPower(lemma_A_l2(l2z, l2zeta));
+        }
+        return opB_power(lemma_B_l2(l2z, l2zeta));
+    }
 };

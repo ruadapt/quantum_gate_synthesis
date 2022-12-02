@@ -773,7 +773,7 @@ namespace ring
         std::tie(b, bk) = arg.b().decomposeDyadic();
         Integer x1 = 2 * ak;
         Integer x2 = 2 * bk - 1;
-        return (x1 > x2) ? x1 : x2;
+        return std::max<Integer>(x1, x2);
     }
 
     template <typename T>
@@ -1005,7 +1005,7 @@ bool Dyadic<T>::operator==(const Dyadic &d) const
 {
     T b = d.a();
     T m = d.n();
-    T k = (m > n()) ? m : n();
+    T k = std::max<T>(m, n());
     return (a() * ring::exp2<T>(k - n())) == (b * ring::exp2<T>(k - m));
 }
 
@@ -1020,7 +1020,7 @@ Ordering Dyadic<T>::compare(const Dyadic &d) const
 {
     T b = d.a();
     T m = d.n();
-    T k = (n() > m) ? n() : m;
+    T k = std::max<T>(n(), m);
     T size1 = a() * ring::exp2<T>(k - n());
     T size2 = b * ring::exp2<T>(k - m);
     if (size1 > size2)
@@ -1599,7 +1599,7 @@ Integer Complex<T>::denomExp() const
 {
     Integer expA = ring::denomExp<T>(a());
     Integer expB = ring::denomExp<T>(b());
-    return (expA > expB) ? expA : expB;
+    return std::max<Integer>(expA, expB);
 }
 
 template <typename T>
