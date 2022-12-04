@@ -976,6 +976,15 @@ ZDyadic::Dyadic(Integer arg)
 }
 
 template <typename T>
+Dyadic<T>& Dyadic<T>::operator+=(const Dyadic<T> &d)
+{
+    Dyadic<T> sum = *this + d;
+    this->a = sum.a;
+    this->n = sum.n;
+    return *this;
+}
+
+template <typename T>
 Dyadic<T>::Dyadic(T a, T n)
 {
     a_ = a;
@@ -1248,6 +1257,15 @@ RootTwo<T>::RootTwo(T a, T b)
 }
 
 template <typename T>
+RootTwo<T>& RootTwo<T>::operator+=(const RootTwo<T> &r)
+{
+    RootTwo<T> sum = *this + r;
+    this->a_ = sum.a();
+    this->b_ = sum.b();
+    return *this;
+}
+
+template <typename T>
 T RootTwo<T>::a() const
 {
     return a_;
@@ -1496,6 +1514,15 @@ Complex<T>::Complex(T a, T b)
 {
     a_ = a;
     b_ = b;
+}
+
+template <typename T>
+Complex<T>& Complex<T>::operator+=(const Complex<T> &c)
+{
+    Complex<T> sum = *this + c;
+    this->a_ = sum.a();
+    this->b_ = sum.b();
+    return *this;
 }
 
 template <typename T>
@@ -1821,6 +1848,17 @@ Omega<T>::Omega(T a, T b, T c, T d)
     b_ = b;
     c_ = c;
     d_ = d;
+}
+
+template <typename T>
+Omega<T>& Omega<T>::operator+=(const Omega<T> &o)
+{
+    Omega<T> sum = *this + o;
+    this->a_ = sum.a();
+    this->b_ = sum.b();
+    this->c_ = sum.c();
+    this->d_ = sum.d();
+    return *this;
 }
 
 template <typename T>
