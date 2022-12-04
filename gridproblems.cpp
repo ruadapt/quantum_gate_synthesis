@@ -810,4 +810,28 @@ namespace gridprob
         LineIntersector<T> new_int = lineintersector_transform<T>(opFromDRootTwo<T>(opG), set.intersectFun());
         CharFun new_test = charfun_transform(opG, set.testFun());
     }
+
+    template <typename T>
+    Tuple2By2<T> boundingbox_ellipse(Ellipse<T> el)
+    {
+        T x, y;
+        Point<T> ctrA = el.p();
+        x = std::get<0>(ctrA);
+        y = std::get<1>(ctrA);
+        Operator<T> matA = el.op();
+        T a, b, c, d;
+        a = matA(0, 0);
+        b = matA(0, 1);
+        c = matA(1, 0);
+        d = matA(1, 1);
+        T sqrt_det = sqrt(det(matA));
+        T w = sqrt(d) / sqrt_det;
+        T h = sqrt(a) / sqrt_det;
+    }
+
+    template <typename T>
+    Tuple2By2<T> boundingbox(ConvexSet<T> set)
+    {
+        return boundingbox_ellipse(set.el());
+    }
 };
