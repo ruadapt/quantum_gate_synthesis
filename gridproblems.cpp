@@ -34,6 +34,18 @@ Ellipse<T> ConvexSet<T>::el() const
 }
 
 template <typename T>
+CharFun ConvexSet<T>::testFun() const
+{
+    return test_;
+}
+
+template <typename T>
+LineIntersector<T> ConvexSet<T>::intersectFun() const
+{
+    return intersect_;
+}
+
+template <typename T>
 bool ConvexSet<T>::test(Point<DRootTwo> p) const
 {
     return test_(p);
@@ -140,6 +152,15 @@ namespace gridprob
     }
 
     template <typename T>
+    std::tuple<T, T> fatten_interval(std::tuple<T, T> interval)
+    {
+        T x = std::get<0>(interval);
+        T y = std::get<1>(interval);
+        T epsilon = 0.0001 * (y - x);
+        return std::make_tuple(x - epsilon, y + epsilon);
+    }
+
+    template <typename T>
     std::tuple<Integer, T> floorlog(T b, T x)
     {
         if (x <= T(0))
@@ -190,6 +211,17 @@ namespace gridprob
     T iprod(Point<T> p1, Point<T> p2)
     {
         return fst(p1) * fst(p2) + snd(p1) * snd(p2);
+    }
+
+    template <typename T>
+    Operator<T> special_inverse(Operator<T> opG)
+    {
+        T a, b, c, d;
+        a = opG(0, 0);
+        b = opG(0, 1);
+        c = opG(1, 0);
+        d = opG(1, 1);
+        return det(opG) * makeOperator(d, -b, -c, a);
     }
 
     template <typename T>
@@ -258,7 +290,7 @@ namespace gridprob
             std::vector<ZRootTwo> results(subResults.size());
             ZRootTwo lambdaInvNZ = ring::powNonNeg(lInvZ, n);
             std::transform(subResults.begin(), subResults.end(), results.begin(),
-                           [&lambdaInvNZ = std::as_const(lambdaInvNZ)](ZRootTwo z)
+                           [=](ZRootTwo z)
                            { return lambdaInvNZ * z; });
             return results;
         }
@@ -270,7 +302,7 @@ namespace gridprob
             std::vector<ZRootTwo> results(subResults.size());
             ZRootTwo lambdaInvNZ = ring::powNonNeg(lInvZ, n);
             std::transform(subResults.begin(), subResults.end(), results.begin(),
-                           [&lambdaInvNZ = std::as_const(lambdaInvNZ)](ZRootTwo z)
+                           [=](ZRootTwo z)
                            { return lambdaInvNZ * z; });
             return results;
         }
@@ -282,7 +314,7 @@ namespace gridprob
             std::vector<ZRootTwo> results(subResults.size());
             ZRootTwo lambdaMZ = ring::powNonNeg(lZ, m);
             std::transform(subResults.begin(), subResults.end(), results.begin(),
-                           [&lambdaMZ = std::as_const(lambdaMZ)](ZRootTwo z)
+                           [=](ZRootTwo z)
                            { return lambdaMZ * z; });
             return results;
         }
@@ -294,7 +326,7 @@ namespace gridprob
             std::vector<ZRootTwo> results(subResults.size());
             ZRootTwo lambdaMZ = ring::powNonNeg(lZ, m);
             std::transform(subResults.begin(), subResults.end(), results.begin(),
-                           [&lambdaMZ = std::as_const(lambdaMZ)](ZRootTwo z)
+                           [=](ZRootTwo z)
                            { return lambdaMZ * z; });
             return results;
         }
@@ -696,5 +728,86 @@ namespace gridprob
             return opAPower(lemma_A_l2(l2z, l2zeta));
         }
         return opB_power(lemma_B_l2(l2z, l2zeta));
+    }
+
+    template <typename T>
+    Operator<DRootTwo> reduction(OperatorPair<T> st)
+    {
+        std::optional<Operator<DRootTwo>> sl = step_lemma(st);
+        if (!sl.has_value())
+        {
+            return makeOperator<T>(1, 0, 0, 1);
+        }
+        Operator<DRootTwo> opG = sl.value();
+        Operator<DRootTwo> opG2 = reduction<T>(action<T>(st, opG));
+        return prod(opG, opG2);
+    }
+
+    template <typename T>
+    Operator<DRootTwo> to_upright(OperatorPair<T> pair)
+    {
+        Operator<T> a = std::get<0>(pair);
+        Operator<T> b = std::get<1>(pair);
+        Operator<T> a2 = a / (sqrt(det<T>(a)));
+        Operator<T> b2 = b / (sqrt(det<T>(b)));
+        return reduction<T>(a2, b2);
+    }
+
+    template <typename T>
+    Operator<DRootTwo> to_upright_sets(ConvexSet<T> setA, ConvexSet<T> setB)
+    {
+        return to_upright(setA.el().op(), setB.el().op());
+    }
+
+    template <typename T>
+    Point<T> point_transform(Operator<T> opG, Point<T> p)
+    {
+        T x, y;
+        x = std::get<0>(p);
+        y = std::get<1>(p);
+        T a, b, c, d;
+        a = opG(0, 0);
+        b = opG(0, 1);
+        c = opG(1, 0);
+        d = opG(1, 1);
+        return std::make_tuple(a * x + b * y, c * x + d * y);
+    }
+
+    template <typename T>
+    Ellipse<T> ellipse_transform(Operator<T> opG, Ellipse<T> ell)
+    {
+        Operator<T> opG_inv = special_inverse<T>(opG);
+        Operator<T> new_op = prod(prod(adj(opG_inv), ell.op()), opG_inv);
+        Point<T> new_center = point_transform(opG, ell.p());
+        return Ellipse<T>(new_op, new_center);
+    }
+
+    CharFun charfun_transform(Operator<DRootTwo> opG, CharFun f)
+    {
+        Operator<DRootTwo> opG_inv = special_inverse<DRootTwo>(opG);
+        return [=](Point<DRootTwo> p)
+        {
+            return f(point_transform(opG_inv, p));
+        };
+    }
+
+    template <typename T>
+    LineIntersector<T> lineintersector_transform(Operator<DRootTwo> opG, LineIntersector<T> intA)
+    {
+        Operator<T> opG_inv = special_inverse<T>(opG);
+        return [=](Point<DRootTwo> v2, Point<DRootTwo> w2)
+        {
+            Point<DRootTwo> v = point_transform(opG_inv, v2);
+            Point<DRootTwo> w = point_transform(opG_inv, w2);
+            return intA(v, w);
+        };
+    }
+
+    template <typename T>
+    ConvexSet<T> convex_transform(Operator<DRootTwo> opG, ConvexSet<T> set)
+    {
+        Ellipse<T> new_ell = ellipse_transform<T>(opFromDRootTwo<T>(opG), set.el());
+        LineIntersector<T> new_int = lineintersector_transform<T>(opFromDRootTwo<T>(opG), set.intersectFun());
+        CharFun new_test = charfun_transform(opG, set.testFun());
     }
 };
