@@ -112,6 +112,24 @@ namespace gridprob
         return result;
     }
 
+    template <typename T>
+    std::vector<T> adj(std::vector<T> v)
+    {
+        std::vector<T> result(v.size());
+        std::transform(v.begin(), v.end(), result.begin(), [](T x)
+                       { return ring::adj<T>(x); });
+        return result;
+    }
+
+    template <typename T>
+    std::vector<T> adj2(std::vector<T> v)
+    {
+        std::vector<T> result(v.size());
+        std::transform(v.begin(), v.end(), result.begin(), [](T x)
+                       { return ring::adj2<T>(x); });
+        return result;
+    }
+
     double logBase(double b, double x)
     {
         return log(x) / log(b);
@@ -833,5 +851,106 @@ namespace gridprob
     Tuple2By2<T> boundingbox(ConvexSet<T> set)
     {
         return boundingbox_ellipse(set.el());
+    }
+
+    template <typename T>
+    std::function<std::vector<DOmega>(Integer)> gridpoints2_scaled_with_gridop(
+        ConvexSet<T> setA, ConvexSet<T> setB, Operator<DRootTwo> opG)
+    {
+        Operator<DRootTwo> opG_inv = special_inverse<DRootTwo>(opG);
+        ConvexSet<T> setA_prime = convex_transform(opG_inv, setA);
+        ConvexSet<T> setB_prime = convex_transform(adj2<DRootTwo>(opG_inv), setB);
+        Tuple2By2<T> bboxA_prime = boundingbox(setA_prime);
+        Tuple2By2<T> bboxB_prime = boundingbox(setB_prime);
+        T x0A, x1A, y0A, y1A;
+        std::tie(x0A, x1A) = std::get<0>(bboxA_prime);
+        std::tie(y0A, y1A) = std::get<1>(bboxA_prime);
+        T x0B, x1B, y0B, y1B;
+        std::tie(x0B, x1B) = std::get<0>(bboxB_prime);
+        std::tie(y0B, y1B) = std::get<1>(bboxB_prime);
+
+        std::function<std::vector<DOmega>(Integer)> solutions_fun = [=](Integer k)
+        {
+            if (k < 0)
+            {
+                throw std::invalid_argument("k >= 0 is required");
+            }
+
+            std::tuple<T, T> intervalA = std::make_tuple(y0A, y1A);
+            std::tuple<T, T> intervalB = std::make_tuple(y0B, y1B);
+
+            std::vector<DRootTwo> xs = gridpointsScaled<T>(
+                x0A, x1A + lambda<T>(), x0B, x1B + lambda<T>(), k + 1);
+
+            std::vector<DOmega> result(0);
+
+            if (xs.size() == 0)
+            {
+                return result;
+            }
+
+            DRootTwo x0 = xs.at(0);
+            DRootTwo x0_bul = x0.adj2();
+            T dx = ring::powNonNeg(ring::rootHalf<T>(), k);
+            T dx_bul = ring::adj2(dx);
+
+            std::vector<DRootTwo> beta_prime_list = gridpointsScaled(
+                fatten_interval(intervalA), fatten_interval(intervalB), k + 1);
+
+            for (DRootTwo beta_prime : beta_prime_list)
+            {
+                DRootTwo beta_prime_bul = ring::adj2<DRootTwo>(beta_prime);
+
+                Point<DRootTwo> p1A = std::make_tuple(x0, beta_prime);
+                Point<DRootTwo> p2A = std::make_tuple(dx, DRootTwo(0));
+                std::optional<std::tuple<DRootTwo, DRootTwo>> iA = setA_prime.intersectFun(p1A, p2A);
+
+                Point<DRootTwo> p1B = std::make_tuple(x0_bul, beta_prime_bul);
+                Point<DRootTwo> p2B = std::make_tuple(dx_bul, DRootTwo(0));
+                std::optional<std::tuple<DRootTwo, DRootTwo>> iB = setA_prime.intersectFun(p1B, p2B);
+
+                assert(iA.has_value());
+                assert(iB.has_value());
+
+                DRootTwo t0A, t1A, t0B, t1B;
+                std::tie(t0A, t1A) = iA.value();
+                std::tie(t0B, t1B) = iB.value();
+
+                DRootTwo dtA = DRootTwo(10) * ring::recip<DRootTwo>(
+                                        std::max<DRootTwo>(
+                                            DRootTwo(10), ring::powNonNeg<DRootTwo>(DRootTwo(2), k) * (t1B - t0B)));
+                DRootTwo dtB = DRootTwo(10) * ring::recip<DRootTwo>(
+                                        std::max<DRootTwo>(
+                                            DRootTwo(10), ring::powNonNeg<DRootTwo>(DRootTwo(2), k) * (t1A - t0A)));
+
+                DRootTwo rk = ring::powNonNeg<DRootTwo>(ring::rootTwo<DRootTwo>(), k);
+                std::vector<DRootTwo> alpha_prime_offs_list = gridpointsScaledParity(
+                    (beta_prime - x0) * rk, t0A - dtA, t1A + dtA, t0B - dtB, t1B + dtB, 1);
+
+                for (DRootTwo alpha_prime_offs : alpha_prime_offs_list)
+                {
+                    DRootTwo alpha_prime = alpha_prime_offs * dx + x0;
+                    DRootTwo alpha, beta;
+                    std::tie(alpha, beta) = point_transform(opG, std::make_tuple(alpha_prime, beta_prime));
+                    Point<DRootTwo> p = std::make_tuple(alpha, beta);
+                    Point<DRootTwo> p2 = std::make_tuple(alpha.adj2(), beta.adj2());
+                    if (setA.test(p) && setB.test(p2))
+                    {
+                        DOmega i = ring::i<DOmega>();
+                        DOmega z = ring::fromDRootTwo<DOmega>(alpha) + i * ring::fromDRootTwo<DOmega>(beta);
+                        result.push_back(z);
+                    }
+                }
+            }
+            return result;
+        };
+        return solutions_fun;
+    }
+
+    template <typename T>
+    std::function<std::vector<DOmega>(Integer)> gridpoints2_scaled(ConvexSet<T> setA, ConvexSet<T> setB)
+    {
+        Operator<DRootTwo> opG = to_upright_sets<T>(setA, setB);
+        return gridpoints2_scaled_with_gridop(setA, setB, opG);
     }
 };
