@@ -19,11 +19,12 @@ T toReal(int n)
     return toReal<T>(Integer(n));
 }
 
-template <typename T>
-T toReal(Real r)
-{
-    return ring::fromRational<T>(Rational(r));
-}
+// TODO see if this is needed
+// template <typename T>
+// T toReal(Real r)
+// {
+//     return ring::fromRational<T>(Rational(r));
+// }
 
 template <typename T>
 T toReal(ZDyadic d)

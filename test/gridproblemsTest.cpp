@@ -1,10 +1,9 @@
 #define BOOST_TEST_MODULE gridProblems
+#include "utils.h"
 #include "../gridproblems.h"
 #include <boost/test/included/unit_test.hpp>
 #include <iostream>
 #include <tuple>
-
-namespace tt = boost::test_tools;
 
 BOOST_AUTO_TEST_CASE(test_lambda)
 {
@@ -296,6 +295,42 @@ BOOST_AUTO_TEST_CASE(test_unitDisk)
 
     std::optional<std::tuple<Real, Real>> x = u.intersect(p5, p6);
     BOOST_TEST(x.has_value());
-    BOOST_TEST(-0.00222851183 == std::get<0>(x.value()), tt::tolerance(0.0001));
-    BOOST_TEST(0.00169393714 == std::get<1>(x.value()), tt::tolerance(0.0001));
+    BOOST_TEST(approx_equal(Real(-0.00222851183), std::get<0>(x.value())));
+    BOOST_TEST(approx_equal(Real(0.00169393714), std::get<1>(x.value())));
+}
+
+BOOST_AUTO_TEST_CASE(test_disk)
+{
+    ConvexSet<Real> d = gridprob::disk<Real>(25);
+
+    Point<DRootTwo> p1 = std::make_tuple(DRootTwo(ZDyadic(7, 3), 0), 4);
+    Point<DRootTwo> p2 = std::make_tuple(DRootTwo(ZDyadic(1, 1), 0), DRootTwo(ZDyadic(1, 2), 0));
+    Point<DRootTwo> p3 = std::make_tuple(1, DRootTwo(ZDyadic(1, 5), 5));
+    Point<DRootTwo> p4 = std::make_tuple(DRootTwo(ZDyadic(19, 2), 0), DRootTwo(ZDyadic(9, 2), 0));
+    assert(d.test(p1));
+    assert(d.test(p2));
+    assert(!d.test(p3));
+    assert(!d.test(p4));
+
+    DRootTwo d1 = DRootTwo((ZDyadic(1, 2)), (ZDyadic(3, 4)));
+    DRootTwo d2 = DRootTwo((ZDyadic(5, 6)), (ZDyadic(7, 8)));
+    DRootTwo d3 = DRootTwo((ZDyadic(9, 10)), (ZDyadic(11, 12)));
+    DRootTwo d4 = DRootTwo((ZDyadic(4, -6)), (ZDyadic(1, -7)));
+    Point<DRootTwo> p5 = std::make_tuple(d1, d2);
+    Point<DRootTwo> p6 = std::make_tuple(d3, d4);
+
+    std::optional<std::tuple<Real, Real>> x = d.intersect(p5, p6);
+    BOOST_TEST(x.has_value());
+    BOOST_TEST(approx_equal(Real(-0.01164753904), std::get<0>(x.value())));
+    BOOST_TEST(approx_equal(Real(0.01111296434), std::get<1>(x.value())));
+}
+
+BOOST_AUTO_TEST_CASE(test_opFromDRootTwo)
+{
+    Operator<DRootTwo> op1 = gridprob::makeOperator(DRootTwo(1, 2), DRootTwo(3, 4), DRootTwo(7), DRootTwo(8));
+    Operator<QRootTwo> op2 = gridprob::opFromDRootTwo<QRootTwo>(op1);
+    assert(QRootTwo(1, 2) == op2(0, 0));
+    assert(QRootTwo(3, 4) == op2(0, 1));
+    assert(QRootTwo(7) == op2(1, 0));
+    assert(QRootTwo(8) == op2(1, 1));
 }

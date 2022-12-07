@@ -5,7 +5,9 @@
 using Integer = mpz_class; 
 using Rational = mpq_class;
 
-template <int digits>
-using Decimal = boost::multiprecision::number<boost::multiprecision::cpp_dec_float<digits>>;
+template <unsigned int N>
+using Decimal = boost::multiprecision::number<boost::multiprecision::cpp_dec_float<N>>;
 
-using Real = double;
+const int REAL_DIGITS = 10;
+
+using Real = Decimal<REAL_DIGITS>;

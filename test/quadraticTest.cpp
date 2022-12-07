@@ -1,4 +1,5 @@
 #define BOOST_TEST_MODULE quadratic
+#include "utils.h"
 #include "../quadratic.h"
 #include <boost/test/included/unit_test.hpp>
 #include <optional>
@@ -39,8 +40,8 @@ BOOST_AUTO_TEST_CASE(non_integral1)
     Real s2 = std::get<1>(r);
     Real e1 = -3.1681541692269404;
     Real e2 = 0.5681541692269404;
-    BOOST_TEST(e1 == s1, boost::test_tools::tolerance(0.001));
-    BOOST_TEST(e2 == s2, boost::test_tools::tolerance(0.001));
+    BOOST_TEST(approx_equal(e1, s1));
+    BOOST_TEST(approx_equal(e2, s2));
 }
 
 BOOST_AUTO_TEST_CASE(non_integral2)
@@ -55,6 +56,6 @@ BOOST_AUTO_TEST_CASE(non_integral2)
     Real s2 = std::get<1>(r);
     Real e1 = -0.5681541692269404;
     Real e2 = 3.1681541692269404;
-    BOOST_TEST(e1 == s1, boost::test_tools::tolerance(0.001));
-    BOOST_TEST(e2 == s2, boost::test_tools::tolerance(0.001));
+    BOOST_TEST(approx_equal(e1, s1));
+    BOOST_TEST(approx_equal(e2, s2));
 }

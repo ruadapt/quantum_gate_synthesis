@@ -50,7 +50,7 @@ public:
     Dyadic(int arg);
     Dyadic(Integer arg);
     Dyadic(T a, T n);
-    Dyadic& operator+=(const Dyadic &d);
+    Dyadic &operator+=(const Dyadic &d);
     T a() const;
     T n() const;
     Dyadic copy() const;
@@ -92,7 +92,7 @@ public:
     RootTwo(int arg);
     RootTwo(Integer arg);
     RootTwo(T a, T b);
-    RootTwo& operator+=(const RootTwo &r);
+    RootTwo &operator+=(const RootTwo &r);
     T a() const;
     T b() const;
     RootTwo copy() const;
@@ -140,7 +140,7 @@ public:
     Complex(int arg);
     Complex(Integer arg);
     Complex(T a, T b);
-    Complex& operator+=(const Complex &c);
+    Complex &operator+=(const Complex &c);
     T a() const;
     T b() const;
     Complex copy() const;
@@ -214,7 +214,7 @@ public:
     Omega(int arg);
     Omega(Integer arg);
     Omega(T a, T b, T c, T d);
-    Omega& operator+=(const Omega &o);
+    Omega &operator+=(const Omega &o);
     T a() const;
     T b() const;
     T c() const;
@@ -461,7 +461,10 @@ namespace ring
     template <>
     Integer norm(Integer arg);
 
-    Integer floor_of(Real arg);
+    Integer floor_of(double arg);
+
+    template <unsigned int N>
+    Integer floor_of(Decimal<N> arg);
 
     Integer floor_of(Rational arg);
 
@@ -469,7 +472,10 @@ namespace ring
 
     Integer floor_of(QRootTwo arg);
 
-    Integer ceiling_of(Real arg);
+    Integer ceiling_of(double arg);
+
+    template <unsigned int N>
+    Integer ceiling_of(Decimal<N> arg);
 
     Integer ceiling_of(Rational arg);
 
@@ -617,7 +623,10 @@ namespace ring
     std::string toString(const Integer &arg);
 
     template <>
-    std::string toString(const Real &arg);
+    std::string toString(const double &arg);
+
+    template <unsigned int N>
+    std::string toString(const Decimal<N> &arg);
 
     template <>
     std::string toString(const Rational &arg);

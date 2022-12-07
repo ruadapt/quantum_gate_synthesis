@@ -1,3 +1,4 @@
+#include "utils.h"
 #include "../ring.h"
 #include <assert.h>
 #include <iostream>
@@ -221,19 +222,32 @@ void testFractional()
 {
     std::cout << "Fractional testing:" << std::endl;
 
-    assert(RootTwo<Real>(-0.119703136222169, -0.23461814699545125) == RootTwo<Real>(1.25, -2.45).recip());
+    RootTwo<Real> r = RootTwo<Real>(1.25, -2.45).recip();
+    assert(approx_equal(-0.119703136222169, r.a()));
+    assert(approx_equal(-0.23461814699545125, r.b()));
     assert(QRootTwo(-431061208_mpq / 951316543, 923605504_mpq / 951316543) ==
            QRootTwo(123_mpq / 456, 456_mpq / 789).recip());
 
     assert(QComplex(431061208_mpq / 650067905, -923605504_mpq / 650067905) ==
            QComplex(123_mpq / 456, 456_mpq / 789).recip());
 
-    assert(Omega<Real>(1.7114914425427872e-2, 3.0562347188264057e-2, -5.256723716381418e-2, -0.1295843520782396) ==
-           Omega<Real>(1, -3, 3, -7).recip());
-    assert(Omega<Real>(-0.11208737066841847, 3.3092461816390216e-2, -2.4634586960091973e-4, -5.7070126457546395e-2) ==
-           Omega<Real>(3, 7, 12, 2).recip());
-    assert(Omega<Real>(3.2468311407893156e-2, -6.945499620136751e-2, 2.419129113519133e-2, -4.066536047023071e-2) ==
-           Omega<Real>(5, 9, -4, -9).recip());
+    Omega<Real> o1 = Omega<Real>(1, -3, 3, -7).recip();
+    assert(approx_equal(1.7114914425427872e-2, o1.a()));
+    assert(approx_equal(3.0562347188264057e-2, o1.b()));
+    assert(approx_equal(-5.256723716381418e-2, o1.c()));
+    assert(approx_equal(-0.1295843520782396, o1.d()));
+
+    Omega<Real> o2 = Omega<Real>(3, 7, 12, 2).recip();
+    assert(approx_equal(-0.11208737066841847, o2.a()));
+    assert(approx_equal(3.3092461816390216e-2, o2.b()));
+    assert(approx_equal(-2.4634586960091973e-4, o2.c()));
+    assert(approx_equal(-5.7070126457546395e-2, o2.d()));
+
+    Omega<Real> o3 = Omega<Real>(5, 9, -4, -9).recip();
+    assert(approx_equal(3.2468311407893156e-2, o3.a()));
+    assert(approx_equal(-6.945499620136751e-2, o3.b()));
+    assert(approx_equal(2.419129113519133e-2, o3.c()));
+    assert(approx_equal(-4.066536047023071e-2, o3.d()));
 
     assert(QOmega(7_mpq / 409, 25_mpq / 818, -43_mpq / 818, -53_mpq / 409) ==
            QOmega(1, -3, 3, -7).recip());
@@ -319,8 +333,9 @@ void testRootTwoRing()
     std::cout << "\trootTwo tests passed" << std::endl;
 
     ZRootTwo z = ZRootTwo(10, -7);
-    assert(0.10050506338833465 == ring::fromZRootTwo<Real>(z));
-    assert(CReal(0.10050506338833465, 0) == ring::fromZRootTwo<CReal>(z));
+    assert(approx_equal(0.10050506338833465, ring::fromZRootTwo<Real>(z)));
+    assert(approx_equal(0.10050506338833465, ring::fromZRootTwo<CReal>(z).a()));
+    assert(0 == ring::fromZRootTwo<CReal>(z).b());
     assert(ZRootTwo(10, -7) == ring::fromZRootTwo<ZRootTwo>(z));
     assert(QRootTwo(10_mpq, -7_mpq) == ring::fromZRootTwo<QRootTwo>(z));
     assert(ZOmega(7, 0, -7, 10) == ring::fromZRootTwo<ZOmega>(z));
@@ -333,16 +348,18 @@ void testRootHalfRing()
 {
     std::cout << "RootHalfRing testing:" << std::endl;
 
-    assert(0.7071067811865476 == ring::rootHalf<Real>());
-    assert(CReal(0.7071067811865476, 0) == ring::rootHalf<CReal>());
+    assert(approx_equal(0.7071067811865476, ring::rootHalf<Real>()));
+    assert(approx_equal(0.7071067811865476, ring::rootHalf<CReal>().a()));
+    assert(0 == ring::rootHalf<CReal>().b());
     assert(QRootTwo(0, 1_mpq / 2) == ring::rootHalf<QRootTwo>());
     assert(DOmega(ZDyadic(-1, 1), 0, ZDyadic(1, 1), 0) == ring::rootHalf<DOmega>());
     assert(QOmega(-1_mpq / 2, 0, 1_mpq / 2, 0) == ring::rootHalf<QOmega>());
     std::cout << "\trootHalf tests passed" << std::endl;
 
     DRootTwo d = DRootTwo(ZDyadic(5, 2), ZDyadic(-3, 5));
-    assert(1.1174174785275224 == ring::fromDRootTwo<Real>(d));
-    assert(CReal(1.1174174785275224, 0) == ring::fromDRootTwo<CReal>(d));
+    assert(approx_equal(1.1174174785275224, ring::fromDRootTwo<Real>(d)));
+    assert(approx_equal(1.1174174785275224, ring::fromDRootTwo<CReal>(d).a()));
+    assert(0 == ring::fromDRootTwo<CReal>(d).b());
     assert(QRootTwo(5_mpq / 4, -3_mpq / 32) == ring::fromDRootTwo<QRootTwo>(d));
     assert(DOmega(ZDyadic(3, 5), 0, ZDyadic(-3, 5), ZDyadic(5, 2)) == ring::fromDRootTwo<DOmega>(d));
     assert(QOmega(3_mpq / 32, 0, -3_mpq / 32, 5_mpq / 4) == ring::fromDRootTwo<QOmega>(d));
@@ -368,7 +385,8 @@ void testOmegaRing()
 {
     std::cout << "OmegaRing testing:" << std::endl;
 
-    assert(CReal(0.7071067811865476, 0.7071067811865476) == ring::omega<CReal>());
+    assert(approx_equal(0.7071067811865476, ring::omega<CReal>().a()));
+    assert(approx_equal(0.7071067811865476, ring::omega<CReal>().b()));
     assert(DRComplex(DRootTwo(0, ZDyadic(1, 1)), DRootTwo(0, ZDyadic(1, 1))) ==
            ring::omega<DRComplex>());
     assert(QRComplex(QRootTwo(0, 1_mpq / 2), QRootTwo(0, 1_mpq / 2)) ==
@@ -1206,7 +1224,7 @@ void testComplex()
         assert("Complex(4, 9)" == c2.toString());
         std::cout << "\ttoString tests passed" << std::endl;
     }
-    else if constexpr (std::is_same<T, Real>::value)
+    else if constexpr (std::is_same<T, double>::value)
     {
         assert("Complex(1.000000, 2.000000)" == c1.toString());
         assert("Complex(4.000000, 9.000000)" == c2.toString());
@@ -1229,6 +1247,9 @@ void testComplex()
         assert("Complex(RootTwo(1, 0), RootTwo(2, 0))" == c1.toString());
         assert("Complex(RootTwo(4, 0), RootTwo(9, 0))" == c2.toString());
         std::cout << "\ttoString tests passed" << std::endl;
+    }
+    else if constexpr (std::is_same<T, Real>::value)
+    {
     }
     else
     {
@@ -1303,7 +1324,7 @@ void testOmega()
         assert("Omega(5, 9, -4, -9)" == o3.toString());
         std::cout << "\ttoString tests passed" << std::endl;
     }
-    else if constexpr (std::is_same<T, Real>::value)
+    else if constexpr (std::is_same<T, double>::value)
     {
         assert("Omega(0.000000, 0.000000, 0.000000, 0.000000)" == o0.toString());
         assert("Omega(1.000000, -3.000000, 3.000000, -7.000000)" == o1.toString());
@@ -1318,6 +1339,9 @@ void testOmega()
         assert("Omega(Dyadic(3, 0), Dyadic(7, 0), Dyadic(12, 0), Dyadic(2, 0))" == o2.toString());
         assert("Omega(Dyadic(5, 0), Dyadic(9, 0), Dyadic(-4, 0), Dyadic(-9, 0))" == o3.toString());
         std::cout << "\ttoString tests passed" << std::endl;
+    }
+    else if constexpr (std::is_same<T, Real>::value)
+    {
     }
     else
     {

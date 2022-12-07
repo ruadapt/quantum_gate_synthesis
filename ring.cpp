@@ -513,9 +513,15 @@ namespace ring
     template <>
     Integer norm(Integer arg) { return arg; }
 
-    Integer floor_of(Real arg)
+    Integer floor_of(double arg)
     {
         return floor(arg);
+    }
+
+    template <unsigned int N>
+    Integer floor_of(Decimal<N> arg)
+    {
+        return floor(double(arg));
     }
 
     Integer floor_of(Rational arg)
@@ -545,9 +551,15 @@ namespace ring
         return rInt - 1;
     }
 
-    Integer ceiling_of(Real arg)
+    Integer ceiling_of(double arg)
     {
         return ceil(arg);
+    }
+
+    template <unsigned int N>
+    Integer ceiling_of(Decimal<N> arg)
+    {
+        return ceil(double(arg));
     }
 
     Integer ceiling_of(Rational arg)
@@ -948,7 +960,14 @@ namespace ring
     std::string toString(const Integer &arg) { return arg.get_str(); }
 
     template <>
-    std::string toString(const Real &arg) { return std::to_string(arg); }
+    std::string toString(const double &arg) { return std::to_string(arg); }
+
+    template <unsigned int N>
+    std::string toString(const Decimal<N> &arg) { 
+        std::stringstream ss;
+        ss << std::setprecision(std::numeric_limits<Decimal<N>>::digits10) << arg;
+        return ss.str();
+    }
 
     template <>
     std::string toString(const Rational &arg) { return arg.get_str(); }
@@ -1400,7 +1419,7 @@ template <typename T>
 RootTwo<T> RootTwo<T>::recip() const
 {
     assert((*this) != 0);
-    T k = a() * a() - 2 * b() * b();
+    T k = a() * a() - T(2) * b() * b();
     return RootTwo(a() * ring::recip(k), -b() * ring::recip(k));
 }
 

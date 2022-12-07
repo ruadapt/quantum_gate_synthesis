@@ -292,12 +292,10 @@ namespace gridprob
 
         T lT = lambda<T>();
         T lInvT = lambdaInv<T>();
-        T lambdaMT = ring::powInt(lT, m);
         T lambdaNT = ring::powInt(lT, n);
         T lambdaBulNT = ring::powInt(-lInvT, n);
         T lambdaInvMT = ring::powInt(lInvT, m);
         T lambdaBulInvMT = ring::powInt(-lT, m);
-        T lambdaInvNT = ring::powInt(lInvT, n);
         ZRootTwo lZ = lambda<ZRootTwo>();
         ZRootTwo lInvZ = lambdaInv<ZRootTwo>();
 
@@ -845,6 +843,7 @@ namespace gridprob
         T sqrt_det = sqrt(det(matA));
         T w = sqrt(d) / sqrt_det;
         T h = sqrt(a) / sqrt_det;
+        return std::make_tuple(std::make_tuple(x - w, x + w), std::make_tuple(y - h, y + h));
     }
 
     template <typename T>
@@ -903,11 +902,11 @@ namespace gridprob
 
                 Point<DRootTwo> p1A = std::make_tuple(x0, beta_prime);
                 Point<DRootTwo> p2A = std::make_tuple(dx, DRootTwo(0));
-                std::optional<std::tuple<DRootTwo, DRootTwo>> iA = setA_prime.intersectFun(p1A, p2A);
+                std::optional<std::tuple<DRootTwo, DRootTwo>> iA = setA_prime.intersect(p1A, p2A);
 
                 Point<DRootTwo> p1B = std::make_tuple(x0_bul, beta_prime_bul);
                 Point<DRootTwo> p2B = std::make_tuple(dx_bul, DRootTwo(0));
-                std::optional<std::tuple<DRootTwo, DRootTwo>> iB = setA_prime.intersectFun(p1B, p2B);
+                std::optional<std::tuple<DRootTwo, DRootTwo>> iB = setA_prime.intersect(p1B, p2B);
 
                 assert(iA.has_value());
                 assert(iB.has_value());
