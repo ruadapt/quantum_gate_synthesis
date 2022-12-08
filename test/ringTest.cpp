@@ -651,6 +651,14 @@ void testParity()
     std::cout << "\tparity tests passed" << std::endl;
 }
 
+void testFromInteger()
+{
+    std::cout << "fromInteger testing" << std::endl;
+    assert(Real(2.0) == ring::fromInteger<Real>(2));
+    assert(Real(2.0) == ring::fromInteger<Real>(Integer(2)));
+    std::cout << "\tfromInteger tests passed" << std::endl;
+}
+
 template <typename T>
 void testDyadic()
 {
@@ -1471,6 +1479,8 @@ int main()
     testToQOmega();
     std::cout << std::endl;
     testParity();
+    std::cout << std::endl;
+    testFromInteger();
     std::cout << std::endl;
 
     testRootTwoIntegral<int>();

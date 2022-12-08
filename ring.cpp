@@ -279,6 +279,9 @@ namespace ring
     Integer fromInteger(int arg) { return Integer(arg); }
 
     template <>
+    double fromInteger(int arg) { return double(arg); }
+
+    template <>
     Real fromInteger(int arg) { return Real(arg); }
 
     template <>
@@ -294,7 +297,10 @@ namespace ring
     Integer fromInteger(Integer arg) { return arg; }
 
     template <>
-    Real fromInteger(Integer arg) { return arg.get_d(); }
+    double fromInteger(Integer arg) { return arg.get_d(); }
+
+    template <>
+    Real fromInteger(Integer arg) { return Real(arg.get_d()); }
 
     template <>
     Rational fromInteger(Integer arg) { return Rational(arg); }
@@ -499,6 +505,9 @@ namespace ring
     Integer adj2(Integer arg) { return arg; }
 
     template <>
+    Real adj2(Real arg) { return arg; }
+
+    template <>
     Rational adj2(Rational arg) { return arg; }
 
     template <typename T>
@@ -518,8 +527,7 @@ namespace ring
         return floor(arg);
     }
 
-    template <unsigned int N>
-    Integer floor_of(Decimal<N> arg)
+    Integer floor_of(Real arg)
     {
         return floor(double(arg));
     }
@@ -556,8 +564,7 @@ namespace ring
         return ceil(arg);
     }
 
-    template <unsigned int N>
-    Integer ceiling_of(Decimal<N> arg)
+    Integer ceiling_of(Real arg)
     {
         return ceil(double(arg));
     }
@@ -963,7 +970,8 @@ namespace ring
     std::string toString(const double &arg) { return std::to_string(arg); }
 
     template <unsigned int N>
-    std::string toString(const Decimal<N> &arg) { 
+    std::string toString(const Decimal<N> &arg)
+    {
         std::stringstream ss;
         ss << std::setprecision(std::numeric_limits<Decimal<N>>::digits10) << arg;
         return ss.str();
@@ -995,7 +1003,7 @@ ZDyadic::Dyadic(Integer arg)
 }
 
 template <typename T>
-Dyadic<T>& Dyadic<T>::operator+=(const Dyadic<T> &d)
+Dyadic<T> &Dyadic<T>::operator+=(const Dyadic<T> &d)
 {
     Dyadic<T> sum = *this + d;
     this->a = sum.a;
@@ -1276,7 +1284,7 @@ RootTwo<T>::RootTwo(T a, T b)
 }
 
 template <typename T>
-RootTwo<T>& RootTwo<T>::operator+=(const RootTwo<T> &r)
+RootTwo<T> &RootTwo<T>::operator+=(const RootTwo<T> &r)
 {
     RootTwo<T> sum = *this + r;
     this->a_ = sum.a();
@@ -1536,7 +1544,7 @@ Complex<T>::Complex(T a, T b)
 }
 
 template <typename T>
-Complex<T>& Complex<T>::operator+=(const Complex<T> &c)
+Complex<T> &Complex<T>::operator+=(const Complex<T> &c)
 {
     Complex<T> sum = *this + c;
     this->a_ = sum.a();
@@ -1870,7 +1878,7 @@ Omega<T>::Omega(T a, T b, T c, T d)
 }
 
 template <typename T>
-Omega<T>& Omega<T>::operator+=(const Omega<T> &o)
+Omega<T> &Omega<T>::operator+=(const Omega<T> &o)
 {
     Omega<T> sum = *this + o;
     this->a_ = sum.a();

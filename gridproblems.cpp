@@ -59,35 +59,33 @@ std::optional<std::tuple<T, T>> ConvexSet<T>::intersect(Point<DRootTwo> p1, Poin
 
 namespace gridprob
 {
-    template <typename T, int M, int N>
-    Matrix<T, M, N> matrixPow(Matrix<T, M, N> base, int exp)
+    template <typename T>
+    Operator<T> operatorPow(Operator<T> base, int exp)
     {
         assert(exp >= 0);
-        Matrix<T, M, N> result;
+        Operator<T> result;
         if (exp == 0)
         {
-            result = 1 + result;
-            return result;
+            return makeOperator<T>(1, 0, 0, 1);
         }
         if (exp == 1)
         {
             return base;
         }
+        Operator<T> newBase = prod(base, base);
         if (exp % 2 == 0)
         {
-            T newBase = base * base;
             int newExp = exp / 2;
-            return matrixPow(newBase, newExp);
+            return operatorPow(newBase, newExp);
         }
-        T newBase = base * base;
         int newExp = (exp - 1) / 2;
-        return prod(base, matrixPow(newBase, newExp));
+        return prod(base, operatorPow(newBase, newExp));
     }
 
     template <typename T>
-    Operator<T> operatorPow(Operator<T> base, int exp)
+    Operator<T> operatorPow(Operator<T> base, Integer exp)
     {
-        return matrixPow<T, 2, 2>(base, exp);
+        return operatorPow(base, ring::mpzToInt(exp));
     }
 
     template <typename T>
@@ -105,10 +103,10 @@ namespace gridprob
     Operator<T> adj2(Operator<T> op)
     {
         Operator<T> result;
-        result(0, 0) = ring::adj2(op(0, 0));
-        result(0, 1) = ring::adj2(op(0, 1));
-        result(1, 0) = ring::adj2(op(1, 0));
-        result(1, 1) = ring::adj2(op(1, 1));
+        result(0, 0) = ring::adj2<T>(op(0, 0));
+        result(0, 1) = ring::adj2<T>(op(0, 1));
+        result(1, 0) = ring::adj2<T>(op(1, 0));
+        result(1, 1) = ring::adj2<T>(op(1, 1));
         return result;
     }
 
@@ -514,7 +512,18 @@ namespace gridprob
         T b = op(0, 1);
         T d = op(1, 1);
         T lz = d * ring::recip<T>(a);
-        return 0.5 * logBaseDouble(lambda<T>(), lz);
+        double z = 0.5 * logBaseDouble<T>(lambda<T>(), lz);
+        return std::make_tuple(b, z);
+    }
+
+    template <typename T>
+    std::tuple<T, T> operatorToBl2z(Operator<T> op)
+    {
+        T a = op(0, 0);
+        T b = op(0, 1);
+        T d = op(1, 1);
+        T l2z = d * ring::recip<T>(a);
+        return std::make_tuple(b, l2z);
     }
 
     template <typename T>
@@ -610,7 +619,11 @@ namespace gridprob
         Operator<T> g4 = opFromDRootTwo<T>(adj2(g));
         Operator<T> g1 = adj(g2);
         Operator<T> g3 = adj(g4);
-        return std::make_tuple(prod(prod(g1, a), g2), prod(prod(g3, b), g4));
+        Operator<T> p1 = prod(g1, a);
+        Operator<T> m1 = prod(p1, g2);
+        Operator<T> p2 = prod(g3, b);
+        Operator<T> m2 = prod(p2, g4);
+        return std::make_tuple(m1, m2);
     }
 
     template <typename T>
@@ -686,39 +699,47 @@ namespace gridprob
 
         T l2z_minus_zeta = l2z / l2zeta;
 
-        auto wlog_using = [=](Operator<T> op)
+        auto wlog_using = [=](Operator<DRootTwo> op)
         {
             Operator<T> matA2, matB2;
-            std::tie(matA2, matB2) = action(matA, matB);
-            std::optional<Operator<DRootTwo>> maybe_op2 = step_lemma(matA2, matB2);
-            return maybe_op2.has_value() ? (prod(op, maybe_op2.value())) : op;
+            std::tie(matA2, matB2) = action(std::make_tuple(matA, matB), op);
+            std::optional<Operator<DRootTwo>> maybe_op2 = step_lemma(std::make_tuple(matA2, matB2));
+            std::optional<Operator<DRootTwo>> result;
+            if (maybe_op2.has_value())
+            {
+                result = prod(op, maybe_op2.value());
+            }
+            result = std::nullopt;
+            return result;
         };
 
         auto with_shift = [=](Integer k)
         {
             Operator<T> matA2, matB2;
-            std::tie(matA2, matB2) = shiftState(k, matA, matB);
-            std::optional<Operator<DRootTwo>> maybe_op2 = step_lemma(matA2, matB2);
+            std::tie(matA2, matB2) = shiftState(k, std::make_tuple(matA, matB));
+            std::optional<Operator<DRootTwo>> maybe_op2 = step_lemma(std::make_tuple(matA2, matB2));
+            std::optional<Operator<DRootTwo>> result;
             if (maybe_op2.has_value())
             {
-                return shiftSigma(k, maybe_op2.value());
+                result = shiftSigma(k, maybe_op2.value());
             }
-            return std::nullopt;
+            result = std::nullopt;
+            return result;
         };
 
         if (beta < 0)
         {
-            return wlog_using(opZ<T>());
+            return wlog_using(opZ<DRootTwo>());
         }
         if (l2z * l2zeta < 1)
         {
-            return wlog_using(opX<T>());
+            return wlog_using(opX<DRootTwo>());
         }
         if (l2z_minus_zeta > 33.971 || l2z_minus_zeta < 0.029437)
         {
-            return wlog_using(opSPower<T>(std::round(logLambda(l2z_minus_zeta) / 8)));
+            return wlog_using(opSPower<DRootTwo>(std::round(logLambda(l2z_minus_zeta) / 8)));
         }
-        if (skew(matA, matB) <= 15)
+        if (skew(std::make_tuple(matA, matB)) <= 15)
         {
             return std::nullopt;
         }
@@ -726,24 +747,24 @@ namespace gridprob
         {
             return with_shift(round(logLambda(l2z_minus_zeta) / 4));
         }
-        if (within(l2z, 0.24410, 4.0968) && within(l2zeta, 0.24410, 4.0968))
+        if (within<T>(l2z, 0.24410, 4.0968) && within<T>(l2zeta, 0.24410, 4.0968))
         {
-            return opR<T>();
+            return opR<DRootTwo>();
         }
 
         if (b >= 0 && l2z <= 1.6969)
         {
-            return opK<T>();
+            return opK<DRootTwo>();
         }
         if (b >= 0 && l2zeta <= 1.6969)
         {
-            return adj2<T>(opK<T>);
+            return adj2<DRootTwo>(opK<DRootTwo>());
         }
         if (b >= 0)
         {
-            return opAPower(lemma_A_l2(l2z, l2zeta));
+            return opAPower<DRootTwo>(lemma_A_l2<T>(l2z, l2zeta));
         }
-        return opB_power(lemma_B_l2(l2z, l2zeta));
+        return opBPower<DRootTwo>(lemma_B_l2<T>(l2z, l2zeta));
     }
 
     template <typename T>
@@ -752,7 +773,7 @@ namespace gridprob
         std::optional<Operator<DRootTwo>> sl = step_lemma(st);
         if (!sl.has_value())
         {
-            return makeOperator<T>(1, 0, 0, 1);
+            return makeOperator<DRootTwo>(DRootTwo(1), DRootTwo(0), DRootTwo(0), DRootTwo(1));
         }
         Operator<DRootTwo> opG = sl.value();
         Operator<DRootTwo> opG2 = reduction<T>(action<T>(st, opG));
@@ -766,13 +787,13 @@ namespace gridprob
         Operator<T> b = std::get<1>(pair);
         Operator<T> a2 = a / (sqrt(det<T>(a)));
         Operator<T> b2 = b / (sqrt(det<T>(b)));
-        return reduction<T>(a2, b2);
+        return reduction<T>(std::make_tuple(a2, b2));
     }
 
     template <typename T>
     Operator<DRootTwo> to_upright_sets(ConvexSet<T> setA, ConvexSet<T> setB)
     {
-        return to_upright(setA.el().op(), setB.el().op());
+        return to_upright(std::make_tuple(setA.el().op(), setB.el().op()));
     }
 
     template <typename T>
@@ -916,11 +937,11 @@ namespace gridprob
                 std::tie(t0B, t1B) = iB.value();
 
                 DRootTwo dtA = DRootTwo(10) * ring::recip<DRootTwo>(
-                                        std::max<DRootTwo>(
-                                            DRootTwo(10), ring::powNonNeg<DRootTwo>(DRootTwo(2), k) * (t1B - t0B)));
+                                                  std::max<DRootTwo>(
+                                                      DRootTwo(10), ring::powNonNeg<DRootTwo>(DRootTwo(2), k) * (t1B - t0B)));
                 DRootTwo dtB = DRootTwo(10) * ring::recip<DRootTwo>(
-                                        std::max<DRootTwo>(
-                                            DRootTwo(10), ring::powNonNeg<DRootTwo>(DRootTwo(2), k) * (t1A - t0A)));
+                                                  std::max<DRootTwo>(
+                                                      DRootTwo(10), ring::powNonNeg<DRootTwo>(DRootTwo(2), k) * (t1A - t0A)));
 
                 DRootTwo rk = ring::powNonNeg<DRootTwo>(ring::rootTwo<DRootTwo>(), k);
                 std::vector<DRootTwo> alpha_prime_offs_list = gridpointsScaledParity(

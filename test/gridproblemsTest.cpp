@@ -334,3 +334,125 @@ BOOST_AUTO_TEST_CASE(test_opFromDRootTwo)
     assert(QRootTwo(7) == op2(1, 0));
     assert(QRootTwo(8) == op2(1, 1));
 }
+
+BOOST_AUTO_TEST_CASE(test_logBaseDouble)
+{
+    Real b = 1.234;
+    Real x = 3.76;
+    BOOST_TEST(approx_equal(6.2989305043634936, gridprob::logBaseDouble(b, x)));
+}
+
+BOOST_AUTO_TEST_CASE(test_shiftSigma)
+{
+    Operator<Real> oA = gridprob::opA<Real>();
+    Operator<Real> shifted = gridprob::shiftSigma(2, oA);
+    BOOST_TEST(approx_equal(5.82842712473, shifted(0, 0)));
+    BOOST_TEST(approx_equal(-2.00000000000, shifted(0, 1)));
+    BOOST_TEST(approx_equal(0.00000000000, shifted(1, 0)));
+    BOOST_TEST(approx_equal(0.17157287525, shifted(1, 1)));
+}
+
+BOOST_AUTO_TEST_CASE(test_shiftTau)
+{
+    Operator<Real> oA = gridprob::opA<Real>();
+    Operator<Real> oB = gridprob::opB<Real>();
+    OperatorPair<Real> pair = std::make_tuple(oA, oB);
+
+    Operator<Real> rA, rB;
+    std::tie(rA, rB) = gridprob::shiftState(4, pair);
+    BOOST_TEST(approx_equal(33.97056274829, rA(0, 0)));
+    BOOST_TEST(approx_equal(-2.00000000000, rA(0, 1)));
+    BOOST_TEST(approx_equal(0.00000000000, rA(1, 0)));
+    BOOST_TEST(approx_equal(0.02943725152, rA(1, 1)));
+    BOOST_TEST(approx_equal(0.02943725152, rB(0, 0)));
+    BOOST_TEST(approx_equal(1.41421356237, rB(0, 1)));
+    BOOST_TEST(approx_equal(0.00000000000, rB(1, 0)));
+    BOOST_TEST(approx_equal(33.97056274829, rB(1, 1)));
+}
+
+BOOST_AUTO_TEST_CASE(test_shiftState)
+{
+    Operator<Real> oA = gridprob::opA<Real>();
+    Operator<Real> shifted = gridprob::shiftTau(3, oA);
+    BOOST_TEST(approx_equal(0.07106781186, shifted(0, 0)));
+    BOOST_TEST(approx_equal(2.00000000000, shifted(0, 1)));
+    BOOST_TEST(approx_equal(0.00000000000, shifted(1, 0)));
+    BOOST_TEST(approx_equal(14.07106781181, shifted(1, 1)));
+}
+
+BOOST_AUTO_TEST_CASE(test_lemma_A)
+{
+    Real x = 11.2345;
+    Real y = 17.1253;
+    Integer k = gridprob::lemma_A(x, y);
+    BOOST_CHECK_EQUAL(9983, k);
+}
+
+BOOST_AUTO_TEST_CASE(test_lemma_B)
+{
+    Real x = 11.2345;
+    Real y = 17.1253;
+    Integer k = gridprob::lemma_B(x, y);
+    BOOST_CHECK_EQUAL(14118, k);
+}
+
+BOOST_AUTO_TEST_CASE(test_lemma_A_l2)
+{
+    Real x = 111.2345;
+    Real y = 117.1253;
+    Integer k = gridprob::lemma_A_l2(x, y);
+    BOOST_CHECK_EQUAL(5, k);
+}
+
+BOOST_AUTO_TEST_CASE(test_lemma_B_l2)
+{
+    Real x = 111.2345;
+    Real y = 117.1253;
+    Integer k = gridprob::lemma_B_l2(x, y);
+    BOOST_CHECK_EQUAL(7, k);
+}
+
+BOOST_AUTO_TEST_CASE(test_step_lemma)
+{
+    Operator<Real> oA = gridprob::opA<Real>();
+    Operator<Real> oB = gridprob::opB<Real>();
+    std::optional<Operator<DRootTwo>> op = gridprob::step_lemma(std::make_tuple(oA, oB));
+    BOOST_TEST(!op.has_value());
+}
+
+BOOST_AUTO_TEST_CASE(test_to_upright)
+{
+    Operator<Real> oA = gridprob::opA<Real>();
+    Operator<Real> oB = gridprob::opB<Real>();
+    Operator<DRootTwo> op = gridprob::to_upright<Real>(std::make_tuple(oA, oB));
+    assert(DRootTwo(1) == op(0, 0));
+    assert(DRootTwo(0) == op(0, 1));
+    assert(DRootTwo(0) == op(1, 0));
+    assert(DRootTwo(1) == op(1, 1));
+}
+
+BOOST_AUTO_TEST_CASE(test_to_upright_sets)
+{
+    CharFun alwaysTrue = [](Point<DRootTwo> p)
+    { auto x = p; return true; };
+
+    LineIntersector<Real> intersect = [](Point<DRootTwo> p1, Point<DRootTwo> p2)
+    { auto x = p1; auto y = p2; return std::make_tuple(1.1, 2.2); };
+
+    Operator<Real> oA = gridprob::opA<Real>();
+    Point<Real> centerA = std::make_tuple(10, 10);
+    Ellipse<Real> elA = Ellipse<Real>(oA, centerA);
+    ConvexSet<Real> setA = ConvexSet<Real>(elA, alwaysTrue, intersect);
+
+    Operator<Real> oB = gridprob::opB<Real>();
+    Point<Real> centerB = std::make_tuple(7, 2);
+    Ellipse<Real> elB = Ellipse<Real>(oB, centerB);
+    ConvexSet<Real> setB = ConvexSet<Real>(elB, alwaysTrue, intersect);
+
+    Operator<DRootTwo> op = gridprob::to_upright_sets<Real>(setA, setB);
+
+    assert(DRootTwo(1) == op(0, 0));
+    assert(DRootTwo(0) == op(0, 1));
+    assert(DRootTwo(0) == op(1, 0));
+    assert(DRootTwo(1) == op(1, 1));
+}

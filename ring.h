@@ -339,6 +339,9 @@ namespace ring
     Integer fromInteger(int arg);
 
     template <>
+    double fromInteger(int arg);
+
+    template <>
     Real fromInteger(int arg);
 
     template <>
@@ -349,6 +352,9 @@ namespace ring
 
     template <>
     Integer fromInteger(Integer arg);
+
+    template <>
+    double fromInteger(Integer arg);
 
     template <>
     Real fromInteger(Integer arg);
@@ -440,6 +446,9 @@ namespace ring
     template <>
     Rational adj(Rational arg);
 
+    template <>
+    Real adj(Real arg);
+
     template <typename T>
     T adj2(T arg);
 
@@ -452,6 +461,9 @@ namespace ring
     template <>
     Rational adj2(Rational arg);
 
+    template <>
+    Real adj2(Real arg);
+
     template <typename T>
     Integer norm(T arg);
 
@@ -463,8 +475,7 @@ namespace ring
 
     Integer floor_of(double arg);
 
-    template <unsigned int N>
-    Integer floor_of(Decimal<N> arg);
+    Integer floor_of(Real arg);
 
     Integer floor_of(Rational arg);
 
@@ -474,8 +485,7 @@ namespace ring
 
     Integer ceiling_of(double arg);
 
-    template <unsigned int N>
-    Integer ceiling_of(Decimal<N> arg);
+    Integer ceiling_of(Real arg);
 
     Integer ceiling_of(Rational arg);
 
