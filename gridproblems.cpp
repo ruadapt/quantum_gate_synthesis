@@ -380,7 +380,6 @@ namespace gridprob
         {
             throw std::invalid_argument("gridpointsScaled: k >= 0 is required");
         }
-        T scaleT = ring::powNonNeg(ring::rootHalf<T>(), k);
         T scaleInvT = ring::powNonNeg(ring::rootTwo<T>(), k);
         DRootTwo scaleD = ring::powNonNeg(ring::rootHalf<DRootTwo>(), k);
         DRootTwo scaleInvD = ring::powNonNeg(ring::rootTwo<DRootTwo>(), k);
@@ -393,6 +392,16 @@ namespace gridprob
         std::transform(w.begin(), w.end(), results.begin(), [=](ZRootTwo z)
                        { return scaleD * ring::fromZRootTwo<DRootTwo>(z); });
         return results;
+    }
+
+    template <typename T>
+    std::vector<DRootTwo> gridpointsScaled(std::tuple<T, T> intX, std::tuple<T, T> intY, Integer k)
+    {
+        T x0 = std::get<0>(intX);
+        T x1 = std::get<1>(intX);
+        T y0 = std::get<0>(intY);
+        T y1 = std::get<1>(intY);
+        return gridpointsScaled(x0, x1, y0, y1, k);
     }
 
     template <typename T>
@@ -446,7 +455,7 @@ namespace gridprob
             QRootTwo a = ring::fromDRootTwo<QRootTwo>(iprod<DRootTwo>(v, v));
             QRootTwo b = ring::fromDRootTwo<QRootTwo>(DRootTwo(2) * iprod<DRootTwo>(v, p));
             QRootTwo c = ring::fromDRootTwo<QRootTwo>(iprod<DRootTwo>(p, p) - 1);
-            std::optional<std::tuple<Real, Real>> q = quadratic<QRootTwo>(a, b, c);
+            std::optional<std::tuple<T, T>> q = quadratic<QRootTwo>(a, b, c);
             return q;
         };
 
@@ -814,7 +823,8 @@ namespace gridprob
     Ellipse<T> ellipse_transform(Operator<T> opG, Ellipse<T> ell)
     {
         Operator<T> opG_inv = special_inverse<T>(opG);
-        Operator<T> new_op = prod(prod(adj(opG_inv), ell.op()), opG_inv);
+        Operator<T> p1 = prod(adj(opG_inv), ell.op());
+        Operator<T> new_op = prod(p1, opG_inv);
         Point<T> new_center = point_transform(opG, ell.p());
         return Ellipse<T>(new_op, new_center);
     }
@@ -831,7 +841,7 @@ namespace gridprob
     template <typename T>
     LineIntersector<T> lineintersector_transform(Operator<DRootTwo> opG, LineIntersector<T> intA)
     {
-        Operator<T> opG_inv = special_inverse<T>(opG);
+        Operator<DRootTwo> opG_inv = special_inverse<DRootTwo>(opG);
         return [=](Point<DRootTwo> v2, Point<DRootTwo> w2)
         {
             Point<DRootTwo> v = point_transform(opG_inv, v2);
@@ -844,8 +854,9 @@ namespace gridprob
     ConvexSet<T> convex_transform(Operator<DRootTwo> opG, ConvexSet<T> set)
     {
         Ellipse<T> new_ell = ellipse_transform<T>(opFromDRootTwo<T>(opG), set.el());
-        LineIntersector<T> new_int = lineintersector_transform<T>(opFromDRootTwo<T>(opG), set.intersectFun());
+        LineIntersector<T> new_int = lineintersector_transform<T>(opG, set.intersectFun());
         CharFun new_test = charfun_transform(opG, set.testFun());
+        return ConvexSet<T>(new_ell, new_test, new_int);
     }
 
     template <typename T>
@@ -911,8 +922,8 @@ namespace gridprob
 
             DRootTwo x0 = xs.at(0);
             DRootTwo x0_bul = x0.adj2();
-            T dx = ring::powNonNeg(ring::rootHalf<T>(), k);
-            T dx_bul = ring::adj2(dx);
+            DRootTwo dx = ring::powNonNeg(ring::rootHalf<DRootTwo>(), k);
+            DRootTwo dx_bul = ring::adj2(dx);
 
             std::vector<DRootTwo> beta_prime_list = gridpointsScaled(
                 fatten_interval(intervalA), fatten_interval(intervalB), k + 1);
@@ -923,25 +934,23 @@ namespace gridprob
 
                 Point<DRootTwo> p1A = std::make_tuple(x0, beta_prime);
                 Point<DRootTwo> p2A = std::make_tuple(dx, DRootTwo(0));
-                std::optional<std::tuple<DRootTwo, DRootTwo>> iA = setA_prime.intersect(p1A, p2A);
+                std::optional<std::tuple<T, T>> iA = setA_prime.intersect(p1A, p2A);
 
                 Point<DRootTwo> p1B = std::make_tuple(x0_bul, beta_prime_bul);
                 Point<DRootTwo> p2B = std::make_tuple(dx_bul, DRootTwo(0));
-                std::optional<std::tuple<DRootTwo, DRootTwo>> iB = setA_prime.intersect(p1B, p2B);
+                std::optional<std::tuple<T, T>> iB = setA_prime.intersect(p1B, p2B);
 
                 assert(iA.has_value());
                 assert(iB.has_value());
 
-                DRootTwo t0A, t1A, t0B, t1B;
+                T t0A, t1A, t0B, t1B;
                 std::tie(t0A, t1A) = iA.value();
                 std::tie(t0B, t1B) = iB.value();
 
-                DRootTwo dtA = DRootTwo(10) * ring::recip<DRootTwo>(
-                                                  std::max<DRootTwo>(
-                                                      DRootTwo(10), ring::powNonNeg<DRootTwo>(DRootTwo(2), k) * (t1B - t0B)));
-                DRootTwo dtB = DRootTwo(10) * ring::recip<DRootTwo>(
-                                                  std::max<DRootTwo>(
-                                                      DRootTwo(10), ring::powNonNeg<DRootTwo>(DRootTwo(2), k) * (t1A - t0A)));
+                T dtA = T(10) * ring::recip<T>(std::max<T>(
+                                    T(10), ring::powNonNeg<T>(T(2), k) * (t1B - t0B)));
+                T dtB = T(10) * ring::recip<T>(std::max<T>(
+                                    T(10), ring::powNonNeg<T>(T(2), k) * (t1A - t0A)));
 
                 DRootTwo rk = ring::powNonNeg<DRootTwo>(ring::rootTwo<DRootTwo>(), k);
                 std::vector<DRootTwo> alpha_prime_offs_list = gridpointsScaledParity(

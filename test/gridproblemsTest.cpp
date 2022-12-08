@@ -456,3 +456,76 @@ BOOST_AUTO_TEST_CASE(test_to_upright_sets)
     assert(DRootTwo(0) == op(1, 0));
     assert(DRootTwo(1) == op(1, 1));
 }
+
+BOOST_AUTO_TEST_CASE(test_transforms)
+{
+    CharFun alwaysTrue = [](Point<DRootTwo> p)
+    { auto x = p; return true; };
+
+    LineIntersector<Real> intersect = [](Point<DRootTwo> p1, Point<DRootTwo> p2)
+    { auto x = p1; auto y = p2; return std::make_tuple(1.1, 2.2); };
+
+    Operator<Real> oA = gridprob::opA<Real>();
+    Point<Real> centerA = std::make_tuple(10, 10);
+    Ellipse<Real> elA = Ellipse<Real>(oA, centerA);
+    ConvexSet<Real> setA = ConvexSet<Real>(elA, alwaysTrue, intersect);
+
+    Operator<Real> opG = gridprob::opK<Real>();
+    Operator<DRootTwo> opG2 = gridprob::opK<DRootTwo>();
+
+    gridprob::point_transform<Real>(opG, centerA);
+    gridprob::ellipse_transform<Real>(opG, elA);
+    gridprob::charfun_transform(opG2, alwaysTrue);
+    gridprob::lineintersector_transform<Real>(opG2, intersect);
+    gridprob::convex_transform<Real>(opG2, setA);
+}
+
+BOOST_AUTO_TEST_CASE(test_boundingbox_ellipse)
+{
+    Operator<Real> oB = gridprob::opB<Real>();
+    Point<Real> centerB = std::make_tuple(7, 2);
+    Ellipse<Real> elB = Ellipse<Real>(oB, centerB);
+
+    Real a, b, c, d;
+    Tuple2By2<Real> box = gridprob::boundingbox_ellipse(elB);
+    std::tie(a, b) = std::get<0>(box);
+    std::tie(c, d) = std::get<1>(box);
+    BOOST_TEST(approx_equal(6.00000000000, a));
+    BOOST_TEST(approx_equal(8.00000000000, b));
+    BOOST_TEST(approx_equal(1.00000000000, c));
+    BOOST_TEST(approx_equal(3.00000000000, d));
+}
+
+BOOST_AUTO_TEST_CASE(test_boundingbox)
+{
+    CharFun alwaysTrue = [](Point<DRootTwo> p)
+    { auto x = p; return true; };
+
+    LineIntersector<Real> intersect = [](Point<DRootTwo> p1, Point<DRootTwo> p2)
+    { auto x = p1; auto y = p2; return std::make_tuple(1.1, 2.2); };
+
+    Operator<Real> oB = gridprob::opB<Real>();
+    Point<Real> centerB = std::make_tuple(7, 2);
+    Ellipse<Real> elB = Ellipse<Real>(oB, centerB);
+    ConvexSet<Real> setB = ConvexSet<Real>(elB, alwaysTrue, intersect);
+
+    Real a, b, c, d;
+    Tuple2By2<Real> box = gridprob::boundingbox(setB);
+    std::tie(a, b) = std::get<0>(box);
+    std::tie(c, d) = std::get<1>(box);
+    BOOST_TEST(approx_equal(6.00000000000, a));
+    BOOST_TEST(approx_equal(8.00000000000, b));
+    BOOST_TEST(approx_equal(1.00000000000, c));
+    BOOST_TEST(approx_equal(3.00000000000, d));
+}
+
+BOOST_AUTO_TEST_CASE(test_gridpoints2_scaled)
+{
+    ConvexSet<Real> u = gridprob::unitDisk<Real>();
+    ConvexSet<Real> u2 = gridprob::unitDisk<Real>();
+    std::function<std::vector<DOmega>(Integer)> solver = gridprob::gridpoints2_scaled<Real>(u, u2);
+    std::vector<DOmega> points1 = solver(1);
+    std::vector<DOmega> points2 = solver(2);
+    BOOST_CHECK_EQUAL(17, points1.size());
+    BOOST_CHECK_EQUAL(57, points2.size());
+}
