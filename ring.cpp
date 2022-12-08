@@ -1256,6 +1256,13 @@ ZDyadic ring::half()
 }
 
 template <typename T>
+std::ostream& operator<<(std::ostream& os, const Dyadic<T> &d)
+{
+    os << d.toString();
+    return os;
+}
+
+template <typename T>
 RootTwo<T>::RootTwo()
 {
     a_ = 0;
@@ -1516,6 +1523,13 @@ QRootTwo::RootTwo(Rational a, Rational b)
 }
 
 template <typename T>
+std::ostream& operator<<(std::ostream& os, const RootTwo<T> &r)
+{
+    os << r.toString();
+    return os;
+}
+
+template <typename T>
 Complex<T>::Complex()
 {
     a_ = 0;
@@ -1738,6 +1752,13 @@ QComplex::Complex(Rational a, Rational b)
     b_ = b;
 }
 
+template <typename T>
+std::ostream& operator<<(std::ostream& os, const Complex<T> &c)
+{
+    os << c.toString();
+    return os;
+}
+
 Z2::Z2()
 {
     mod2_ = 0;
@@ -1839,6 +1860,12 @@ Z2 Z2::fromInteger(int n)
 Z2 Z2::fromInteger(Integer n)
 {
     return Z2(n);
+}
+
+std::ostream& operator<<(std::ostream& os, const Z2 &z)
+{
+    os << z.toString();
+    return os;
 }
 
 template <typename T>
@@ -2093,4 +2120,11 @@ QOmega::Omega(Rational a, Rational b, Rational c, Rational d)
     b_ = b;
     c_ = c;
     d_ = d;
+}
+
+template <typename T>
+std::ostream& operator<<(std::ostream& os, const Omega<T> &o)
+{
+    os << o.toString();
+    return os;
 }
