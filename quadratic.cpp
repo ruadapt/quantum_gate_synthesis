@@ -1,6 +1,5 @@
 #include "quadratic.h"
 #include "toReal.h"
-#include <cmath>
 
 template <typename T>
 std::optional<std::tuple<Real, Real>> quadratic(T a_, T b_, T c_)
@@ -13,8 +12,8 @@ std::optional<std::tuple<Real, Real>> quadratic(T a_, T b_, T c_)
     {
         return std::nullopt;
     }
-    Real s1 = -b - sqrt(radix);
-    Real s2 = -b + sqrt(radix);
+    Real s1 = -b - bmp::sqrt(radix);
+    Real s2 = -b + bmp::sqrt(radix);
     if (b >= 0)
     {
         Real t1 = s1 / (2 * a);

@@ -1,7 +1,11 @@
 #include "ring.h"
 #include "quadratic.h"
+#include <boost/math/constants/constants.hpp>
+#include <boost/numeric/ublas/io.hpp>
 #include <vector>
-#include <cmath>
+
+namespace constants = boost::math::constants;
+namespace bmp = boost::multiprecision;
 
 template <typename T>
 T fst(Point<T> p)
@@ -368,8 +372,9 @@ namespace gridprob
         std::vector<ZRootTwo> results;
         std::copy_if(shifted.begin(), shifted.end(), std::back_inserter(results), [=](ZRootTwo z)
                      { 
-                        T zz = ring::fromZRootTwo<T>(z);
-                        return within<T>(zz, x0, x1) && within<T>(ring::adj2(zz), y0, y1); });
+                        T z1 = ring::fromZRootTwo<T>(z);
+                        T z2 = ring::fromZRootTwo<T>(z.adj2());
+                        return within<T>(z1, x0, x1) && within<T>(ring::adj2(z2), y0, y1); });
         return results;
     }
 
@@ -550,7 +555,7 @@ namespace gridprob
     template <typename T>
     T uprightness(Operator<T> op)
     {
-        return M_PI / 4 * sqrt(det(op) / (op(0, 0) * op(1, 1)));
+        return constants::pi<T>() / 4 * bmp::sqrt(det(op) / (op(0, 0) * op(1, 1)));
     }
 
     template <typename T>
@@ -669,14 +674,14 @@ namespace gridprob
     Integer lemma_A(T z, T zeta)
     {
         T c = std::min<T>(z, zeta);
-        return std::max<Integer>(1, ring::floor_of(pow(lambda<T>(), c) / T(2)));
+        return std::max<Integer>(1, ring::floor_of(bmp::pow(lambda<T>(), c) / T(2)));
     }
 
     template <typename T>
     Integer lemma_B(T z, T zeta)
     {
         T c = std::min<T>(z, zeta);
-        return std::max<Integer>(1, ring::floor_of(pow(lambda<T>(), c) / ring::rootTwo<T>()));
+        return std::max<Integer>(1, ring::floor_of(bmp::pow(lambda<T>(), c) / ring::rootTwo<T>()));
     }
 
     template <typename T>
@@ -794,8 +799,8 @@ namespace gridprob
     {
         Operator<T> a = std::get<0>(pair);
         Operator<T> b = std::get<1>(pair);
-        Operator<T> a2 = a / (sqrt(det<T>(a)));
-        Operator<T> b2 = b / (sqrt(det<T>(b)));
+        Operator<T> a2 = a / bmp::sqrt(det<T>(a));
+        Operator<T> b2 = b / bmp::sqrt(det<T>(b));
         return reduction<T>(std::make_tuple(a2, b2));
     }
 
@@ -872,9 +877,9 @@ namespace gridprob
         b = matA(0, 1);
         c = matA(1, 0);
         d = matA(1, 1);
-        T sqrt_det = sqrt(det(matA));
-        T w = sqrt(d) / sqrt_det;
-        T h = sqrt(a) / sqrt_det;
+        T sqrt_det = bmp::sqrt(det(matA));
+        T w = bmp::sqrt(d) / sqrt_det;
+        T h = bmp::sqrt(a) / sqrt_det;
         return std::make_tuple(std::make_tuple(x - w, x + w), std::make_tuple(y - h, y + h));
     }
 

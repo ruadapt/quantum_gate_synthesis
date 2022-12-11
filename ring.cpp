@@ -1,5 +1,4 @@
 #include "ring.h"
-#include <cmath>
 #include <iostream>
 #include <tuple>
 #include <gmpxx.h>
@@ -442,7 +441,7 @@ namespace ring
     }
 
     template <>
-    Real rootTwo() { return sqrt(2); }
+    Real rootTwo() { return bmp::sqrt(Real(2)); }
 
     template <typename T>
     T fromZRootTwo(ZRootTwo arg)
@@ -459,7 +458,7 @@ namespace ring
     template <>
     Real rootHalf()
     {
-        return sqrt(0.5);
+        return bmp::sqrt(Real(0.5));
     }
 
     template <typename T>
@@ -969,11 +968,10 @@ namespace ring
     template <>
     std::string toString(const double &arg) { return std::to_string(arg); }
 
-    template <unsigned int N>
-    std::string toString(const Decimal<N> &arg)
+    std::string toString(const Real &arg)
     {
         std::stringstream ss;
-        ss << std::setprecision(std::numeric_limits<Decimal<N>>::digits10) << arg;
+        ss << std::setprecision(std::numeric_limits<Real>::digits10) << arg;
         return ss.str();
     }
 
@@ -2126,5 +2124,11 @@ template <typename T>
 std::ostream& operator<<(std::ostream& os, const Omega<T> &o)
 {
     os << o.toString();
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const Real &r)
+{
+    os << ring::toString(r);
     return os;
 }

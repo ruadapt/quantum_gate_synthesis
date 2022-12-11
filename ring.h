@@ -635,8 +635,7 @@ namespace ring
     template <>
     std::string toString(const double &arg);
 
-    template <unsigned int N>
-    std::string toString(const Decimal<N> &arg);
+    std::string toString(const Real &arg);
 
     template <>
     std::string toString(const Rational &arg);
