@@ -323,8 +323,9 @@ void testRootTwoRing()
 {
     std::cout << "RootTwoRing testing:" << std::endl;
 
-    assert(1.4142135623730951 == ring::rootTwo<Real>());
-    assert(CReal(1.4142135623730951, 0) == ring::rootTwo<CReal>());
+    assert(approx_equal(1.4142135623730951, ring::rootTwo<Real>()));
+    assert(approx_equal(1.4142135623730951, ring::rootTwo<CReal>().a()));
+    assert(0 == ring::rootTwo<CReal>().b());
     assert(ZRootTwo(0, 1) == ring::rootTwo<ZRootTwo>());
     assert(QRootTwo(0_mpq, 1_mpq) == ring::rootTwo<QRootTwo>());
     assert(ZOmega(-1, 0, 1, 0) == ring::rootTwo<ZOmega>());

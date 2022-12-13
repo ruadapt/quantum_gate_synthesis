@@ -123,10 +123,10 @@ BOOST_AUTO_TEST_CASE(test_gridpoints_1)
     QRootTwo y1 = QRootTwo(200, 0);
     std::vector<ZRootTwo> points = gridprob::gridpoints<QRootTwo>(x0, x1, y0, y1);
     std::sort(points.begin(), points.end());
-    assert(742 == points.size());
-    assert(ZRootTwo(59, -48) == points.at(0));
-    assert(ZRootTwo(59, -38) == points.at(543));
-    assert(ZRootTwo(84, -52) == points.at(741));
+    BOOST_REQUIRE_EQUAL(742, points.size());
+    BOOST_CHECK_EQUAL(ZRootTwo(59, -48), points.at(0));
+    BOOST_CHECK_EQUAL(ZRootTwo(59, -38), points.at(543));
+    BOOST_CHECK_EQUAL(ZRootTwo(84, -52), points.at(741));
 }
 
 BOOST_AUTO_TEST_CASE(test_gridpoints_2)

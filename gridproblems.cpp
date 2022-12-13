@@ -371,10 +371,10 @@ namespace gridprob
                        { return z + alpha; });
         std::vector<ZRootTwo> results;
         std::copy_if(shifted.begin(), shifted.end(), std::back_inserter(results), [=](ZRootTwo z)
-                     { 
+                     {
                         T z1 = ring::fromZRootTwo<T>(z);
                         T z2 = ring::fromZRootTwo<T>(z.adj2());
-                        return within<T>(z1, x0, x1) && within<T>(ring::adj2(z2), y0, y1); });
+                        return within<T>(z1, x0, x1) && within<T>(z2, y0, y1); });
         return results;
     }
 
