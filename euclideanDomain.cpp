@@ -87,7 +87,7 @@ namespace euclidean_domain
         {
             return x;
         }
-        Integer r = std::get<1>(divmod(x, y));
+        T r = std::get<1>(divmod(x, y));
         return euclid_gcd(y, r);
     }
 
@@ -98,7 +98,7 @@ namespace euclidean_domain
         {
             return std::make_tuple(T(1), T(0), T(0), T(1), x);
         }
-        Integer q, r;
+        T q, r;
         std::tie(q, r) = divmod(x, y);
         T a2, b2, s2, t2, d;
         std::tie(a2, b2, s2, t2, d) = extended_euclid(y, r);
@@ -130,13 +130,13 @@ namespace euclidean_domain
     template <typename T>
     std::optional<T> inv_mod(T p, T a)
     {
-        Integer b, d;
+        T b, d;
         std::tie(b, std::ignore, std::ignore, std::ignore, d) = extended_euclid(a, p);
-        std::optional<Integer> inv = euclid_inverse(d);
+        std::optional<T> inv = euclid_inverse(d);
         if (inv.has_value())
         {
-            Integer d2 = inv.value();
-            return std::get<1>(divmod(b * d2, p));  
+            T d2 = inv.value();
+            return std::get<1>(divmod(b * d2, p));
         }
         return std::nullopt;
     }
