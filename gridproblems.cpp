@@ -987,4 +987,30 @@ namespace gridprob
         Operator<DRootTwo> opG = to_upright_sets<T>(setA, setB);
         return gridpoints2_scaled_with_gridop(setA, setB, opG);
     }
+
+    template <typename T>
+    std::function<std::vector<DOmega>(Integer)> gridpoints2_increasing_with_gridop(
+        ConvexSet<T> setA, ConvexSet<T> setB, Operator<DRootTwo> opG)
+    {
+        std::function<std::vector<DOmega>(Integer)> solutions_fun = gridpoints2_scaled_with_gridop(setA, setB, opG);
+        std::function<std::vector<DOmega>(Integer)> exact_solutions = [=](Integer k)
+        {
+            if (k == 0)
+            {
+                return solutions_fun(0);
+            }
+            std::vector<DOmega> all_sols = solutions_fun(k);
+            std::vector<DOmega> exact;
+            std::copy_if(all_sols.begin(), all_sols.end(), std::back_inserter(exact), [=](DOmega d)
+                         { return ring::denomExp(d) == k; });
+            return exact;
+        };
+        return exact_solutions;
+    }
+
+    template <typename T>
+    std::function<std::vector<DOmega>(Integer)> gridpoints2_increasing(ConvexSet<T> setA, ConvexSet<T> setB)
+    {
+        return gridpoints2_increasing_with_gridop(setA, setB, to_upright_sets(setA, setB));
+    }
 };

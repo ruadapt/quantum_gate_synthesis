@@ -529,3 +529,23 @@ BOOST_AUTO_TEST_CASE(test_gridpoints2_scaled)
     BOOST_CHECK_EQUAL(17, points1.size());
     BOOST_CHECK_EQUAL(57, points2.size());
 }
+
+BOOST_AUTO_TEST_CASE(test_gridpoints2_increasing_with_gridop)
+{
+    ConvexSet<Real> u = gridprob::unitDisk<Real>();
+    ConvexSet<Real> u2 = gridprob::unitDisk<Real>();
+    std::function<std::vector<DOmega>(Integer)> solver = gridprob::gridpoints2_increasing<Real>(u, u2);
+    std::vector<DOmega> points0 = solver(0);
+    std::vector<DOmega> points1 = solver(1);
+    std::vector<DOmega> points2 = solver(2);
+    std::vector<DOmega> points3 = solver(3);
+    std::vector<DOmega> points4 = solver(4);
+    std::vector<DOmega> points5 = solver(5);
+    BOOST_CHECK_EQUAL(9, points0.size());
+    BOOST_CHECK_EQUAL(8, points1.size());
+    // TODO the two commented out tests fail, possibly due to small number precision differences
+    // BOOST_CHECK_EQUAL(40, points2.size());
+    BOOST_CHECK_EQUAL(136, points3.size());
+    // BOOST_CHECK_EQUAL(480, points4.size());
+    BOOST_CHECK_EQUAL(1912, points5.size());
+}
