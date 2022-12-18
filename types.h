@@ -2,6 +2,8 @@
 #include <gmpxx.h>
 #include <boost/multiprecision/cpp_dec_float.hpp>
 #include <tuple>
+#include <variant>
+#include <optional>
 
 using Integer = mpz_class;
 using Rational = mpq_class;
@@ -16,6 +18,12 @@ const int REAL_DIGITS = 100;
 using Real = Decimal<REAL_DIGITS>;
 
 template <typename T>
+using List = std::vector<T>;
+
+template <typename T>
+using Maybe = std::optional<T>;
+
+template <typename T>
 using Tup2 = std::tuple<T, T>;
 
 template <typename T>
@@ -26,3 +34,12 @@ using Tup4 = std::tuple<T, T, T, T>;
 
 template <typename T>
 using Tup5 = std::tuple<T, T, T, T, T>;
+
+template <typename A, typename B>
+using Either = std::variant<A, B>;
+
+template <typename A, typename B>
+A fst(Either<A, B> e) { return std::get<0>(e); }
+
+template <typename A, typename B>
+B snd(Either<A, B> e) { return std::get<1>(e); }
