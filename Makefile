@@ -3,7 +3,7 @@ CXX = g++
 CPPFLAGS= -isystem /usr/local/include -std=c++17 -Werror -Wall -Wextra -Wpedantic -Wconversion
 LDLIBS = -lgmp -lgmpxx
 
-headers = types.h ring.h gridproblems.h matrix.h quadratic.h toReal.h euclideanDomain.h diophantine.h stepComp.h
+headers = utils.h types.h ring.h gridproblems.h matrix.h quadratic.h toReal.h euclideanDomain.h diophantine.h stepComp.h
 modules = ring.cpp gridproblems.cpp matrix.cpp quadratic.cpp toReal.cpp euclideanDomain.cpp diophantine.cpp stepComp.cpp
 tests = test/ringTest test/gridproblemsTest test/matrixTest test/quadraticTest test/toRealTest test/euclideanDomainTest test/diophantineTest test/stepCompTest
 

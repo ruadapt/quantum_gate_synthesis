@@ -7,4 +7,6 @@ matrixTest
 quadraticTest
 toRealTest
 euclideanDomainTest
+diophantineTest
+stepCompTest
 temp
