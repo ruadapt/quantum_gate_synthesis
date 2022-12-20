@@ -76,6 +76,41 @@ StepComp<T> StepComp<T>::forward(int n) const
     return current;
 }
 
+template <typename T>
+std::optional<T> StepComp<T>::get_result() const
+{
+    return (this->done_) ? this->value : std::nullopt;
+}
+
+template <typename T>
+StepComp<StepComp<T>> StepComp<T>::subtask(int n) const
+{
+    if (n <= 0 || this->done_)
+    {
+        return StepComp<StepComp<T>>(*this);
+    }
+    // TODO try to make this iterative.
+    return StepComp<StepComp<T>>([=]()
+                                 { this->untick().subtask(n - 1); });
+}
+
+template <typename T>
+T StepComp<T>::run() const
+{
+    StepComp<T> current = *this;
+    while (!current.done_)
+    {
+        current = current.untick();
+    }
+    return current.value_;
+}
+
+template <typename T>
+std::optional<T> StepComp<T>::run_bounded(int n)
+{
+    return this->forward(n).get_result();
+}
+
 namespace stepcomp
 {
     /**
