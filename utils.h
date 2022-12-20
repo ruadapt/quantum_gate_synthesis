@@ -24,17 +24,31 @@ namespace utils
      */
     int randint(int lo, int hi)
     {
+        assert(lo <= hi);
         std::random_device r;
         std::default_random_engine e1(r());
         std::uniform_int_distribution<int> gen(lo, hi);
         return gen(e1);
     }
 
+    gmp_randclass rr(gmp_randinit_default);
+    bool seeded = false;
+
     /**
      * Uniform random integer. Both endpoints are inclusive.
      */
     Integer randint(Integer lo, Integer hi)
     {
-        return Integer(randint(ring::mpzToInt(lo), ring::mpzToInt(hi)));
+        assert(lo <= hi);
+
+        if (!seeded)
+        {
+            rr.seed((unsigned long)(time(NULL)));
+            seeded = true;
+        }
+
+        Integer n = hi - lo + 1;
+        Integer rand = rr.get_z_range(n);
+        return lo + rand;
     }
 }
