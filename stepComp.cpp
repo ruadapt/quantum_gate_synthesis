@@ -15,21 +15,10 @@ std::ostream &operator<<(std::ostream &os, const StepComp<T> &s)
 }
 
 template <typename T>
-StepComp<T>::StepComp(T value)
-{
-    value_ = value;
-    done_ = true;
-}
-
-template <typename T>
-StepComp<T>::StepComp(std::function<StepComp<T>()> comp)
-{
-    comp_ = comp;
-    done_ = false;
-}
-
-template <typename T>
 bool StepComp<T>::is_done() const { return done_; }
+
+template <typename T>
+int StepComp<T>::speed() const { return speed_; }
 
 template <typename T>
 T StepComp<T>::value() const
@@ -56,9 +45,17 @@ StepComp<T> StepComp<T>::untick() const
 {
     if (this->is_done())
     {
-        return StepComp<T>(this->value());
+        return StepComp<T>(this->value(), this->speed_);
     }
-    return this->comp_();
+    StepComp<T> current = *this;
+    for (int i = 0; i < this->speed_; i++)
+    {
+        current = current.comp_();
+    }
+    // The speed always stays the same after unticking, regardless of the contents of the
+    // inner StepComps.
+    current.speed_ = speed_;
+    return current;
 }
 
 template <typename T>
@@ -79,7 +76,7 @@ StepComp<T> StepComp<T>::forward(int n) const
 template <typename T>
 std::optional<T> StepComp<T>::get_result() const
 {
-    return (this->done_) ? this->value : std::nullopt;
+    return (this->done_) ? this->value_ : std::nullopt;
 }
 
 template <typename T>
@@ -92,6 +89,16 @@ StepComp<StepComp<T>> StepComp<T>::subtask(int n) const
     // TODO try to make this iterative.
     return StepComp<StepComp<T>>([=]()
                                  { this->untick().subtask(n - 1); });
+}
+
+template <typename T>
+StepComp<T> StepComp<T>::speedup(int n) const
+{
+    if (this->done_)
+    {
+        return StepComp<T>(this->value_, this->speed_ * n);
+    }
+    return StepComp<T>(this->comp_, this->speed_ * n);
 }
 
 template <typename T>
@@ -118,13 +125,14 @@ namespace stepcomp
      * finish and yield the value.
      */
     template <typename T>
-    StepComp<T> wrap(T value, int n)
+    StepComp<T> wrap(T value, int n, int speed)
     {
-        StepComp<T> current = StepComp<T>(value);
+        StepComp<T> current = StepComp<T>(value, speed);
         for (int i = 0; i < n; i++)
         {
             current = StepComp<T>([=]()
-                                  { return current; });
+                                  { return current; },
+                                  speed);
         }
         return current;
     }

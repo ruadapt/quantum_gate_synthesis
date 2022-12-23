@@ -7,9 +7,14 @@ template <typename T>
 class StepComp
 {
 public:
-    StepComp(T value);
-    StepComp(std::function<StepComp<T>()> comp);
+    StepComp(T value, int speed = 1) : done_{true}, speed_{speed}, value_{value}
+    {
+    }
+    StepComp(std::function<StepComp<T>()> comp, int speed = 1) : done_{false}, speed_{speed}, comp_{comp}
+    {
+    }
     bool is_done() const;
+    int speed() const;
     T value() const;
     std::function<StepComp<T>()> comp() const;
     StepComp<T> untick() const;
@@ -24,6 +29,7 @@ public:
 
 private:
     bool done_;
+    int speed_;
     T value_;
     std::function<StepComp<T>()> comp_;
 };
@@ -46,7 +52,7 @@ namespace stepcomp
     StepComp<Maybe<List<T>>> parallel_list_maybe(List<StepComp<Maybe<T>>>);
 
     template <typename T>
-    StepComp<T> wrap(T value, int n);
+    StepComp<T> wrap(T value, int n, int speed = 1);
 }
 
 #include "stepComp.cpp"
