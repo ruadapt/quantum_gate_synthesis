@@ -36,10 +36,10 @@ template <typename T>
 using Tup5 = std::tuple<T, T, T, T, T>;
 
 template <typename A, typename B>
-using Either = std::variant<A, B>;
+using Either = std::variant<std::monostate, A, B>;
 
 template <typename A, typename B>
-A fst(Either<A, B> e) { return std::get<0>(e); }
+A fst(Either<A, B> e) { return std::get<1>(e); }
 
 template <typename A, typename B>
-B snd(Either<A, B> e) { return std::get<1>(e); }
+B snd(Either<A, B> e) { return std::get<2>(e); }

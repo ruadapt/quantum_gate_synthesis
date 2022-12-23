@@ -39,7 +39,7 @@ private:
 namespace stepcomp
 {
     template <typename A, typename B>
-    Either<std::tuple<A, StepComp<B>>, std::tuple<StepComp<A>, B>> parallel(StepComp<A> c1, StepComp<B> c2);
+    StepComp<Either<std::tuple<A, StepComp<B>>, std::tuple<StepComp<A>, B>>> parallel(StepComp<A> c1, StepComp<B> c2);
 
     template <typename T>
     StepComp<T> diverge();

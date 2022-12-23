@@ -147,7 +147,7 @@ std::optional<T> StepComp<T>::run_bounded(int n)
 namespace stepcomp
 {
     /**
-     * Given a value, put it into a StepComp that needs to be unticked n times to
+     * Given a value, put it into a StepComp that needs to run for n steps to
      * finish and yield the value.
      */
     template <typename T>
@@ -163,9 +163,27 @@ namespace stepcomp
         return current;
     }
 
+    template <typename A, typename B>
+    StepComp<Either<std::tuple<A, StepComp<B>>, std::tuple<StepComp<A>, B>>> parallel(StepComp<A> c1, StepComp<B> c2)
+    {
+        using T1 = std::tuple<A, StepComp<B>>;
+        using T2 = std::tuple<StepComp<A>, B>;
+        if (c1.is_done())
+        {
+            return StepComp(Either<T1, T2>(std::make_tuple(c1.value(), c2)));
+        }
+        if (c2.is_done())
+        {
+            return StepComp(Either<T1, T2>(std::make_tuple(c1, c2.value())));
+        }
+        return StepComp<Either<T1, T2>>([=]()
+                                        { return parallel<A, B>(c1.untick(), c2.untick()); });
+    }
+
     template <typename T>
     StepComp<T> diverge()
     {
-        return StepComp<T>([]() { return diverge<T>(); });    
+        return StepComp<T>([]()
+                           { return diverge<T>(); });
     }
 }

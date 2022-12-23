@@ -69,6 +69,24 @@ BOOST_AUTO_TEST_CASE(test_speedup)
     BOOST_CHECK_EQUAL(true, s3.forward(2).is_done());
 }
 
+BOOST_AUTO_TEST_CASE(test_parallel)
+{
+    StepComp<std::string> sc1 = sc::wrap(std::string("result1"), 3);
+    StepComp<std::string> sc2 = sc::wrap(std::string("result2"), 2);
+    using A = std::string;
+    using B = std::string;
+    using R = Either<std::tuple<A, StepComp<B>>, std::tuple<StepComp<A>, B>>;
+    StepComp<R> p = sc::parallel(sc1, sc2);
+    BOOST_CHECK_EQUAL(false, p.is_done());
+    p = p.untick();
+    BOOST_CHECK_EQUAL(false, p.is_done());
+    p = p.untick();
+    BOOST_CHECK_EQUAL(true, p.is_done());
+    BOOST_CHECK_EQUAL(2, p.value().index()); // The second computation finishes first.
+    std::string result = std::get<1>(snd(p.value()));
+    BOOST_CHECK_EQUAL("result2", result);
+}
+
 BOOST_AUTO_TEST_CASE(test_diverge)
 {
     StepComp<Integer> div = sc::diverge<Integer>();
