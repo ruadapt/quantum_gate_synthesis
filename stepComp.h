@@ -17,14 +17,15 @@ public:
     int speed() const;
     T value() const;
     std::function<StepComp<T>()> comp() const;
+    int count() const;
+    StepComp<T> set_count(int count) const;
+    void reset_count() const;
     StepComp<T> untick() const;
     StepComp<T> forward(int n) const;
     std::optional<T> get_result() const;
     StepComp<StepComp<T>> subtask(int n) const;
     StepComp<T> speedup(int n) const;
-    StepComp<std::tuple<T, int>> with_counter() const;
     T run() const;
-    std::tuple<T, int> run_with_steps() const;
     std::optional<T> run_bounded(int n);
 
 private:
@@ -32,6 +33,7 @@ private:
     int speed_;
     T value_;
     std::function<StepComp<T>()> comp_;
+    int count_ = 0;
 };
 
 namespace stepcomp

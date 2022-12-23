@@ -9,7 +9,7 @@ std::ostream &operator<<(std::ostream &os, const StepComp<T> &s)
     }
     else
     {
-        os << "StepComp(Incomplete)";
+        os << "StepComp(Incomplete, speed = " << s.speed() << ")";
     }
     return os;
 }
@@ -41,21 +41,47 @@ std::function<StepComp<T>()> StepComp<T>::comp() const
 }
 
 template <typename T>
+int StepComp<T>::count() const
+{
+    return count_;
+}
+
+template <typename T>
+StepComp<T> StepComp<T>::set_count(int count) const
+{
+    StepComp<T> result = *this;
+    result.count_ = count;
+    return result;
+}
+
+template <typename T>
+void StepComp<T>::reset_count() const
+{
+    count_ = 0;
+}
+
+template <typename T>
 StepComp<T> StepComp<T>::untick() const
 {
     if (this->is_done())
     {
-        return StepComp<T>(this->value(), this->speed_);
+        return StepComp<T>(this->value(), this->speed_).set_count(count_);
     }
+    int c = this->count();
     StepComp<T> current = *this;
     for (int i = 0; i < this->speed_; i++)
     {
+        if (current.is_done())
+        {
+            break;
+        }
         current = current.comp_();
+        c++;
     }
     // The speed always stays the same after unticking, regardless of the contents of the
     // inner StepComps.
     current.speed_ = speed_;
-    return current;
+    return current.set_count(c);
 }
 
 template <typename T>
@@ -96,9 +122,9 @@ StepComp<T> StepComp<T>::speedup(int n) const
 {
     if (this->done_)
     {
-        return StepComp<T>(this->value_, this->speed_ * n);
+        return StepComp<T>(this->value_, this->speed_ * n).set_count(count_);
     }
-    return StepComp<T>(this->comp_, this->speed_ * n);
+    return StepComp<T>(this->comp_, this->speed_ * n).set_count(count_);
 }
 
 template <typename T>
@@ -135,5 +161,11 @@ namespace stepcomp
                                   speed);
         }
         return current;
+    }
+
+    template <typename T>
+    StepComp<T> diverge()
+    {
+        return StepComp<T>([]() { return diverge<T>(); });    
     }
 }

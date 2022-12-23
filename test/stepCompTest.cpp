@@ -68,3 +68,36 @@ BOOST_AUTO_TEST_CASE(test_speedup)
     BOOST_CHECK_EQUAL(false, s3.forward(1).is_done());
     BOOST_CHECK_EQUAL(true, s3.forward(2).is_done());
 }
+
+BOOST_AUTO_TEST_CASE(test_diverge)
+{
+    StepComp<Integer> div = sc::diverge<Integer>();
+    BOOST_CHECK_EQUAL(false, div.is_done());
+    BOOST_CHECK_EQUAL(false, div.forward(1000).is_done());
+}
+
+BOOST_AUTO_TEST_CASE(test_count)
+{
+    StepComp<int> sc = sc::wrap(5, 100);
+    StepComp<int> sc2 = sc.speedup(50);
+
+    StepComp<int> f1 = sc.forward(99);
+    BOOST_CHECK_EQUAL(false, f1.is_done());
+
+    StepComp<int> f2 = sc.forward(100);
+    BOOST_CHECK_EQUAL(true, f2.is_done());
+    BOOST_CHECK_EQUAL(100, f2.count());
+
+    // Once the StepComp is done after 100 steps, we stop counting.
+    StepComp<int> f3 = sc.forward(300);
+    BOOST_CHECK_EQUAL(true, f3.is_done());
+    BOOST_CHECK_EQUAL(100, f3.count());
+
+    StepComp<int> f4 = sc2.forward(1);
+    BOOST_CHECK_EQUAL(false, f4.is_done());
+    
+    // Even with a speedup, we still count the raw number of computations.
+    StepComp<int> f5 = sc2.forward(2);
+    BOOST_CHECK_EQUAL(true, f5.is_done());
+    BOOST_CHECK_EQUAL(100, f5.count());
+}
