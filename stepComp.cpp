@@ -186,4 +186,51 @@ namespace stepcomp
         return StepComp<T>([]()
                            { return diverge<T>(); });
     }
+
+    template <typename T>
+    StepComp<T> parallel_first(StepComp<T> c1, StepComp<T> c2)
+    {
+        if (c1.is_done())
+        {
+            return StepComp<T>(c1.value());
+        }
+        if (c2.is_done())
+        {
+            return StepComp<T>(c2.value());
+        }
+        return StepComp<T>([=]()
+                           { return parallel_first(c1.untick(), c2.untick()); });
+    }
+
+    template <typename A, typename B>
+    StepComp<Maybe<std::tuple<A, B>>> parallel_maybe(StepComp<Maybe<A>> c1, StepComp<Maybe<B>> c2)
+    {
+        if (c1.is_done() && c2.is_done())
+        {
+            if (!c1.value().has_value() || !c2.value().has_value())
+            {
+                return StepComp<Maybe<std::tuple<A, B>>>(std::nullopt);
+            }
+            return StepComp(Maybe<std::tuple<A, B>>(std::make_tuple(c1.value().value(), c2.value().value())));
+        }
+        if (c1.is_done())
+        {
+            Maybe<A> m1 = c1.value();
+            if (!m1.has_value())
+            {
+                return StepComp<Maybe<std::tuple<A, B>>>(std::nullopt);
+            }
+            return StepComp<Maybe<std::tuple<A, B>>>([=](){ return parallel_maybe(c1, c2.untick()); });
+        }
+        if (c2.is_done())
+        {
+            Maybe<B> m2 = c2.value();
+            if (!m2.has_value())
+            {
+                return StepComp<Maybe<std::tuple<A, B>>>(std::nullopt);
+            }
+            return StepComp<Maybe<std::tuple<A, B>>>([=](){ return parallel_maybe(c1.untick(), c2); });
+        }
+        return StepComp<Maybe<std::tuple<A, B>>>([=](){ return parallel_maybe(c1.untick(), c2.untick()); });
+    }
 }

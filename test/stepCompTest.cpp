@@ -78,13 +78,63 @@ BOOST_AUTO_TEST_CASE(test_parallel)
     using R = Either<std::tuple<A, StepComp<B>>, std::tuple<StepComp<A>, B>>;
     StepComp<R> p = sc::parallel(sc1, sc2);
     BOOST_CHECK_EQUAL(false, p.is_done());
-    p = p.untick();
-    BOOST_CHECK_EQUAL(false, p.is_done());
-    p = p.untick();
-    BOOST_CHECK_EQUAL(true, p.is_done());
-    BOOST_CHECK_EQUAL(2, p.value().index()); // The second computation finishes first.
-    std::string result = std::get<1>(snd(p.value()));
+    BOOST_CHECK_EQUAL(false, p.forward(1).is_done());
+    BOOST_CHECK_EQUAL(true, p.forward(2).is_done());
+    StepComp<R> d = p.forward(2);
+    BOOST_CHECK_EQUAL(2, d.value().index()); // The second computation finishes first.
+    std::string result = std::get<1>(snd(d.value()));
     BOOST_CHECK_EQUAL("result2", result);
+}
+
+BOOST_AUTO_TEST_CASE(test_parallel_first)
+{
+    StepComp<std::string> sc1 = sc::wrap(std::string("result1"), 2);
+    StepComp<std::string> sc2 = sc::wrap(std::string("result2"), 3);
+    StepComp<std::string> p = sc::parallel_first(sc1, sc2);
+    BOOST_CHECK_EQUAL(false, p.is_done());
+    BOOST_CHECK_EQUAL(false, p.forward(1).is_done());
+    BOOST_CHECK_EQUAL(true, p.forward(2).is_done());
+    BOOST_CHECK_EQUAL("result1", p.forward(2).value()); // The first computation finishes first.
+}
+
+BOOST_AUTO_TEST_CASE(test_parallel_maybe)
+{
+    {
+        StepComp<Maybe<std::string>> sc1 = sc::wrap<Maybe<std::string>>(std::nullopt, 5);
+        StepComp<Maybe<int>> sc2 = sc::wrap<Maybe<int>>(std::nullopt, 4);
+        StepComp<Maybe<std::tuple<std::string, int>>> p = sc::parallel_maybe(sc1, sc2);
+        BOOST_CHECK_EQUAL(false, p.is_done());
+        BOOST_CHECK_EQUAL(false, p.forward(3).is_done());
+        BOOST_CHECK_EQUAL(true, p.forward(4).is_done());
+        BOOST_CHECK(std::nullopt == p.run());
+    }
+    {
+        StepComp<Maybe<std::string>> sc1 = sc::wrap<Maybe<std::string>>("r1", 5);
+        StepComp<Maybe<int>> sc2 = sc::wrap<Maybe<int>>(std::nullopt, 4);
+        StepComp<Maybe<std::tuple<std::string, int>>> p = sc::parallel_maybe(sc1, sc2);
+        BOOST_CHECK_EQUAL(false, p.is_done());
+        BOOST_CHECK_EQUAL(false, p.forward(3).is_done());
+        BOOST_CHECK_EQUAL(true, p.forward(4).is_done());
+        BOOST_CHECK(std::nullopt == p.run());
+    }
+    {
+        StepComp<Maybe<std::string>> sc1 = sc::wrap<Maybe<std::string>>(std::nullopt, 5);
+        StepComp<Maybe<int>> sc2 = sc::wrap<Maybe<int>>(12, 4);
+        StepComp<Maybe<std::tuple<std::string, int>>> p = sc::parallel_maybe(sc1, sc2);
+        BOOST_CHECK_EQUAL(false, p.is_done());
+        BOOST_CHECK_EQUAL(false, p.forward(4).is_done());
+        BOOST_CHECK_EQUAL(true, p.forward(5).is_done());
+        BOOST_CHECK(std::nullopt == p.run());
+    }
+    {
+        StepComp<Maybe<std::string>> sc1 = sc::wrap<Maybe<std::string>>("r1", 5);
+        StepComp<Maybe<int>> sc2 = sc::wrap<Maybe<int>>(12, 4);
+        StepComp<Maybe<std::tuple<std::string, int>>> p = sc::parallel_maybe(sc1, sc2);
+        BOOST_CHECK_EQUAL(false, p.is_done());
+        BOOST_CHECK_EQUAL(false, p.forward(4).is_done());
+        BOOST_CHECK_EQUAL(true, p.forward(5).is_done());
+        BOOST_CHECK(std::make_tuple("r1", 12) == p.run());
+    }
 }
 
 BOOST_AUTO_TEST_CASE(test_diverge)
@@ -113,7 +163,7 @@ BOOST_AUTO_TEST_CASE(test_count)
 
     StepComp<int> f4 = sc2.forward(1);
     BOOST_CHECK_EQUAL(false, f4.is_done());
-    
+
     // Even with a speedup, we still count the raw number of computations.
     StepComp<int> f5 = sc2.forward(2);
     BOOST_CHECK_EQUAL(true, f5.is_done());
