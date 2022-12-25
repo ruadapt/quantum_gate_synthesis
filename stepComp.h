@@ -51,7 +51,7 @@ namespace stepcomp
     StepComp<Maybe<std::tuple<A, B>>> parallel_maybe(StepComp<Maybe<A>> c1, StepComp<Maybe<B>> c2);
 
     template <typename T>
-    StepComp<Maybe<List<T>>> parallel_list_maybe(List<StepComp<Maybe<T>>>);
+    StepComp<Maybe<List<T>>> parallel_list_maybe(List<StepComp<Maybe<T>>> steps);
 
     template <typename T>
     StepComp<T> wrap(T value, int n, int speed = 1);

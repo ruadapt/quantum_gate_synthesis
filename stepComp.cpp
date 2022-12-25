@@ -1,4 +1,5 @@
 #include "stepComp.h"
+#include "types.h"
 
 template <typename T>
 std::ostream &operator<<(std::ostream &os, const StepComp<T> &s)
@@ -220,7 +221,8 @@ namespace stepcomp
             {
                 return StepComp<Maybe<std::tuple<A, B>>>(std::nullopt);
             }
-            return StepComp<Maybe<std::tuple<A, B>>>([=](){ return parallel_maybe(c1, c2.untick()); });
+            return StepComp<Maybe<std::tuple<A, B>>>([=]()
+                                                     { return parallel_maybe(c1, c2.untick()); });
         }
         if (c2.is_done())
         {
@@ -229,8 +231,44 @@ namespace stepcomp
             {
                 return StepComp<Maybe<std::tuple<A, B>>>(std::nullopt);
             }
-            return StepComp<Maybe<std::tuple<A, B>>>([=](){ return parallel_maybe(c1.untick(), c2); });
+            return StepComp<Maybe<std::tuple<A, B>>>([=]()
+                                                     { return parallel_maybe(c1.untick(), c2); });
         }
-        return StepComp<Maybe<std::tuple<A, B>>>([=](){ return parallel_maybe(c1.untick(), c2.untick()); });
+        return StepComp<Maybe<std::tuple<A, B>>>([=]()
+                                                 { return parallel_maybe(c1.untick(), c2.untick()); });
+    }
+
+    template <typename T>
+    StepComp<Maybe<List<T>>> parallel_list_maybe(List<StepComp<Maybe<T>>> steps)
+    {
+        if (steps.size() == 0)
+        {
+            return Maybe<List<T>>(List<T>{});
+        }
+        bool all_done = true;
+        for (StepComp<Maybe<T>> sc : steps)
+        {
+            // If we get any nullopt results, return a nullopt StepComp right away.
+            if (sc.is_done() && !sc.value().has_value())
+            {
+                return StepComp<Maybe<List<T>>>(std::nullopt);
+            }
+            if (!sc.is_done())
+            {
+                all_done = false;
+            }
+        }
+        if (all_done)
+        {
+            List<T> results;
+            std::transform(steps.begin(), steps.end(), std::back_inserter(results), [](StepComp<Maybe<T>> sc)
+                           { return sc.value().value(); });
+            return StepComp(Maybe<List<T>>(results));
+        }
+        List<StepComp<Maybe<T>>> next;
+        std::transform(steps.begin(), steps.end(), std::back_inserter(next), [](StepComp<Maybe<T>> sc)
+                       { return sc.untick(); });
+        return StepComp<Maybe<List<T>>>([=]()
+                                        { return parallel_list_maybe(next); });
     }
 }

@@ -137,6 +137,34 @@ BOOST_AUTO_TEST_CASE(test_parallel_maybe)
     }
 }
 
+BOOST_AUTO_TEST_CASE(test_parallel_list_maybe)
+{
+    {
+        StepComp<Maybe<std::string>> sc1 = sc::wrap<Maybe<std::string>>(std::nullopt, 6);
+        StepComp<Maybe<std::string>> sc2 = sc::wrap<Maybe<std::string>>(std::nullopt, 7);
+        StepComp<Maybe<std::string>> sc3 = sc::wrap<Maybe<std::string>>(std::string("r1"), 4);
+        StepComp<Maybe<std::string>> sc4 = sc::wrap<Maybe<std::string>>(std::string("r2"), 5);
+        StepComp<Maybe<std::string>> sc5 = sc::wrap<Maybe<std::string>>(std::string("r3"), 2);
+        List<StepComp<Maybe<std::string>>> stepcomps{sc1, sc2, sc3, sc4, sc5};
+        StepComp<Maybe<List<std::string>>> p = sc::parallel_list_maybe(stepcomps);
+        BOOST_CHECK_EQUAL(false, p.is_done());
+        BOOST_CHECK_EQUAL(false, p.forward(5).is_done());
+        BOOST_CHECK_EQUAL(true, p.forward(6).is_done());
+        BOOST_CHECK(std::nullopt == p.run());
+    }
+    {
+        StepComp<Maybe<std::string>> sc1 = sc::wrap<Maybe<std::string>>(std::string("r1"), 4);
+        StepComp<Maybe<std::string>> sc2 = sc::wrap<Maybe<std::string>>(std::string("r2"), 5);
+        StepComp<Maybe<std::string>> sc3 = sc::wrap<Maybe<std::string>>(std::string("r3"), 2);
+        List<StepComp<Maybe<std::string>>> stepcomps{sc1, sc2, sc3};
+        StepComp<Maybe<List<std::string>>> p = sc::parallel_list_maybe(stepcomps);
+        BOOST_CHECK_EQUAL(false, p.is_done());
+        BOOST_CHECK_EQUAL(false, p.forward(4).is_done());
+        BOOST_CHECK_EQUAL(true, p.forward(5).is_done());
+        BOOST_CHECK((List<std::string>{"r1", "r2", "r3"} == p.run().value()));
+    }
+}
+
 BOOST_AUTO_TEST_CASE(test_diverge)
 {
     StepComp<Integer> div = sc::diverge<Integer>();
