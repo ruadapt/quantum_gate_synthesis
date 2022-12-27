@@ -22,3 +22,11 @@ BOOST_AUTO_TEST_CASE(test_find_factor)
         BOOST_CHECK(610817 == factor || 611939 == factor);
     }
 }
+
+BOOST_AUTO_TEST_CASE(test_power_mod)
+{
+    BOOST_CHECK_EQUAL(1, dio::power_mod(2, 0, 12));
+    BOOST_CHECK_EQUAL(1, dio::power_mod(234, 0, 17));
+    BOOST_CHECK_EQUAL(5, dio::power_mod(17, 1, 12));
+    BOOST_CHECK_EQUAL(6, dio::power_mod(17, 123, 7));
+}

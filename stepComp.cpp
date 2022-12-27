@@ -140,7 +140,7 @@ T StepComp<T>::run() const
 }
 
 template <typename T>
-std::optional<T> StepComp<T>::run_bounded(int n)
+std::optional<T> StepComp<T>::run_bounded(int n) const
 {
     return this->forward(n).get_result();
 }

@@ -26,7 +26,7 @@ public:
     StepComp<StepComp<T>> subtask(int n) const;
     StepComp<T> speedup(int n) const;
     T run() const;
-    std::optional<T> run_bounded(int n);
+    std::optional<T> run_bounded(int n) const;
 
 private:
     bool done_;

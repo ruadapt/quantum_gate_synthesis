@@ -27,7 +27,7 @@ namespace diophantine
                 if (d == 1)
                 {
                     return StepComp<Integer>([=]()
-                                    { return StepComp<Integer>(aux_ref(f(x), f(f(y)), aux_ref)); });
+                                             { return StepComp<Integer>(aux_ref(f(x), f(f(y)), aux_ref)); });
                 }
                 if (d == n)
                 {
@@ -38,6 +38,24 @@ namespace diophantine
             return aux_impl(x, y, aux_impl);
         };
         return StepComp<Integer>([=]()
-                        { return aux(Integer(2), f(Integer(2))); });
+                                 { return aux(Integer(2), f(Integer(2))); });
+    }
+
+    Integer power_mod(Integer a, Integer k, Integer n)
+    {
+        if (k == 0)
+        {
+            return 1;
+        }
+        if (k == 1)
+        {
+            return utils::mod(a, n);
+        }
+        Integer b = power_mod(a, utils::div(k, 2), n);
+        if (ring::even(k))
+        {
+            return utils::mod(b * b, n);
+        }
+        return utils::mod(b * b * a, n);
     }
 }
