@@ -134,4 +134,65 @@ namespace diophantine
             // TODO wrap this in a stepcomp?
             return root_of_negative_one(n); });
     }
+
+    Pair<Integer> mul(Pair<Integer> p1, Pair<Integer> p2, Integer n, Integer r, Integer s)
+    {
+        Integer a, b, c, d;
+        std::tie(a, b) = p1;
+        std::tie(c, d) = p2;
+        Integer x = a * c;
+        Integer y = a * d + b * c;
+        Integer z = b * d;
+        Integer a2 = y - x * r;
+        Integer b2 = z - x * s;
+        Integer a3 = utils::mod(a2, n);
+        Integer b3 = utils::mod(b2, n);
+        return std::make_tuple(a3, b3);
+    }
+
+    Pair<Integer> pow(Pair<Integer> x, Integer m, Integer n, Integer r, Integer s)
+    {
+        if (m <= 0)
+        {
+            return std::make_tuple(0, 1);
+        }
+        if (ring::odd(m))
+        {
+            return mul(x, pow(x, m - 1, n, r, s), n, r, s);
+        }
+        Pair<Integer> y = pow(x, utils::div(m, 2), n, r, s);
+        return mul(y, y, n, r, s);
+    };
+
+    StepComp<Integer> root_mod(Integer n, Integer a)
+    {
+        if (utils::mod(a, n) == -1)
+        {
+            return root_of_negative_one(n);
+        }
+
+        Integer b = utils::randint(0, n - 1);
+        Integer r = utils::mod(2 * b, n);
+        Integer s = utils::mod(b * b - a, n);
+        Integer c, d;
+        std::tie(c, d) = pow(std::make_tuple(1_mpz, 0_mpz), utils::div(n - 1, 2), n, r, s);
+
+        auto res = [=]()
+        {
+            std::optional<Integer> imod = ed::inv_mod(n, c);
+            if (imod.has_value())
+            {
+                Integer c2 = imod.value();
+                Integer t = (1 - d) * c2;
+                Integer t1 = utils::mod(t + b, n);
+                if (utils::mod(t1 * t1 - a, n) == 0)
+                {
+                    return StepComp<Integer>(t1);
+                }
+            }
+            return root_mod(n, a);
+        };
+
+        return StepComp<Integer>(res);
+    }
 }

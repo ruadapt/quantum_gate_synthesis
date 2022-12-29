@@ -268,8 +268,6 @@ namespace ring
 
     Integer div(Integer a, Integer b);
 
-    int mpzToInt(Integer z);
-
     template <typename Integral>
     Integral shift(Integral x, int bits);
 

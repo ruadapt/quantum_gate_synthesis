@@ -1,3 +1,4 @@
+#pragma once
 #include "types.h"
 #include "ring.h"
 #include <gmpxx.h>
@@ -7,7 +8,8 @@ namespace utils
 {
     int to_int(Integer n)
     {
-        return ring::mpzToInt(n);
+        assert(n.fits_sint_p());
+        return static_cast<int>(n.get_si());
     }
 
     unsigned long to_unsigned_long(Integer n)
@@ -37,6 +39,10 @@ namespace utils
 
     Integer div(Integer x, Integer y)
     {
+        if (y == 0)
+        {
+            throw std::invalid_argument("Division by 0");
+        }
         Integer q;
         mpz_fdiv_q(q.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
         return q;

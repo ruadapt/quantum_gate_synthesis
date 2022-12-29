@@ -1,4 +1,5 @@
 #include "ring.h"
+#include "utils.h"
 #include <iostream>
 #include <tuple>
 #include <gmpxx.h>
@@ -19,25 +20,12 @@ namespace ring
         {
             throw std::invalid_argument("Division by 0");
         }
-        return mpzToInt(div(Integer(a), Integer(b)));
+        return utils::to_int(div(Integer(a), Integer(b)));
     }
 
     Integer div(Integer a, Integer b)
     {
-        if (b == 0)
-        {
-            throw std::invalid_argument("Division by 0");
-        }
-        Integer result;
-        // mpz_fdiv_q always rounds down.
-        mpz_fdiv_q(result.get_mpz_t(), a.get_mpz_t(), b.get_mpz_t());
-        return result;
-    }
-
-    int mpzToInt(Integer z)
-    {
-        assert(z.fits_sint_p());
-        return static_cast<int>(z.get_si());
+        return utils::div(a, b);
     }
 
     template <typename Integral>
@@ -56,7 +44,7 @@ namespace ring
     template <typename Integral>
     Integral shift(Integral x, Integer bits)
     {
-        return shift<Integral>(x, mpzToInt(bits));
+        return shift<Integral>(x, utils::to_int(bits));
     }
 
     template <>
@@ -77,7 +65,7 @@ namespace ring
     template <>
     Integer shift(Integer x, Integer bits)
     {
-        return shift<Integer>(x, mpzToInt(bits));
+        return shift<Integer>(x, utils::to_int(bits));
     }
 
     template <typename Integral>
@@ -113,7 +101,7 @@ namespace ring
     template <typename Integral>
     Integral exp2(Integer pow)
     {
-        return exp2<Integral>(mpzToInt(pow));
+        return exp2<Integral>(utils::to_int(pow));
     }
 
     template <typename T>
@@ -370,7 +358,7 @@ namespace ring
     {
         // Any exponent should be able to fit in an int, or else the result would
         // be too large.
-        return powNonNeg<T>(base, mpzToInt(exp));
+        return powNonNeg<T>(base, utils::to_int(exp));
     }
 
     /**
@@ -387,7 +375,7 @@ namespace ring
     {
         // Any exponent should be able to fit in an int, or else the result would
         // be too large.
-        return powInt<T>(base, mpzToInt(exp));
+        return powInt<T>(base, utils::to_int(exp));
     }
 
     template <typename T>

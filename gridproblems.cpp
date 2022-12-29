@@ -77,7 +77,7 @@ namespace gridprob
     template <typename T>
     Operator<T> operatorPow(Operator<T> base, Integer exp)
     {
-        return operatorPow(base, ring::mpzToInt(exp));
+        return operatorPow(base, utils::to_int(exp));
     }
 
     template <typename T>
@@ -277,7 +277,7 @@ namespace gridprob
 
         // floorlog requires a positive argument, so we don't compute it until
         // we've ruled out the possibility that dy <= 0.
-        int n = ring::mpzToInt(std::get<0>(floorlog<T>(lambda<T>(), dy)));
+        int n = utils::to_int(std::get<0>(floorlog<T>(lambda<T>(), dy)));
         int m = -n;
 
         T lT = lambda<T>();

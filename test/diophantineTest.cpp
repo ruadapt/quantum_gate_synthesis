@@ -52,5 +52,20 @@ BOOST_AUTO_TEST_CASE(test_power_mod)
 BOOST_AUTO_TEST_CASE(test_root_of_negative_one)
 {
     StepComp<Integer> s = dio::root_of_negative_one(13);
-    BOOST_CHECK(8 == s.run() || 5 == s.run());
+    Integer val = s.run();
+    BOOST_CHECK(8 == val || 5 == val);
+}
+
+BOOST_AUTO_TEST_CASE(test_root_mod)
+{
+    {
+        StepComp<Integer> s = dio::root_mod(13, 4);
+        Integer val = s.run();
+        BOOST_CHECK(2 == val || 11 == val);
+    }
+    {
+        StepComp<Integer> s = dio::root_mod(129, 13);
+        Integer val = s.run();
+        BOOST_CHECK(20 == val || 23 == val || 106 == val || 109 == val);
+    }
 }
