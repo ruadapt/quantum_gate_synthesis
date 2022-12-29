@@ -12,12 +12,6 @@ template <typename T>
 using Tuple2By2 = std::tuple<std::tuple<T, T>, std::tuple<T, T>>;
 
 template <typename T>
-T fst(Point<T> p);
-
-template <typename T>
-T snd(Point<T> p);
-
-template <typename T>
 using Operator = Matrix<T, 2, 2>;
 
 template <typename T>

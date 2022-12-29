@@ -5,6 +5,36 @@
 
 namespace utils
 {
+    int to_int(Integer n)
+    {
+        return ring::mpzToInt(n);
+    }
+
+    unsigned long to_unsigned_long(Integer n)
+    {
+        assert(n >= 0);
+        assert(n.fits_ulong_p());
+        return static_cast<unsigned long>(n.get_ui());
+    }
+
+    template <typename T>
+    List<T> tail(List<T> x)
+    {
+        if (x.size() == 0)
+        {
+            throw std::invalid_argument("Can't take the tail of an empty list");
+        }
+        return List<T>(x.begin() + 1, x.end());
+    }
+
+    template <typename T>
+    List<T> concat(List<T> x, List<T> y)
+    {
+        List<T> result = x;
+        result.insert(result.end(), y.begin(), y.end());
+        return result;
+    }
+
     Integer div(Integer x, Integer y)
     {
         Integer q;

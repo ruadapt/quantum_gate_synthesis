@@ -8,18 +8,6 @@ namespace constants = boost::math::constants;
 namespace bmp = boost::multiprecision;
 
 template <typename T>
-T fst(Point<T> p)
-{
-    return std::get<0>(p);
-}
-
-template <typename T>
-T snd(Point<T> p)
-{
-    return std::get<1>(p);
-}
-
-template <typename T>
 Operator<T> Ellipse<T>::op() const
 {
     return op_;

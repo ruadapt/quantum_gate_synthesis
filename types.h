@@ -21,10 +21,40 @@ template <typename T>
 using List = std::vector<T>;
 
 template <typename T>
+std::ostream& operator<<(std::ostream& os, const List<T> &l)
+{
+    os << "[";
+    for (size_t i = 0; i < l.size(); i++)
+    {
+        os << l.at(i);
+        if (i != l.size() - 1)
+        {
+            os << ", ";
+        }
+    }
+    os << "]";
+    return os;
+}
+
+
+template <typename T>
 using Maybe = std::optional<T>;
 
 template <typename T>
-using Tup2 = std::tuple<T, T>;
+using Pair = std::tuple<T, T>;
+
+template <typename T>
+T fst(Pair<T> p) { return std::get<0>(p); }
+
+template <typename T>
+T snd(Pair<T> p) { return std::get<1>(p); }
+
+template <typename T>
+std::ostream& operator<<(std::ostream& os, const Pair<T> &p)
+{
+    os << "(" << fst(p) << ", " << snd(p) << ")";
+    return os;
+}
 
 template <typename T>
 using Tup3 = std::tuple<T, T, T>;
