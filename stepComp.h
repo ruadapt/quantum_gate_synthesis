@@ -22,11 +22,11 @@ public:
     void reset_count() const;
     StepComp<T> untick() const;
     StepComp<T> forward(int n) const;
-    std::optional<T> get_result() const;
+    Maybe<T> get_result() const;
     StepComp<StepComp<T>> subtask(int n) const;
     StepComp<T> speedup(int n) const;
     T run() const;
-    std::optional<T> run_bounded(int n) const;
+    Maybe<T> run_bounded(int n) const;
 
 private:
     bool done_;
@@ -38,6 +38,9 @@ private:
 
 namespace stepcomp
 {
+    template <typename T, typename U>
+    StepComp<U> bind(StepComp<T> sc, std::function<StepComp<U>(T)> g);
+
     template <typename A, typename B>
     StepComp<Either<std::tuple<A, StepComp<B>>, std::tuple<StepComp<A>, B>>> parallel(StepComp<A> c1, StepComp<B> c2);
 

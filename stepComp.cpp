@@ -101,9 +101,9 @@ StepComp<T> StepComp<T>::forward(int n) const
 }
 
 template <typename T>
-std::optional<T> StepComp<T>::get_result() const
+Maybe<T> StepComp<T>::get_result() const
 {
-    return (this->done_) ? this->value_ : std::nullopt;
+    return (this->done_) ? this->value_ : Maybe<T>{};
 }
 
 template <typename T>
@@ -140,13 +140,24 @@ T StepComp<T>::run() const
 }
 
 template <typename T>
-std::optional<T> StepComp<T>::run_bounded(int n) const
+Maybe<T> StepComp<T>::run_bounded(int n) const
 {
     return this->forward(n).get_result();
 }
 
 namespace stepcomp
 {
+    template <typename T, typename U>
+    StepComp<U> bind(StepComp<T> sc, std::function<StepComp<U>(T)> g)
+    {
+        if (sc.is_done())
+        {
+            return g(sc.value());
+        }
+        return StepComp<U>([=]()
+                           { return bind(sc.untick(), g); });
+    }
+
     /**
      * Given a value, put it into a StepComp that needs to run for n steps to
      * finish and yield the value.

@@ -41,6 +41,20 @@ template <typename T>
 using Maybe = std::optional<T>;
 
 template <typename T>
+std::ostream& operator<<(std::ostream& os, const Maybe<T> &m)
+{
+    if (m.has_value())
+    {
+        os << "Just(" << m.value() << ")"; 
+    }
+    else
+    {
+        os << "Nothing";
+    }
+    return os;
+}
+
+template <typename T>
 using Pair = std::tuple<T, T>;
 
 template <typename T>

@@ -48,6 +48,14 @@ BOOST_AUTO_TEST_CASE(test_forward)
     BOOST_CHECK_EQUAL(15, s2.forward(100).value());
 }
 
+BOOST_AUTO_TEST_CASE(test_get_result)
+{
+    StepComp<Integer> s = sc::wrap(Integer(15), 100);
+    BOOST_CHECK_EQUAL(Maybe<Integer>{}, s.get_result());
+    BOOST_CHECK_EQUAL(Maybe<Integer>{}, s.forward(99).get_result());
+    BOOST_CHECK_EQUAL(Maybe<Integer>{15}, s.forward(100).get_result());
+}
+
 BOOST_AUTO_TEST_CASE(test_speedup)
 {
     StepComp<Integer> s = sc::wrap(Integer(15), 8);
@@ -67,6 +75,20 @@ BOOST_AUTO_TEST_CASE(test_speedup)
     BOOST_CHECK_EQUAL(false, s3.is_done());
     BOOST_CHECK_EQUAL(false, s3.forward(1).is_done());
     BOOST_CHECK_EQUAL(true, s3.forward(2).is_done());
+}
+
+BOOST_AUTO_TEST_CASE(test_bind)
+{
+    StepComp<std::string> x = sc::wrap(std::string("result"), 3);
+    auto g = [](std::string s) -> StepComp<int>
+    { return StepComp<int>(int(s.length())); };
+    StepComp<int> y = sc::bind<std::string, int>(x, g);
+    BOOST_CHECK_EQUAL(false, x.is_done());
+    BOOST_CHECK_EQUAL(false, y.is_done());
+    BOOST_CHECK_EQUAL(false, x.forward(2).is_done());
+    BOOST_CHECK_EQUAL(false, y.forward(2).is_done());
+    BOOST_CHECK("result" == x.forward(3).get_result());
+    BOOST_CHECK(6 == y.forward(3).get_result());
 }
 
 BOOST_AUTO_TEST_CASE(test_parallel)
