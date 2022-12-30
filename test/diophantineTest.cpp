@@ -69,3 +69,43 @@ BOOST_AUTO_TEST_CASE(test_root_mod)
         BOOST_CHECK(20 == val || 23 == val || 106 == val || 109 == val);
     }
 }
+
+BOOST_AUTO_TEST_CASE(test_dioph_int_assoc_prime)
+{
+    // n < 0 case
+    {
+        StepComp<Maybe<ZOmega>> sc = dio::dioph_int_assoc_prime(-11);
+        Maybe<ZOmega> z = sc.run();
+        BOOST_CHECK(ZOmega(1, 0, 1, 3) == z || ZOmega(1, 0, 1, -3) == z);
+    }
+    // n == 0 case
+    {
+        StepComp<Maybe<ZOmega>> sc = dio::dioph_int_assoc_prime(0);
+        Maybe<ZOmega> z = sc.run();
+        BOOST_CHECK(ZOmega(0) == z);
+    }
+    // n == 2 case
+    {
+        StepComp<Maybe<ZOmega>> sc = dio::dioph_int_assoc_prime(2);
+        Maybe<ZOmega> z = sc.run();
+        BOOST_CHECK(ZOmega(-1, 0, 1, 0) == z);
+    }
+    // n mod 4 == 1 case
+    {
+        StepComp<Maybe<ZOmega>> sc = dio::dioph_int_assoc_prime(5);
+        Maybe<ZOmega> z = sc.run();
+        BOOST_CHECK(ZOmega(0, 1, 0, 2) == z || ZOmega(0, 1, 0, -2) == z);
+    }
+    // n mod 8 == 3 case
+    {
+        StepComp<Maybe<ZOmega>> sc = dio::dioph_int_assoc_prime(11);
+        Maybe<ZOmega> z = sc.run();
+        BOOST_CHECK(ZOmega(1, 0, 1, 3) == z || ZOmega(1, 0, 1, -3) == z);
+    }
+    // n mod 8 == 7 case
+    {
+        StepComp<Maybe<ZOmega>> sc = dio::dioph_int_assoc_prime(23);
+        Maybe<Maybe<ZOmega>> z = sc.run();
+        BOOST_CHECK(Maybe<ZOmega>() == z);
+    }
+}

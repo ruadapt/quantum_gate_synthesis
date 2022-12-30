@@ -103,7 +103,7 @@ StepComp<T> StepComp<T>::forward(int n) const
 template <typename T>
 Maybe<T> StepComp<T>::get_result() const
 {
-    return (this->done_) ? this->value_ : Maybe<T>{};
+    return (this->done_) ? this->value_ : Maybe<T>();
 }
 
 template <typename T>

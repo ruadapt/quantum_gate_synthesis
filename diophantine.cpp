@@ -195,4 +195,61 @@ namespace diophantine
 
         return StepComp<Integer>(res);
     }
+
+    StepComp<Maybe<ZOmega>> dioph_int_assoc_prime(Integer n)
+    {
+        if (n < 0)
+        {
+            return dioph_int_assoc_prime(-n);
+        }
+        if (n == 0)
+        {
+            return StepComp(Maybe<ZOmega>(0));
+        }
+        if (n == 2)
+        {
+            return StepComp(Maybe<ZOmega>(ring::rootTwo<ZOmega>()));
+        }
+        if (utils::mod(n, 4) == 1)
+        {
+            StepComp<Integer> s = root_of_negative_one(n);
+            auto g = [=](Integer h) -> StepComp<Maybe<ZOmega>>
+            {
+                ZOmega t = ed::euclid_gcd<ZOmega>(
+                    ring::fromInteger<ZOmega>(h) + ring::i<ZOmega>(), ring::fromInteger<ZOmega>(n));
+                if (t.adj() * t != ring::fromInteger<ZOmega>(n))
+                {
+                    throw std::runtime_error("Intended solution does not work");
+                }
+                return StepComp<Maybe<ZOmega>>(Maybe<ZOmega>(t));
+            };
+            return sc::bind<Integer, Maybe<ZOmega>>(s, g);
+        }
+        if (utils::mod(n, 8) == 3)
+        {
+            StepComp<Integer> s = root_mod(n, -2);
+            auto g = [=](Integer h) -> StepComp<Maybe<ZOmega>>
+            {
+                ZOmega t = ed::euclid_gcd<ZOmega>(
+                    ring::fromInteger<ZOmega>(h) + ring::i<ZOmega>() * ring::rootTwo<ZOmega>(),
+                    ring::fromInteger<ZOmega>(n));
+                if (t.adj() * t != ring::fromInteger<ZOmega>(n))
+                {
+                    throw std::runtime_error("Intended solution does not work");
+                }
+                return StepComp<Maybe<ZOmega>>(Maybe<ZOmega>(t));
+            };
+            return sc::bind<Integer, Maybe<ZOmega>>(s, g);
+        }
+        if (utils::mod(n, 8) == 7)
+        {
+            StepComp<Integer> s = root_mod(n, 2);
+            auto g = [=](Integer h __attribute__((unused))) -> StepComp<Maybe<ZOmega>>
+            {
+                return StepComp<Maybe<ZOmega>>(Maybe<ZOmega>());
+            };
+            return sc::bind<Integer, Maybe<ZOmega>>(s, g);
+        }
+        throw std::runtime_error("Error in dioph_int_assoc_prime");
+    }
 }

@@ -51,9 +51,9 @@ BOOST_AUTO_TEST_CASE(test_forward)
 BOOST_AUTO_TEST_CASE(test_get_result)
 {
     StepComp<Integer> s = sc::wrap(Integer(15), 100);
-    BOOST_CHECK_EQUAL(Maybe<Integer>{}, s.get_result());
-    BOOST_CHECK_EQUAL(Maybe<Integer>{}, s.forward(99).get_result());
-    BOOST_CHECK_EQUAL(Maybe<Integer>{15}, s.forward(100).get_result());
+    BOOST_CHECK_EQUAL(Maybe<Integer>(), s.get_result());
+    BOOST_CHECK_EQUAL(Maybe<Integer>(), s.forward(99).get_result());
+    BOOST_CHECK_EQUAL(Maybe<Integer>(15), s.forward(100).get_result());
 }
 
 BOOST_AUTO_TEST_CASE(test_speedup)
