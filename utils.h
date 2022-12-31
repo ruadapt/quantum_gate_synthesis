@@ -37,6 +37,17 @@ namespace utils
         return result;
     }
 
+    template <typename T>
+    T product(List<T> list)
+    {
+        T result = T(1);
+        for (T x : list)
+        {
+            result = result * x;
+        }
+        return result;
+    }
+
     Integer div(Integer x, Integer y)
     {
         if (y == 0)
@@ -46,6 +57,11 @@ namespace utils
         Integer q;
         mpz_fdiv_q(q.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
         return q;
+    }
+
+    int div (int x, int y)
+    {
+        return to_int(div(Integer(x), Integer(y)));
     }
 
     Integer mod(Integer x, Integer y)

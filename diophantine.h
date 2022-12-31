@@ -19,6 +19,24 @@ namespace diophantine
     StepComp<Integer> root_of_negative_one(Integer n);
 
     StepComp<Integer> root_mod(Integer n, Integer a);
+
+    StepComp<Maybe<ZOmega>> dioph_int_assoc_prime(Integer n);
+
+    StepComp<Maybe<ZOmega>> dioph_int_assoc(Integer n);
+    
+    StepComp<Maybe<ZOmega>> dioph_int_assoc_powers(List<Pair<Integer>> facs);
+
+    StepComp<Maybe<ZOmega>> dioph_int_assoc_power(Pair<Integer> p);
+
+    StepComp<Maybe<ZOmega>> dioph_zroottwo_selfassociate(ZRootTwo xi);
+
+    StepComp<Maybe<ZOmega>> dioph_zroottwo_assoc_prime(ZRootTwo xi);
+
+    StepComp<Maybe<ZOmega>> dioph_zroottwo_assoc(ZRootTwo xi);
+
+    StepComp<Maybe<ZOmega>> dioph_zroottwo_assoc_powers(List<std::tuple<ZRootTwo, Integer>> facs);
+
+    StepComp<Maybe<ZOmega>> dioph_zroottwo_assoc_power(std::tuple<ZRootTwo, Integer> p);
 }
 
 #include "diophantine.cpp"

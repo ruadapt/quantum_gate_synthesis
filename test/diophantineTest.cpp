@@ -105,7 +105,38 @@ BOOST_AUTO_TEST_CASE(test_dioph_int_assoc_prime)
     // n mod 8 == 7 case
     {
         StepComp<Maybe<ZOmega>> sc = dio::dioph_int_assoc_prime(23);
-        Maybe<Maybe<ZOmega>> z = sc.run();
+        Maybe<ZOmega> z = sc.run();
         BOOST_CHECK(Maybe<ZOmega>() == z);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(test_dioph_int_assoc)
+{
+    {
+        StepComp<Maybe<ZOmega>> sc = dio::dioph_int_assoc(171);
+        Maybe<ZOmega> mz = sc.run();
+        BOOST_REQUIRE(mz.has_value());
+        ZOmega z = mz.value();
+        ZOmega prod = z.adj() * z;
+        // Make sure that the returned value is a correct solution.
+        BOOST_CHECK(ed::euclid_associates(ZOmega(171), prod));
+    }
+    {
+        StepComp<Maybe<ZOmega>> sc = dio::dioph_int_assoc(1235);
+        Maybe<ZOmega> mz = sc.run();
+        BOOST_REQUIRE(mz.has_value());
+        ZOmega z = mz.value();
+        ZOmega prod = z.adj() * z;
+        // Make sure that the returned value is a correct solution.
+        BOOST_CHECK(ed::euclid_associates(ZOmega(1235), prod));
+    }
+    {
+        StepComp<Maybe<ZOmega>> sc = dio::dioph_int_assoc(12367849);
+        Maybe<ZOmega> mz = sc.run();
+        BOOST_REQUIRE(mz.has_value());
+        ZOmega z = mz.value();
+        ZOmega prod = z.adj() * z;
+        // Make sure that the returned value is a correct solution.
+        BOOST_CHECK(ed::euclid_associates(ZOmega(12367849), prod));
     }
 }

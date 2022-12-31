@@ -252,4 +252,93 @@ namespace diophantine
         }
         throw std::runtime_error("Error in dioph_int_assoc_prime");
     }
+
+    StepComp<Maybe<ZOmega>> dioph_int_assoc_interleave(StepComp<Maybe<ZOmega>> p, StepComp<Integer> f, Integer n)
+    {
+        StepComp<StepComp<Maybe<ZOmega>>> p2 = p.subtask(4);
+        auto g = [=](StepComp<Maybe<ZOmega>> p) -> StepComp<Maybe<ZOmega>>
+        {
+            if (p.is_done())
+            {
+                return StepComp(p.value());
+            }
+            StepComp<StepComp<Integer>> f2 = f.subtask(1000);
+            auto g2 = [=](StepComp<Integer> f) -> StepComp<Maybe<ZOmega>>
+            {
+                if (f.is_done())
+                {
+                    Integer a = f.value();
+                    int k = f.count();
+                    Integer b = utils::div(n, a);
+                    Integer u;
+                    List<std::tuple<Integer, Integer>> facs;
+                    std::tie(u, facs) = relatively_prime_factors(a, b);
+                    return dioph_int_assoc_powers(facs).forward(utils::div(k, 2));
+                }
+                return dioph_int_assoc_interleave(p, f, n);
+            };
+            return sc::bind<StepComp<Integer>, Maybe<ZOmega>>(f2, g2);
+        };
+        return sc::bind<StepComp<Maybe<ZOmega>>, Maybe<ZOmega>>(p2, g);
+    }
+
+    StepComp<Maybe<ZOmega>> dioph_int_assoc(Integer n)
+    {
+        if (n < 0)
+        {
+            return dioph_int_assoc(-n);
+        }
+        if (n == 0)
+        {
+            return StepComp(Maybe<ZOmega>(0));
+        }
+        if (n == 1)
+        {
+            return StepComp(Maybe<ZOmega>(1));
+        }
+        StepComp<Maybe<ZOmega>> prime_solver = dioph_int_assoc_prime(n);
+        StepComp<Integer> factor_solver = find_factor(n).speedup(30);
+        return dioph_int_assoc_interleave(prime_solver, factor_solver, n);
+    }
+
+    StepComp<Maybe<ZOmega>> dioph_int_assoc_powers(List<Pair<Integer>> facs)
+    {
+        List<StepComp<Maybe<ZOmega>>> stepcomps;
+        auto mapping = [](Pair<Integer> p)
+        {
+            return dioph_int_assoc_power(p);
+        };
+        std::transform(facs.begin(), facs.end(), std::back_inserter(stepcomps), mapping);
+        StepComp<Maybe<List<ZOmega>>> parallel = sc::parallel_list_maybe(stepcomps);
+        auto g = [](Maybe<List<ZOmega>> res) -> StepComp<Maybe<ZOmega>>
+        {
+            if (res.has_value())
+            {
+                return StepComp(Maybe<ZOmega>(utils::product(res.value())));
+            }
+            return StepComp(Maybe<ZOmega>());
+        };
+        return sc::bind<Maybe<List<ZOmega>>, Maybe<ZOmega>>(parallel, g);
+    }
+
+    StepComp<Maybe<ZOmega>> dioph_int_assoc_power(Pair<Integer> p)
+    {
+        Integer n, k;
+        std::tie(n, k) = p;
+        if (ring::even(k))
+        {
+            ZOmega val = ring::fromInteger<ZOmega>(ring::powNonNeg<Integer>(n, utils::div(k, 2)));
+            return StepComp(Maybe<ZOmega>(val));
+        }
+        StepComp<Maybe<ZOmega>> sc = dioph_int_assoc(n);
+        auto g = [=](Maybe<ZOmega> t) -> StepComp<Maybe<ZOmega>>
+        {
+            if (t.has_value())
+            {
+                return StepComp(Maybe<ZOmega>(ring::powNonNeg(t.value(), k)));
+            }
+            return StepComp(Maybe<ZOmega>());
+        };
+        return sc::bind<Maybe<ZOmega>, Maybe<ZOmega>>(sc, g);
+    }
 }
