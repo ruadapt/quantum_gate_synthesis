@@ -7,10 +7,13 @@ template <typename T>
 class StepComp
 {
 public:
+    StepComp() : done_{true}, speed_{1}, value_{T()}
+    {
+    }
     StepComp(T value, int speed = 1) : done_{true}, speed_{speed}, value_{value}
     {
     }
-    StepComp(std::function<StepComp<T>()> comp, int speed = 1) : done_{false}, speed_{speed}, comp_{comp}
+    StepComp(std::function<StepComp<T>()> comp, int speed = 1) : done_{false}, speed_{speed}, value_{T()}, comp_{comp}
     {
     }
     bool is_done() const;

@@ -56,6 +56,27 @@ BOOST_AUTO_TEST_CASE(test_get_result)
     BOOST_CHECK_EQUAL(Maybe<Integer>(15), s.forward(100).get_result());
 }
 
+BOOST_AUTO_TEST_CASE(test_subtask)
+{
+    {
+        StepComp<std::string> sc1 = sc::wrap(std::string("result"), 5);
+        StepComp<StepComp<std::string>> sc2 = sc1.subtask(6);
+        BOOST_CHECK_EQUAL(false, sc2.forward(4).is_done());
+        // The wrapper task finishes after 5 steps with the result of sc1.
+        BOOST_REQUIRE_EQUAL(true, sc2.forward(5).is_done());
+        BOOST_CHECK_EQUAL("result", sc2.forward(5).value().value());
+    }
+    {
+        StepComp<std::string> sc1 = sc::wrap(std::string("result"), 5);
+        StepComp<StepComp<std::string>> sc2 = sc1.subtask(4);
+        BOOST_CHECK_EQUAL(false, sc2.forward(3).is_done());
+        // After 4 steps, sc2 finishes, but it still contains an incomplete version
+        // of sc1, since sc1 takes 5 steps.
+        BOOST_REQUIRE_EQUAL(true, sc2.forward(4).is_done());
+        BOOST_CHECK_EQUAL(false, sc2.forward(4).value().is_done());
+    }
+}
+
 BOOST_AUTO_TEST_CASE(test_speedup)
 {
     StepComp<Integer> s = sc::wrap(Integer(15), 8);

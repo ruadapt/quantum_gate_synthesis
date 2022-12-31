@@ -6,11 +6,11 @@ std::ostream &operator<<(std::ostream &os, const StepComp<T> &s)
 {
     if (s.is_done())
     {
-        os << "StepComp(" << s.value() << ")";
+        os << "Done(" << s.value() << ")";
     }
     else
     {
-        os << "StepComp(Incomplete, speed = " << s.speed() << ")";
+        os << "Incomplete(speed = " << s.speed() << ")";
     }
     return os;
 }
@@ -113,9 +113,9 @@ StepComp<StepComp<T>> StepComp<T>::subtask(int n) const
     {
         return StepComp<StepComp<T>>(*this);
     }
-    // TODO try to make this iterative.
+    StepComp<T> copy = *this;
     return StepComp<StepComp<T>>([=]()
-                                 { this->untick().subtask(n - 1); });
+                                 { return copy.untick().subtask(n - 1); });
 }
 
 template <typename T>
