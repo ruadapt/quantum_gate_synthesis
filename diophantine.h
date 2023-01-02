@@ -8,7 +8,7 @@ namespace diophantine
 
     StepComp<Maybe<DOmega>> diophantine_dyadic(DRootTwo xi);
 
-    StepComp<Maybe<ZRootTwo>> diophantine_associate(ZRootTwo xi);
+    StepComp<Maybe<ZOmega>> diophantine_associate(ZRootTwo xi);
 
     StepComp<Integer> find_factor(Integer n);
 

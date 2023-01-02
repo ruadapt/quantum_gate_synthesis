@@ -3,13 +3,95 @@
 #include "utils.h"
 #include "stepComp.h"
 #include "ring.h"
+#include "gridproblems.h"
 #include "euclideanDomain.h"
 
+namespace gp = gridprob;
 namespace sc = stepcomp;
 namespace ed = euclidean_domain;
 
 namespace diophantine
 {
+    StepComp<Maybe<ZOmega>> diophantine(ZRootTwo xi)
+    {
+        if (xi == 0)
+        {
+            return StepComp(Maybe<ZOmega>(ZOmega(0)));
+        }
+        if (xi < 0)
+        {
+            return StepComp(Maybe<ZOmega>());
+        }
+        if (xi.adj2() < 0)
+        {
+            return StepComp(Maybe<ZOmega>());
+        }
+        StepComp<Maybe<ZOmega>> sc = diophantine_associate(xi);
+        auto g = [=](Maybe<ZOmega> t_opt) -> StepComp<Maybe<ZOmega>>
+        {
+            if (!t_opt.has_value())
+            {
+                return StepComp(Maybe<ZOmega>());
+            }
+            ZOmega t = t_opt.value();
+            ZRootTwo xi_associate = ring::zRootTwoOfZOmega(t.adj() * t);
+            ZRootTwo u = ed::euclid_div(xi, xi_associate);
+            Maybe<ZRootTwo> root = ring::zRootTwoRoot(u);
+            if (!root.has_value())
+            {
+                return StepComp(Maybe<ZOmega>());
+            }
+            ZRootTwo v = root.value();
+            return StepComp(Maybe<ZOmega>(ring::fromZRootTwo<ZOmega>(v) * t));
+        };
+        return sc::bind<Maybe<ZOmega>, Maybe<ZOmega>>(sc, g);
+    }
+
+    StepComp<Maybe<DOmega>> diophantine_dyadic(DRootTwo xi)
+    {
+        Integer k = ring::denomExp(xi);
+        Integer k2, k3;
+        std::tie(k2, k3) = ed::divMod(k, 2_mpz);
+        DRootTwo prod = ring::powNonNeg((gp::lambda<DRootTwo>() * ring::rootTwo<DRootTwo>()), k3) * DRootTwo(ring::powNonNeg(2_mpz, k2)) * xi;
+        ZRootTwo xi2 = ring::toWhole<DRootTwo, ZRootTwo>(prod);
+        StepComp<Maybe<ZOmega>> sc = diophantine(xi2);
+        auto g = [=](Maybe<ZOmega> t2_opt) -> StepComp<Maybe<DOmega>>
+        {
+            if (!t2_opt.has_value())
+            {
+                return StepComp(Maybe<DOmega>());
+            }
+            ZOmega t2 = t2_opt.value();
+            DOmega u = ring::rootHalf<DOmega>() * (ring::omega<DOmega>() - ring::i<DOmega>());
+            DOmega prod = ring::powNonNeg(u, k3) * ring::powNonNeg(ring::rootHalf<DOmega>(), k2) * ring::fromWhole<DOmega, ZOmega>(t2);
+            return StepComp(Maybe<DOmega>(prod));
+        };
+        return sc::bind<Maybe<ZOmega>, Maybe<DOmega>>(sc, g);
+    }
+
+    StepComp<Maybe<ZOmega>> diophantine_associate(ZRootTwo xi)
+    {
+        if (xi == 0)
+        {
+            return StepComp(Maybe<ZOmega>(ZOmega(0)));
+        }
+        ZRootTwo d = ed::euclid_gcd(xi, xi.adj2());
+        ZRootTwo xi2 = ed::euclid_gcd(xi, d);
+        StepComp<Maybe<std::tuple<ZOmega, ZOmega>>> sc = sc::parallel_maybe(
+            dioph_zroottwo_selfassociate(d), dioph_zroottwo_assoc(xi2));
+        auto g = [=](Maybe<std::tuple<ZOmega, ZOmega>> res) -> StepComp<Maybe<ZOmega>>
+        {
+            if (!res.has_value())
+            {
+                return StepComp(Maybe<ZOmega>());
+            }
+            ZOmega t1, t2;
+            std::tie(t1, t2) = res.value();
+            return StepComp(Maybe<ZOmega>(t1 * t2));
+        };
+        return sc::bind<Maybe<std::tuple<ZOmega, ZOmega>>, Maybe<ZOmega>>(sc, g);
+    }
+
     StepComp<Integer> find_factor(Integer n)
     {
         if (ring::even(n) && n > 2)
@@ -336,7 +418,6 @@ namespace diophantine
         return sc::bind<Maybe<ZOmega>, Maybe<ZOmega>>(sc, g);
     }
 
-
     StepComp<Maybe<ZOmega>> dioph_zroottwo_selfassociate(ZRootTwo xi)
     {
         if (xi == 0)
@@ -412,7 +493,7 @@ namespace diophantine
                     ZRootTwo u;
                     List<std::tuple<ZRootTwo, Integer>> facs;
                     std::tie(u, facs) = relatively_prime_factors(alpha, beta);
-                    return dioph_zroottwo_assoc_powers(facs).forward(utils::div(k, 2)); 
+                    return dioph_zroottwo_assoc_powers(facs).forward(utils::div(k, 2));
                 }
                 return dioph_zroottwo_assoc_interleave(p, f, xi);
             };
