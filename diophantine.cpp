@@ -41,61 +41,65 @@ namespace diophantine
                                  { return aux(Integer(2), f(Integer(2))); });
     }
 
-    std::tuple<Integer, List<Integer>, List<Pair<Integer>>> relatively_prime_aux2(Integer h, List<Pair<Integer>> flist)
+    template <typename T>
+    std::tuple<T, List<T>, List<std::tuple<T, Integer>>> relatively_prime_aux2(T h, List<std::tuple<T, Integer>> flist)
     {
         if (flist.size() == 0)
         {
-            return std::make_tuple(1, List<Integer>{}, List<Pair<Integer>>{std::make_tuple(h, 1_mpz)});
+            return std::make_tuple(T(1), List<T>{}, List<std::tuple<T, Integer>>{std::make_tuple(h, 1_mpz)});
         }
-        Integer f, k;
+        T f;
+        Integer k;
         std::tie(f, k) = flist.at(0);
-        List<Pair<Integer>> fs = utils::tail(flist);
+        List<std::tuple<T, Integer>> fs = utils::tail(flist);
         if (ed::euclid_associates(h, f))
         {
-            Integer u2 = ed::euclid_div(h, f);
-            List<Pair<Integer>> new_fs = fs;
+            T u2 = ed::euclid_div(h, f);
+            List<std::tuple<T, Integer>> new_fs = fs;
             new_fs.insert(new_fs.begin(), std::make_tuple(f, k + 1));
-            return std::make_tuple(u2, List<Integer>{}, new_fs);
+            return std::make_tuple(u2, List<T>{}, new_fs);
         }
-        Integer d = ed::euclid_gcd(h, f);
+        T d = ed::euclid_gcd(h, f);
         if (ed::is_unit(d))
         {
-            Integer u;
-            List<Integer> hs;
-            List<Pair<Integer>> fs2;
+            T u;
+            List<T> hs;
+            List<std::tuple<T, Integer>> fs2;
             std::tie(u, hs, fs2) = relatively_prime_aux2(h, fs);
-            List<Pair<Integer>> new_fs = fs2;
+            List<std::tuple<T, Integer>> new_fs = fs2;
             new_fs.insert(new_fs.begin(), std::make_tuple(f, k));
             return std::make_tuple(u, hs, new_fs);
         }
-        List<Integer> temp1{ed::euclid_div(h, d), d};
-        List<Integer> temp2(utils::to_unsigned_long(k), ed::euclid_div(f, d));
-        List<Integer> temp3(utils::to_unsigned_long(k), d);
-        return std::make_tuple(1_mpz, utils::concat(temp1, utils::concat(temp2, temp3)), fs);
+        List<T> temp1{ed::euclid_div(h, d), d};
+        List<T> temp2(utils::to_unsigned_long(k), ed::euclid_div(f, d));
+        List<T> temp3(utils::to_unsigned_long(k), d);
+        return std::make_tuple(T(1), utils::concat(temp1, utils::concat(temp2, temp3)), fs);
     }
 
-    std::tuple<Integer, List<Pair<Integer>>> relatively_prime_aux(Integer u, List<Integer> vals, List<Pair<Integer>> fs)
+    template <typename T>
+    std::tuple<T, List<std::tuple<T, Integer>>> relatively_prime_aux(T u, List<T> vals, List<std::tuple<T, Integer>> fs)
     {
         if (vals.size() == 0)
         {
             return std::make_tuple(u, fs);
         }
-        Integer h = vals.at(0);
-        List<Integer> t = utils::tail(vals);
+        T h = vals.at(0);
+        List<T> t = utils::tail(vals);
         if (ed::is_unit(h))
         {
-            return relatively_prime_aux(h * u, utils::tail(vals), fs);
+            return relatively_prime_aux(T(h * u), utils::tail(vals), fs);
         }
-        Integer u2;
-        List<Integer> hs;
-        List<Pair<Integer>> fs2;
+        T u2;
+        List<T> hs;
+        List<std::tuple<T, Integer>> fs2;
         std::tie(u2, hs, fs2) = relatively_prime_aux2(h, fs);
-        return relatively_prime_aux(u2 * u, utils::concat(hs, t), fs2);
+        return relatively_prime_aux(T(u2 * u), utils::concat(hs, t), fs2);
     }
 
-    std::tuple<Integer, List<std::tuple<Integer, Integer>>> relatively_prime_factors(Integer a, Integer b)
+    template <typename T>
+    std::tuple<T, List<std::tuple<T, Integer>>> relatively_prime_factors(T a, T b)
     {
-        return relatively_prime_aux(1, List<Integer>{a, b}, List<Pair<Integer>>{});
+        return relatively_prime_aux(T(1), List<T>{a, b}, List<std::tuple<T, Integer>>{});
     }
 
     Integer power_mod(Integer a, Integer k, Integer n)
@@ -217,10 +221,7 @@ namespace diophantine
             {
                 ZOmega t = ed::euclid_gcd<ZOmega>(
                     ring::fromInteger<ZOmega>(h) + ring::i<ZOmega>(), ring::fromInteger<ZOmega>(n));
-                if (t.adj() * t != ring::fromInteger<ZOmega>(n))
-                {
-                    throw std::runtime_error("Intended solution does not work");
-                }
+                assert(t.adj() * t == ring::fromInteger<ZOmega>(n)); // Make sure solution is correct.
                 return StepComp<Maybe<ZOmega>>(Maybe<ZOmega>(t));
             };
             return sc::bind<Integer, Maybe<ZOmega>>(s, g);
@@ -233,10 +234,7 @@ namespace diophantine
                 ZOmega t = ed::euclid_gcd<ZOmega>(
                     ring::fromInteger<ZOmega>(h) + ring::i<ZOmega>() * ring::rootTwo<ZOmega>(),
                     ring::fromInteger<ZOmega>(n));
-                if (t.adj() * t != ring::fromInteger<ZOmega>(n))
-                {
-                    throw std::runtime_error("Intended solution does not work");
-                }
+                assert(t.adj() * t == ring::fromInteger<ZOmega>(n)); // Make sure solution is correct.
                 return StepComp<Maybe<ZOmega>>(Maybe<ZOmega>(t));
             };
             return sc::bind<Integer, Maybe<ZOmega>>(s, g);

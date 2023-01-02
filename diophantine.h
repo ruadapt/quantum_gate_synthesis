@@ -12,7 +12,8 @@ namespace diophantine
 
     StepComp<Integer> find_factor(Integer n);
 
-    std::tuple<Integer, List<std::tuple<Integer, Integer>>> relatively_prime_factors(Integer a, Integer b);
+    template <typename T>
+    std::tuple<T, List<std::tuple<T, Integer>>> relatively_prime_factors(T a, T b);
 
     Integer power_mod(Integer a, Integer k, Integer n);
 

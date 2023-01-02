@@ -27,17 +27,26 @@ BOOST_AUTO_TEST_CASE(test_relatively_prime_factors)
 {
     {
         Integer n;
-        List<Pair<Integer>> fs;
-        std::tie(n, fs) = dio::relatively_prime_factors(12, 2);
+        List<std::tuple<Integer, Integer>> fs;
+        std::tie(n, fs) = dio::relatively_prime_factors<Integer>(12, 2);
         BOOST_CHECK_EQUAL(1, n);
         BOOST_CHECK_EQUAL((List<Pair<Integer>>{Pair<Integer>(3, 1), Pair<Integer>(2, 3)}), fs);
     }
     {
         Integer n;
-        List<Pair<Integer>> fs;
-        std::tie(n, fs) = dio::relatively_prime_factors(331500, 6007800);
+        List<std::tuple<Integer, Integer>> fs;
+        std::tie(n, fs) = dio::relatively_prime_factors<Integer>(331500, 6007800);
         BOOST_CHECK_EQUAL(1, n);
         BOOST_CHECK_EQUAL((List<Pair<Integer>>{Pair<Integer>(589, 1), Pair<Integer>(13, 1), Pair<Integer>(5, 5), Pair<Integer>(2, 5), Pair<Integer>(51, 2)}), fs);
+    }
+    {
+        ZOmega z;
+        List<std::tuple<ZOmega, Integer>> fs;
+        std::tie(z, fs) = dio::relatively_prime_factors<ZOmega>(ZOmega(1, 2, 3, 4), ZOmega(2, 4, 6, 8));
+        BOOST_CHECK_EQUAL(ZOmega(0, 0, 0, -1), z);
+        std::tuple<ZOmega, Integer> t1 = std::make_tuple(ZOmega(-1, 0, -1, 0), 4);
+        std::tuple<ZOmega, Integer> t2 = std::make_tuple(ZOmega(3, 1, 1, -2), 2);
+        BOOST_CHECK((List<std::tuple<ZOmega, Integer>>{t1, t2}) == fs);
     }
 }
 
