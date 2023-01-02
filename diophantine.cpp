@@ -302,11 +302,7 @@ namespace diophantine
     StepComp<Maybe<ZOmega>> dioph_int_assoc_powers(List<Pair<Integer>> facs)
     {
         List<StepComp<Maybe<ZOmega>>> stepcomps;
-        auto mapping = [](Pair<Integer> p)
-        {
-            return dioph_int_assoc_power(p);
-        };
-        std::transform(facs.begin(), facs.end(), std::back_inserter(stepcomps), mapping);
+        std::transform(facs.begin(), facs.end(), std::back_inserter(stepcomps), dioph_int_assoc_power);
         StepComp<Maybe<List<ZOmega>>> parallel = sc::parallel_list_maybe(stepcomps);
         auto g = [](Maybe<List<ZOmega>> res) -> StepComp<Maybe<ZOmega>>
         {
@@ -336,6 +332,140 @@ namespace diophantine
                 return StepComp(Maybe<ZOmega>(ring::powNonNeg(t.value(), k)));
             }
             return StepComp(Maybe<ZOmega>());
+        };
+        return sc::bind<Maybe<ZOmega>, Maybe<ZOmega>>(sc, g);
+    }
+
+
+    StepComp<Maybe<ZOmega>> dioph_zroottwo_selfassociate(ZRootTwo xi)
+    {
+        if (xi == 0)
+        {
+            return StepComp(Maybe<ZOmega>(0));
+        }
+        Integer a = xi.a();
+        Integer b = xi.b();
+        Integer n = ed::euclid_gcd(a, b);
+        ZRootTwo r = ed::euclid_div(xi, ring::fromInteger<ZRootTwo>(n));
+        StepComp<Maybe<ZOmega>> sc = dioph_int_assoc(n);
+        auto g = [=](Maybe<ZOmega> res) -> StepComp<Maybe<ZOmega>>
+        {
+            if (!res.has_value())
+            {
+                return StepComp(Maybe<ZOmega>());
+            }
+            ZOmega t = res.value();
+            if (ed::euclid_divides(ring::rootTwo<ZRootTwo>(), r))
+            {
+                return StepComp(Maybe<ZOmega>((ZOmega(1) + ring::omega<ZOmega>()) * t));
+            }
+            return StepComp(Maybe<ZOmega>(t));
+        };
+        return sc::bind<Maybe<ZOmega>, Maybe<ZOmega>>(sc, g);
+    }
+
+    StepComp<Maybe<ZOmega>> dioph_zroottwo_assoc_prime(ZRootTwo xi)
+    {
+        if (xi == 0)
+        {
+            return StepComp(Maybe<ZOmega>(0));
+        }
+        Integer n = ring::abs(xi.norm());
+        if (utils::mod(n, 8) == 1)
+        {
+            StepComp<Integer> sc = root_of_negative_one(n);
+            auto g = [=](Integer h) -> StepComp<Maybe<ZOmega>>
+            {
+                ZOmega t = ed::euclid_gcd(
+                    ring::fromInteger<ZOmega>(h) + ring::i<ZOmega>(), ring::fromZRootTwo<ZOmega>(xi));
+                // Make sure solution is correct.
+                assert(ed::euclid_associates(t.adj() * t, ring::fromZRootTwo<ZOmega>(xi)));
+                return StepComp(Maybe<ZOmega>(t));
+            };
+            return sc::bind<Integer, Maybe<ZOmega>>(sc, g);
+        }
+        if (utils::mod(n, 8) == 7)
+        {
+            return StepComp(Maybe<ZOmega>());
+        }
+        return sc::diverge<Maybe<ZOmega>>();
+    }
+
+    StepComp<Maybe<ZOmega>> dioph_zroottwo_assoc_interleave(StepComp<Maybe<ZOmega>> p, StepComp<Integer> f, ZRootTwo xi)
+    {
+        StepComp<StepComp<Maybe<ZOmega>>> p2 = p.subtask(4);
+        auto g = [=](StepComp<Maybe<ZOmega>> p) -> StepComp<Maybe<ZOmega>>
+        {
+            if (p.is_done())
+            {
+                return StepComp(p.value());
+            }
+            StepComp<StepComp<Integer>> f2 = f.subtask(1000);
+            auto g2 = [=](StepComp<Integer> f) -> StepComp<Maybe<ZOmega>>
+            {
+                if (f.is_done())
+                {
+                    Integer a = f.value();
+                    int k = f.count();
+                    ZRootTwo alpha = ed::euclid_gcd(xi, ring::fromInteger<ZRootTwo>(a));
+                    ZRootTwo beta = ed::euclid_div(xi, alpha);
+                    ZRootTwo u;
+                    List<std::tuple<ZRootTwo, Integer>> facs;
+                    std::tie(u, facs) = relatively_prime_factors(alpha, beta);
+                    return dioph_zroottwo_assoc_powers(facs).forward(utils::div(k, 2)); 
+                }
+                return dioph_zroottwo_assoc_interleave(p, f, xi);
+            };
+            return sc::bind<StepComp<Integer>, Maybe<ZOmega>>(f2, g2);
+        };
+        return sc::bind<StepComp<Maybe<ZOmega>>, Maybe<ZOmega>>(p2, g);
+    }
+
+    StepComp<Maybe<ZOmega>> dioph_zroottwo_assoc(ZRootTwo xi)
+    {
+        if (xi == 0)
+        {
+            return StepComp(Maybe<ZOmega>(ZOmega(0)));
+        }
+        StepComp<Maybe<ZOmega>> prime_solver = dioph_zroottwo_assoc_prime(xi);
+        Integer n = ring::abs(xi.norm());
+        StepComp<Integer> factor_solver = find_factor(n).speedup(30);
+        return dioph_zroottwo_assoc_interleave(prime_solver, factor_solver, xi);
+    }
+
+    StepComp<Maybe<ZOmega>> dioph_zroottwo_assoc_powers(List<std::tuple<ZRootTwo, Integer>> facs)
+    {
+        List<StepComp<Maybe<ZOmega>>> stepcomps;
+        std::transform(facs.begin(), facs.end(), std::back_inserter(stepcomps), dioph_zroottwo_assoc_power);
+        StepComp<Maybe<List<ZOmega>>> parallel = sc::parallel_list_maybe(stepcomps);
+        auto g = [](Maybe<List<ZOmega>> res) -> StepComp<Maybe<ZOmega>>
+        {
+            if (!res.has_value())
+            {
+                return StepComp(Maybe<ZOmega>());
+            }
+            return StepComp(Maybe<ZOmega>(utils::product(res.value())));
+        };
+        return sc::bind<Maybe<List<ZOmega>>, Maybe<ZOmega>>(parallel, g);
+    }
+
+    StepComp<Maybe<ZOmega>> dioph_zroottwo_assoc_power(std::tuple<ZRootTwo, Integer> p)
+    {
+        ZRootTwo xi;
+        Integer k;
+        std::tie(xi, k) = p;
+        if (ring::even(k))
+        {
+            return StepComp(Maybe<ZOmega>(ring::fromZRootTwo<ZOmega>(ring::powNonNeg(xi, utils::div(k, 2)))));
+        }
+        StepComp<Maybe<ZOmega>> sc = dioph_zroottwo_assoc(xi);
+        auto g = [=](Maybe<ZOmega> t) -> StepComp<Maybe<ZOmega>>
+        {
+            if (!t.has_value())
+            {
+                return StepComp(Maybe<ZOmega>());
+            }
+            return StepComp(Maybe<ZOmega>(ring::powNonNeg(t.value(), k)));
         };
         return sc::bind<Maybe<ZOmega>, Maybe<ZOmega>>(sc, g);
     }

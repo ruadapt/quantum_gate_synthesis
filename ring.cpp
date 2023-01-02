@@ -167,6 +167,20 @@ namespace ring
         return sgn(a);
     }
 
+    template <typename T>
+    T abs(T arg)
+    {
+        return arg.abs();
+    }
+
+    template <>
+    Integer abs(Integer arg)
+    {
+        Integer result;
+        mpz_abs(result.get_mpz_t(), arg.get_mpz_t());
+        return result;
+    }
+
     bool getBit(int n, int bit)
     {
         return (n >> bit) & 1;

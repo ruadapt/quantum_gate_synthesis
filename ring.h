@@ -313,6 +313,12 @@ namespace ring
     template <>
     int sign(int a);
 
+    template <typename T>
+    T abs(T arg);
+
+    template <>
+    Integer abs(Integer arg);
+
     bool getBit(int n, int bit);
 
     int lobit(int n);
