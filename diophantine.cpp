@@ -76,7 +76,7 @@ namespace diophantine
             return StepComp(Maybe<ZOmega>(ZOmega(0)));
         }
         ZRootTwo d = ed::euclid_gcd(xi, xi.adj2());
-        ZRootTwo xi2 = ed::euclid_gcd(xi, d);
+        ZRootTwo xi2 = ed::euclid_div(xi, d);
         StepComp<Maybe<std::tuple<ZOmega, ZOmega>>> sc = sc::parallel_maybe(
             dioph_zroottwo_selfassociate(d), dioph_zroottwo_assoc(xi2));
         auto g = [=](Maybe<std::tuple<ZOmega, ZOmega>> res) -> StepComp<Maybe<ZOmega>>

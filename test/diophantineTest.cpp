@@ -149,3 +149,26 @@ BOOST_AUTO_TEST_CASE(test_dioph_int_assoc)
         BOOST_CHECK(ed::euclid_associates(ZOmega(12367849), prod));
     }
 }
+
+BOOST_AUTO_TEST_CASE(test_diophantine)
+{
+    // has_result indicates whether the diophantine equation should have a solution.
+    auto test = [](Integer a, Integer b, bool has_result)
+    {
+        StepComp<Maybe<ZOmega>> sc = dio::diophantine(ZRootTwo(a, b));
+        Maybe<ZOmega> mz = sc.run();
+        if (!has_result)
+        {
+            BOOST_REQUIRE(!mz.has_value());
+            return;
+        }
+        BOOST_REQUIRE(mz.has_value());
+        ZOmega z = mz.value();
+        ZOmega prod = z.adj() * z;
+        ZOmega expected_prod = ZOmega(a) + ZOmega(b) * ring::rootTwo<ZOmega>();
+        BOOST_CHECK_EQUAL(expected_prod, prod);
+    };
+    test(6_mpz, 1_mpz, true);
+    test(18_mpz, -11_mpz, true);
+    test(1230948_mpz, 873216_mpz, false);
+}
