@@ -250,7 +250,7 @@ BOOST_AUTO_TEST_CASE(test_point_construction)
 
 BOOST_AUTO_TEST_CASE(test_makeOperator)
 {
-    Operator<Integer> op = gridprob::makeOperator<Integer>(6, 7, 8, 9);
+    Operator<Integer> op = matrix2x2<Integer>(6, 7, 8, 9);
     assert(op(0, 0) == 6);
     assert(op(0, 1) == 7);
     assert(op(1, 0) == 8);
@@ -267,7 +267,7 @@ BOOST_AUTO_TEST_CASE(test_pointFromDRootTwo)
 BOOST_AUTO_TEST_CASE(test_Ellipse_construction)
 {
     Point<Integer> p = std::make_tuple(10, 12);
-    Operator<Integer> op = gridprob::makeOperator<Integer>(6, 7, 8, 9);
+    Operator<Integer> op = matrix2x2<Integer>(6, 7, 8, 9);
     Ellipse<Integer> e = Ellipse<Integer>(op, p);
     Operator<Integer> op2 = e.op();
     Point<Integer> p2 = e.p();
@@ -327,7 +327,7 @@ BOOST_AUTO_TEST_CASE(test_disk)
 
 BOOST_AUTO_TEST_CASE(test_opFromDRootTwo)
 {
-    Operator<DRootTwo> op1 = gridprob::makeOperator(DRootTwo(1, 2), DRootTwo(3, 4), DRootTwo(7), DRootTwo(8));
+    Operator<DRootTwo> op1 = matrix2x2(DRootTwo(1, 2), DRootTwo(3, 4), DRootTwo(7), DRootTwo(8));
     Operator<QRootTwo> op2 = gridprob::opFromDRootTwo<QRootTwo>(op1);
     assert(QRootTwo(1, 2) == op2(0, 0));
     assert(QRootTwo(3, 4) == op2(0, 1));

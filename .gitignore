@@ -9,4 +9,5 @@ toRealTest
 euclideanDomainTest
 diophantineTest
 stepCompTest
+gridSynthTest
 temp

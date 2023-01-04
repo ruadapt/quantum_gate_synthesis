@@ -94,9 +94,6 @@ namespace gridprob
     Point<T> pointFromDRootTwo(Point<DRootTwo>);
 
     template <typename T>
-    Operator<T> makeOperator(T x0, T x1, T x2, T x3);
-
-    template <typename T>
     ConvexSet<T> unitDisk();
 
     template <typename T>

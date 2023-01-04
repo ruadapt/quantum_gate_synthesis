@@ -16,8 +16,8 @@ namespace gridsynth
         Point<T> z = Point<T>{zx, zy};
         T ev1 = 4 * bmp::pow(1 / epsilon, 4);
         T ev2 = bmp::pow(1 / epsilon, 2);
-        Operator<T> mmat = gp::makeOperator<T>(ev1, 0, 0, ev2);
-        Operator<T> bmat = gp::makeOperator<T>(zx, -zy, zy, zx);
+        Operator<T> mmat = matrix2x2<T>(ev1, 0, 0, ev2);
+        Operator<T> bmat = matrix2x2<T>(zx, -zy, zy, zx);
         Operator<T> temp1 = prod(bmat, mmat);
         Operator<T> mat = prod(temp1, gp::special_inverse(bmat));
         Point<T> ctr = Point<T>{d * zx, d * zy};
