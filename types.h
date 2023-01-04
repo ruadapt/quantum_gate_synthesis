@@ -1,6 +1,7 @@
 #pragma once
 #include <gmpxx.h>
 #include <boost/multiprecision/cpp_dec_float.hpp>
+#include <boost/numeric/ublas/matrix.hpp>
 #include <tuple>
 #include <variant>
 #include <optional>
@@ -87,3 +88,15 @@ A fst(Either<A, B> e) { return std::get<1>(e); }
 
 template <typename A, typename B>
 B snd(Either<A, B> e) { return std::get<2>(e); }
+
+template <typename T, int N>
+using Vector = boost::numeric::ublas::c_vector<T, N>;
+
+template <typename T, int M, int N>
+using Matrix = boost::numeric::ublas::c_matrix<T, M, N>;
+
+template <typename T>
+using U2 = Matrix<T, 2, 2>;
+
+template <typename T>
+using SO3 = Matrix<T, 3, 3>;
