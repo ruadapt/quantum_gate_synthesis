@@ -1,9 +1,13 @@
 #define BOOST_TEST_MODULE gridProblems
 #include "utils.h"
 #include "../gridproblems.h"
+#include "../gridSynth.h"
 #include <boost/test/included/unit_test.hpp>
 #include <iostream>
 #include <tuple>
+
+namespace gs = gridsynth;
+namespace gp = gridprob;
 
 BOOST_AUTO_TEST_CASE(test_lambda)
 {
@@ -530,7 +534,7 @@ BOOST_AUTO_TEST_CASE(test_gridpoints2_scaled)
     BOOST_CHECK_EQUAL(57, points2.size());
 }
 
-BOOST_AUTO_TEST_CASE(test_gridpoints2_increasing_with_gridop)
+BOOST_AUTO_TEST_CASE(test_gridpoints2_increasing)
 {
     ConvexSet<Real> u = gridprob::unitDisk<Real>();
     ConvexSet<Real> u2 = gridprob::unitDisk<Real>();
@@ -548,4 +552,26 @@ BOOST_AUTO_TEST_CASE(test_gridpoints2_increasing_with_gridop)
     BOOST_CHECK_EQUAL(136, points3.size());
     // BOOST_CHECK_EQUAL(480, points4.size());
     BOOST_CHECK_EQUAL(1912, points5.size());
+}
+
+// TODO this test causes a failed assertion
+BOOST_AUTO_TEST_CASE(test_gridpoints2_increasing_epsilon_region)
+{
+    Real prec = 0.001;
+    Real theta = 1.5707963267948966; // pi/2
+    Real epsilon = bmp::pow(2, prec);
+    ConvexSet<Real> region = gs::epsilon_region(epsilon, theta);
+    std::function<List<DOmega>(Integer)> raw_candidates = gp::gridpoints2_increasing(region, gp::unitDisk<Real>());
+    List<DOmega> candidates = raw_candidates(0);
+}
+
+// TODO memory access violation
+BOOST_AUTO_TEST_CASE(test_gridpoints2_increasing_epsilon_region2)
+{
+    Real prec = 0.001;
+    Real theta = 1; // pi/2
+    Real epsilon = bmp::pow(2, prec);
+    ConvexSet<Real> region = gs::epsilon_region(epsilon, theta);
+    std::function<List<DOmega>(Integer)> raw_candidates = gp::gridpoints2_increasing(region, gp::unitDisk<Real>());
+    List<DOmega> candidates = raw_candidates(0);
 }
