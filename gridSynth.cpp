@@ -1,10 +1,13 @@
 #include "gridSynth.h"
 #include "quadratic.h"
 #include "ring.h"
+#include "diophantine.h"
 
 namespace gridsynth
 {
+    namespace dio = diophantine;
     namespace gp = gridprob;
+    namespace sc = stepcomp;
     namespace bmp = boost::multiprecision;
 
     template <typename T>
@@ -64,6 +67,58 @@ namespace gridsynth
         };
 
         return ConvexSet<T>(ell, tst, intersect);
+    }
+
+    template <typename T>
+    std::tuple<U2<DOmega>, Maybe<double>, List<std::tuple<DOmega, Integer, DStatus>>> gridsynth_internal(
+        T prec, T theta, int effort)
+    {
+        T epsilon = bmp::pow(2, prec);
+        ConvexSet<T> region = epsilon_region(epsilon, theta);
+        std::function<List<DOmega>(Integer)> raw_candidates = gp::gridpoints2_increasing(region, gp::unitDisk<T>());
+
+        auto tcount = [](Integer k) -> Integer
+        {
+            return (k > 0) ? (2 * k - 2) : 0_mpz;
+        };
+
+        List<std::tuple<DOmega, Integer, DStatus>> candidate_info;
+        Integer k = 0;
+        while (true)
+        {
+            List<DOmega> candidates = raw_candidates(k);
+            for (DOmega u : candidates)
+            {
+                Integer tc = tcount(k);
+                RootTwo<ZDyadic> xi = ring::real(DOmega(1) - u.adj() * u);
+                Maybe<Maybe<DOmega>> answer_t = dio::diophantine_dyadic(xi).run_bounded(effort);
+                if (!answer_t.has_value())
+                {
+                    candidate_info.push_back({u, tc, Timeout});
+                    continue;
+                }
+                if (!answer_t.value().has_value())
+                {
+                    candidate_info.push_back({u, tc, Fail});
+                    continue;
+                }
+                candidate_info.push_back({u, tc, Success});
+                DOmega t = answer_t.value().value();
+                DOmega omega = ring::omega<DOmega>();
+                U2<DOmega> uU;
+                if (ring::denomExp(u + t) < ring::denomExp(u + omega * t))
+                {
+                    uU = matrix2x2(u, -t.adj(), t, u.adj());
+                }
+                else
+                {
+                    uU = matrix2x2(u, -((omega * t).adj()), omega * t, u.adj());
+                }
+                return { uU, 1.0, candidate_info }; 
+                // TODO add error calculation
+            }
+            k++;
+        }
     }
 
     template <typename A, typename B, typename C>
