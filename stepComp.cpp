@@ -114,7 +114,7 @@ StepComp<StepComp<T>> StepComp<T>::subtask(int n) const
         return StepComp<StepComp<T>>(*this);
     }
     StepComp<T> copy = *this;
-    return StepComp<StepComp<T>>([=]()
+    return StepComp<StepComp<T>>([copy, n]()
                                  { return copy.untick().subtask(n - 1); });
 }
 
@@ -154,7 +154,7 @@ namespace stepcomp
         {
             return g(sc.value());
         }
-        return StepComp<U>([=]()
+        return StepComp<U>([sc, g]()
                            { return bind(sc.untick(), g); });
     }
 
@@ -168,7 +168,7 @@ namespace stepcomp
         StepComp<T> current = StepComp<T>(value, speed);
         for (int i = 0; i < n; i++)
         {
-            current = StepComp<T>([=]()
+            current = StepComp<T>([current]()
                                   { return current; },
                                   speed);
         }
@@ -188,7 +188,7 @@ namespace stepcomp
         {
             return StepComp(Either<T1, T2>(std::make_tuple(c1, c2.value())));
         }
-        return StepComp<Either<T1, T2>>([=]()
+        return StepComp<Either<T1, T2>>([c1, c2]()
                                         { return parallel<A, B>(c1.untick(), c2.untick()); });
     }
 
@@ -210,7 +210,7 @@ namespace stepcomp
         {
             return StepComp<T>(c2.value());
         }
-        return StepComp<T>([=]()
+        return StepComp<T>([c1, c2]()
                            { return parallel_first(c1.untick(), c2.untick()); });
     }
 
@@ -232,7 +232,7 @@ namespace stepcomp
             {
                 return StepComp<Maybe<std::tuple<A, B>>>(std::nullopt);
             }
-            return StepComp<Maybe<std::tuple<A, B>>>([=]()
+            return StepComp<Maybe<std::tuple<A, B>>>([c1, c2]()
                                                      { return parallel_maybe(c1, c2.untick()); });
         }
         if (c2.is_done())
@@ -242,10 +242,10 @@ namespace stepcomp
             {
                 return StepComp<Maybe<std::tuple<A, B>>>(std::nullopt);
             }
-            return StepComp<Maybe<std::tuple<A, B>>>([=]()
+            return StepComp<Maybe<std::tuple<A, B>>>([c1, c2]()
                                                      { return parallel_maybe(c1.untick(), c2); });
         }
-        return StepComp<Maybe<std::tuple<A, B>>>([=]()
+        return StepComp<Maybe<std::tuple<A, B>>>([c1, c2]()
                                                  { return parallel_maybe(c1.untick(), c2.untick()); });
     }
 
@@ -279,7 +279,7 @@ namespace stepcomp
         List<StepComp<Maybe<T>>> next;
         std::transform(steps.begin(), steps.end(), std::back_inserter(next), [](StepComp<Maybe<T>> sc)
                        { return sc.untick(); });
-        return StepComp<Maybe<List<T>>>([=]()
+        return StepComp<Maybe<List<T>>>([next]()
                                         { return parallel_list_maybe(next); });
     }
 }

@@ -27,7 +27,7 @@ namespace diophantine
             return StepComp(Maybe<ZOmega>());
         }
         StepComp<Maybe<ZOmega>> sc = diophantine_associate(xi);
-        auto g = [=](Maybe<ZOmega> t_opt) -> StepComp<Maybe<ZOmega>>
+        auto g = [xi](Maybe<ZOmega> t_opt) -> StepComp<Maybe<ZOmega>>
         {
             if (!t_opt.has_value())
             {
@@ -55,7 +55,7 @@ namespace diophantine
         DRootTwo prod = ring::powNonNeg((gp::lambda<DRootTwo>() * ring::rootTwo<DRootTwo>()), k3) * DRootTwo(ring::powNonNeg(2_mpz, k2)) * xi;
         ZRootTwo xi2 = ring::toWhole<DRootTwo, ZRootTwo>(prod);
         StepComp<Maybe<ZOmega>> sc = diophantine(xi2);
-        auto g = [=](Maybe<ZOmega> t2_opt) -> StepComp<Maybe<DOmega>>
+        auto g = [k2, k3](Maybe<ZOmega> t2_opt) -> StepComp<Maybe<DOmega>>
         {
             if (!t2_opt.has_value())
             {
@@ -79,7 +79,7 @@ namespace diophantine
         ZRootTwo xi2 = ed::euclid_div(xi, d);
         StepComp<Maybe<std::tuple<ZOmega, ZOmega>>> sc = sc::parallel_maybe(
             dioph_zroottwo_selfassociate(d), dioph_zroottwo_assoc(xi2));
-        auto g = [=](Maybe<std::tuple<ZOmega, ZOmega>> res) -> StepComp<Maybe<ZOmega>>
+        auto g = [](Maybe<std::tuple<ZOmega, ZOmega>> res) -> StepComp<Maybe<ZOmega>>
         {
             if (!res.has_value())
             {
@@ -99,13 +99,13 @@ namespace diophantine
             return StepComp<Integer>(Integer(2));
         }
         Integer a = utils::randint(1, n - 1);
-        auto f = [=](Integer x) -> Integer
+        auto f = [n, a](Integer x) -> Integer
         { return utils::mod(x * x + a, n); };
         auto aux = [=](Integer x, Integer y) -> StepComp<Integer>
         {
             auto aux_impl = [=](Integer x, Integer y, auto &aux_ref) -> StepComp<Integer>
             {
-                Integer d = ed::euclid_gcd(Integer(x - y), n); // TODO which gcd function to use?
+                Integer d = ed::euclid_gcd(Integer(x - y), n);
                 if (d == 1)
                 {
                     return StepComp<Integer>([=]()
@@ -204,7 +204,7 @@ namespace diophantine
 
     StepComp<Integer> root_of_negative_one(Integer n)
     {
-        return StepComp<Integer>([=]()
+        return StepComp<Integer>([n]()
                                  {
             Integer b = utils::randint(1, n - 1);
             Integer h = power_mod(b, utils::div(n - 1, 4), n);
@@ -263,7 +263,7 @@ namespace diophantine
         Integer c, d;
         std::tie(c, d) = pow(std::make_tuple(1_mpz, 0_mpz), utils::div(n - 1, 2), n, r, s);
 
-        auto res = [=]()
+        auto res = [n, a, b, c, d]()
         {
             std::optional<Integer> imod = ed::inv_mod(n, c);
             if (imod.has_value())
@@ -299,7 +299,7 @@ namespace diophantine
         if (utils::mod(n, 4) == 1)
         {
             StepComp<Integer> s = root_of_negative_one(n);
-            auto g = [=](Integer h) -> StepComp<Maybe<ZOmega>>
+            auto g = [n](Integer h) -> StepComp<Maybe<ZOmega>>
             {
                 ZOmega t = ed::euclid_gcd<ZOmega>(
                     ring::fromInteger<ZOmega>(h) + ring::i<ZOmega>(), ring::fromInteger<ZOmega>(n));
@@ -311,7 +311,7 @@ namespace diophantine
         if (utils::mod(n, 8) == 3)
         {
             StepComp<Integer> s = root_mod(n, -2);
-            auto g = [=](Integer h) -> StepComp<Maybe<ZOmega>>
+            auto g = [n](Integer h) -> StepComp<Maybe<ZOmega>>
             {
                 ZOmega t = ed::euclid_gcd<ZOmega>(
                     ring::fromInteger<ZOmega>(h) + ring::i<ZOmega>() * ring::rootTwo<ZOmega>(),
@@ -324,7 +324,7 @@ namespace diophantine
         if (utils::mod(n, 8) == 7)
         {
             StepComp<Integer> s = root_mod(n, 2);
-            auto g = [=](Integer h __attribute__((unused))) -> StepComp<Maybe<ZOmega>>
+            auto g = [](Integer h __attribute__((unused))) -> StepComp<Maybe<ZOmega>>
             {
                 return StepComp<Maybe<ZOmega>>(Maybe<ZOmega>());
             };
@@ -336,14 +336,14 @@ namespace diophantine
     StepComp<Maybe<ZOmega>> dioph_int_assoc_interleave(StepComp<Maybe<ZOmega>> p, StepComp<Integer> f, Integer n)
     {
         StepComp<StepComp<Maybe<ZOmega>>> p2 = p.subtask(4);
-        auto g = [=](StepComp<Maybe<ZOmega>> p) -> StepComp<Maybe<ZOmega>>
+        auto g = [f, n](StepComp<Maybe<ZOmega>> p) -> StepComp<Maybe<ZOmega>>
         {
             if (p.is_done())
             {
                 return StepComp(p.value());
             }
             StepComp<StepComp<Integer>> f2 = f.subtask(1000);
-            auto g2 = [=](StepComp<Integer> f) -> StepComp<Maybe<ZOmega>>
+            auto g2 = [p, n](StepComp<Integer> f) -> StepComp<Maybe<ZOmega>>
             {
                 if (f.is_done())
                 {
@@ -407,7 +407,7 @@ namespace diophantine
             return StepComp(Maybe<ZOmega>(val));
         }
         StepComp<Maybe<ZOmega>> sc = dioph_int_assoc(n);
-        auto g = [=](Maybe<ZOmega> t) -> StepComp<Maybe<ZOmega>>
+        auto g = [k](Maybe<ZOmega> t) -> StepComp<Maybe<ZOmega>>
         {
             if (t.has_value())
             {
@@ -429,7 +429,7 @@ namespace diophantine
         Integer n = ed::euclid_gcd(a, b);
         ZRootTwo r = ed::euclid_div(xi, ring::fromInteger<ZRootTwo>(n));
         StepComp<Maybe<ZOmega>> sc = dioph_int_assoc(n);
-        auto g = [=](Maybe<ZOmega> res) -> StepComp<Maybe<ZOmega>>
+        auto g = [r](Maybe<ZOmega> res) -> StepComp<Maybe<ZOmega>>
         {
             if (!res.has_value())
             {
@@ -455,7 +455,7 @@ namespace diophantine
         if (utils::mod(n, 8) == 1)
         {
             StepComp<Integer> sc = root_of_negative_one(n);
-            auto g = [=](Integer h) -> StepComp<Maybe<ZOmega>>
+            auto g = [xi](Integer h) -> StepComp<Maybe<ZOmega>>
             {
                 ZOmega t = ed::euclid_gcd(
                     ring::fromInteger<ZOmega>(h) + ring::i<ZOmega>(), ring::fromZRootTwo<ZOmega>(xi));
@@ -475,14 +475,14 @@ namespace diophantine
     StepComp<Maybe<ZOmega>> dioph_zroottwo_assoc_interleave(StepComp<Maybe<ZOmega>> p, StepComp<Integer> f, ZRootTwo xi)
     {
         StepComp<StepComp<Maybe<ZOmega>>> p2 = p.subtask(4);
-        auto g = [=](StepComp<Maybe<ZOmega>> p) -> StepComp<Maybe<ZOmega>>
+        auto g = [f, xi](StepComp<Maybe<ZOmega>> p) -> StepComp<Maybe<ZOmega>>
         {
             if (p.is_done())
             {
                 return StepComp(p.value());
             }
             StepComp<StepComp<Integer>> f2 = f.subtask(1000);
-            auto g2 = [=](StepComp<Integer> f) -> StepComp<Maybe<ZOmega>>
+            auto g2 = [p, xi](StepComp<Integer> f) -> StepComp<Maybe<ZOmega>>
             {
                 if (f.is_done())
                 {
@@ -540,7 +540,7 @@ namespace diophantine
             return StepComp(Maybe<ZOmega>(ring::fromZRootTwo<ZOmega>(ring::powNonNeg(xi, utils::div(k, 2)))));
         }
         StepComp<Maybe<ZOmega>> sc = dioph_zroottwo_assoc(xi);
-        auto g = [=](Maybe<ZOmega> t) -> StepComp<Maybe<ZOmega>>
+        auto g = [k](Maybe<ZOmega> t) -> StepComp<Maybe<ZOmega>>
         {
             if (!t.has_value())
             {

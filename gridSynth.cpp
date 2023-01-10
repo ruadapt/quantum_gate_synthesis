@@ -26,7 +26,7 @@ namespace gridsynth
         Point<T> ctr = Point<T>{d * zx, d * zy};
         Ellipse<T> ell = Ellipse<T>(mat, ctr);
 
-        auto intersect = [=](Point<DRootTwo> p, Point<DRootTwo> v) -> Maybe<Pair<T>>
+        auto intersect = [d, z](Point<DRootTwo> p, Point<DRootTwo> v) -> Maybe<Pair<T>>
         {
             DRootTwo a = gp::iprod(v, v);
             DRootTwo b = DRootTwo(2) * gp::iprod(v, p);
@@ -57,7 +57,7 @@ namespace gridsynth
             return Maybe<Pair<T>>(Pair<T>{t0, std::min(t1, t2)});
         };
 
-        auto tst = [=](Point<DRootTwo> p) -> bool
+        auto tst = [d, zx, zy](Point<DRootTwo> p) -> bool
         {
             DRootTwo x, y;
             std::tie(x, y) = p;
