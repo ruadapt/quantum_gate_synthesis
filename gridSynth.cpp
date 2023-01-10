@@ -31,6 +31,9 @@ namespace gridsynth
             DRootTwo a = gp::iprod(v, v);
             DRootTwo b = DRootTwo(2) * gp::iprod(v, p);
             DRootTwo c = gp::iprod(p, p) - 1;
+            // std::cout << "a = " << a << std::endl;
+            // std::cout << "b = " << b << std::endl;
+            // std::cout << "c = " << c << std::endl;
             Maybe<Pair<T>> q = quadratic(ring::fromDRootTwo<QRootTwo>(a), ring::fromDRootTwo<QRootTwo>(b), ring::fromDRootTwo<QRootTwo>(c));
 
             if (!q.has_value())
@@ -50,6 +53,9 @@ namespace gridsynth
                 return Maybe<Pair<T>>();
             }
             T t2 = rhs / vz;
+            // std::cout << "t0 = " << t0 << std::endl;
+            // std::cout << "t1 = " << t1 << std::endl;
+            // std::cout << "t2 = " << t2 << std::endl;
             if (vz > 0)
             {
                 return Maybe<Pair<T>>(Pair<T>{std::max(t0, t2), t1});
@@ -73,7 +79,7 @@ namespace gridsynth
     std::tuple<U2<DOmega>, Maybe<double>, List<std::tuple<DOmega, Integer, DStatus>>> gridsynth_internal(
         T prec, T theta, int effort)
     {
-        T epsilon = bmp::pow(2, prec);
+        T epsilon = bmp::pow(2, -prec);
         ConvexSet<T> region = epsilon_region(epsilon, theta);
         std::function<List<DOmega>(Integer)> raw_candidates = gp::gridpoints2_increasing(region, gp::unitDisk<T>());
 
