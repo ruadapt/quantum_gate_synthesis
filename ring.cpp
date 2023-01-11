@@ -1210,7 +1210,13 @@ QOmega Dyadic<T>::toQOmega() const
 template <typename T>
 std::string Dyadic<T>::toString() const
 {
-    return "Dyadic(" + ring::toString(a()) + ", " + ring::toString(n()) + ")";
+    T a, n;
+    std::tie(a, n) = this->decomposeDyadic();
+    if (n == 0)
+    {
+        return ring::toString(a);
+    }
+    return ring::toString(a) + " / " + "2^(" + ring::toString(n) + ")";
 }
 
 template <typename T>
@@ -1455,7 +1461,11 @@ QOmega RootTwo<T>::toQOmega() const
 template <typename T>
 std::string RootTwo<T>::toString() const
 {
-    return "RootTwo(" + ring::toString(a()) + ", " + ring::toString(b()) + ")";
+    if (b() == 0)
+    {
+        return ring::toString(a());
+    }
+    return ring::toString(a()) + " + " + ring::toString(b()) + " * root2";
 }
 
 template <typename T>
@@ -1685,7 +1695,12 @@ QOmega Complex<T>::toQOmega() const
 template <typename T>
 std::string Complex<T>::toString() const
 {
-    return "Complex(" + ring::toString(a()) + ", " + ring::toString(b()) + ")";
+    if (b() == 0)
+    {
+        return ring::toString(a());
+    }
+    return ring::toString(a()) + " + " + ring::toString(b()) + "i";
+    // return "Complex(" + ring::toString(a()) + ", " + ring::toString(b()) + ")";
 }
 
 template <typename T>
@@ -1844,7 +1859,7 @@ Z2 Z2::adj2() const
 
 std::string Z2::toString() const
 {
-    return "Z2(" + std::to_string(mod2()) + ")";
+    return std::to_string(mod2());
 }
 
 void Z2::print(std::string prefix) const

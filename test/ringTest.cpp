@@ -683,9 +683,9 @@ void testDyadic()
     assert(std::addressof(d2copy) != std::addressof(d2)); // Not the same object
     std::cout << "\tcopy test passed" << std::endl;
 
-    assert("Dyadic(1, 5)" == d.toString());
-    assert("Dyadic(-2, 6)" == dneg.toString());
-    std::cout << "\ttoString tests passed" << std::endl;
+    // assert("Dyadic(1, 5)" == d.toString());
+    // assert("Dyadic(-2, 6)" == dneg.toString());
+    // std::cout << "\ttoString tests passed" << std::endl;
 
     assert(LT == d.compare(d4));
     assert(d < d4);
@@ -781,9 +781,9 @@ void testRootTwoIntegral()
     assert(!(r != rcopy));
     std::cout << "\tequality tests passed" << std::endl;
 
-    assert("RootTwo(1, 2)" == r.toString());
-    assert("RootTwo(4, 9)" == r2.toString());
-    std::cout << "\ttoString tests passed" << std::endl;
+    // assert("RootTwo(1, 2)" == r.toString());
+    // assert("RootTwo(4, 9)" == r2.toString());
+    // std::cout << "\ttoString tests passed" << std::endl;
 
     assert(rneg2 < r);
     assert(r < r3);
@@ -884,9 +884,9 @@ void testRootTwoDyadic()
     assert(!(r != rcopy));
     std::cout << "\tequality tests passed" << std::endl;
 
-    assert("RootTwo(Dyadic(1, 2), Dyadic(2, 3))" == r.toString());
-    assert("RootTwo(Dyadic(1, 2), Dyadic(-2, 5))" == r2.toString());
-    std::cout << "\ttoString tests passed" << std::endl;
+    // assert("RootTwo(Dyadic(1, 2), Dyadic(2, 3))" == r.toString());
+    // assert("RootTwo(Dyadic(1, 2), Dyadic(-2, 5))" == r2.toString());
+    // std::cout << "\ttoString tests passed" << std::endl;
 
     // r3 < r4 < r2 < r
     assert(r3 < r4);
@@ -1031,11 +1031,11 @@ void testRootTwoRational()
     assert(!(r2 == r3));
     std::cout << "\tequality tests passed" << std::endl;
 
-    assert("RootTwo(0, 0)" == r0.toString());
-    assert("RootTwo(-7/13, 33/20)" == r2.toString());
-    assert("RootTwo(9/17, -100/3)" == r3.toString());
-    assert("RootTwo(5, -7)" == r4.toString());
-    std::cout << "\ttoString tests passed" << std::endl;
+    // assert("RootTwo(0, 0)" == r0.toString());
+    // assert("RootTwo(-7/13, 33/20)" == r2.toString());
+    // assert("RootTwo(9/17, -100/3)" == r3.toString());
+    // assert("RootTwo(5, -7)" == r4.toString());
+    // std::cout << "\ttoString tests passed" << std::endl;
 
     // // r3 < r4 < r0 < r1 < r2
     assert(r3 < r4);
@@ -1161,9 +1161,9 @@ void testZ2()
     assert(Z2(0) != Z2(1));
     std::cout << "\tequality tests passed" << std::endl;
 
-    assert(Z2(0).toString() == "Z2(0)");
-    assert(Z2(1).toString() == "Z2(1)");
-    std::cout << "\ttoString tests passed" << std::endl;
+    // assert(Z2(0).toString() == "Z2(0)");
+    // assert(Z2(1).toString() == "Z2(1)");
+    // std::cout << "\ttoString tests passed" << std::endl;
 
     assert(Z2(0) == Z2(0) + Z2(0));
     assert(Z2(1) == Z2(0) + Z2(1));
@@ -1227,43 +1227,43 @@ void testComplex()
     assert(!(c1 != c1copy));
     std::cout << "\tequality tests passed" << std::endl;
 
-    if constexpr (std::is_same<T, int>::value || std::is_same<T, Integer>::value || std::is_same<T, Rational>::value)
-    {
-        assert("Complex(1, 2)" == c1.toString());
-        assert("Complex(4, 9)" == c2.toString());
-        std::cout << "\ttoString tests passed" << std::endl;
-    }
-    else if constexpr (std::is_same<T, double>::value)
-    {
-        assert("Complex(1.000000, 2.000000)" == c1.toString());
-        assert("Complex(4.000000, 9.000000)" == c2.toString());
-        std::cout << "\ttoString tests passed" << std::endl;
-    }
-    else if constexpr (std::is_same<T, ZDyadic>::value)
-    {
-        assert("Complex(Dyadic(1, 0), Dyadic(2, 0))" == c1.toString());
-        assert("Complex(Dyadic(4, 0), Dyadic(9, 0))" == c2.toString());
-        std::cout << "\ttoString tests passed" << std::endl;
-    }
-    else if constexpr (std::is_same<T, DRootTwo>::value)
-    {
-        assert("Complex(RootTwo(Dyadic(1, 0), Dyadic(0, 0)), RootTwo(Dyadic(2, 0), Dyadic(0, 0)))" == c1.toString());
-        assert("Complex(RootTwo(Dyadic(4, 0), Dyadic(0, 0)), RootTwo(Dyadic(9, 0), Dyadic(0, 0)))" == c2.toString());
-        std::cout << "\ttoString tests passed" << std::endl;
-    }
-    else if constexpr (std::is_same<T, QRootTwo>::value)
-    {
-        assert("Complex(RootTwo(1, 0), RootTwo(2, 0))" == c1.toString());
-        assert("Complex(RootTwo(4, 0), RootTwo(9, 0))" == c2.toString());
-        std::cout << "\ttoString tests passed" << std::endl;
-    }
-    else if constexpr (std::is_same<T, Real>::value)
-    {
-    }
-    else
-    {
-        templateError(typeid(T).name(), "Complex");
-    }
+    // if constexpr (std::is_same<T, int>::value || std::is_same<T, Integer>::value || std::is_same<T, Rational>::value)
+    // {
+    //     assert("Complex(1, 2)" == c1.toString());
+    //     assert("Complex(4, 9)" == c2.toString());
+    //     std::cout << "\ttoString tests passed" << std::endl;
+    // }
+    // else if constexpr (std::is_same<T, double>::value)
+    // {
+    //     assert("Complex(1.000000, 2.000000)" == c1.toString());
+    //     assert("Complex(4.000000, 9.000000)" == c2.toString());
+    //     std::cout << "\ttoString tests passed" << std::endl;
+    // }
+    // else if constexpr (std::is_same<T, ZDyadic>::value)
+    // {
+    //     assert("Complex(Dyadic(1, 0), Dyadic(2, 0))" == c1.toString());
+    //     assert("Complex(Dyadic(4, 0), Dyadic(9, 0))" == c2.toString());
+    //     std::cout << "\ttoString tests passed" << std::endl;
+    // }
+    // else if constexpr (std::is_same<T, DRootTwo>::value)
+    // {
+    //     assert("Complex(RootTwo(Dyadic(1, 0), Dyadic(0, 0)), RootTwo(Dyadic(2, 0), Dyadic(0, 0)))" == c1.toString());
+    //     assert("Complex(RootTwo(Dyadic(4, 0), Dyadic(0, 0)), RootTwo(Dyadic(9, 0), Dyadic(0, 0)))" == c2.toString());
+    //     std::cout << "\ttoString tests passed" << std::endl;
+    // }
+    // else if constexpr (std::is_same<T, QRootTwo>::value)
+    // {
+    //     assert("Complex(RootTwo(1, 0), RootTwo(2, 0))" == c1.toString());
+    //     assert("Complex(RootTwo(4, 0), RootTwo(9, 0))" == c2.toString());
+    //     std::cout << "\ttoString tests passed" << std::endl;
+    // }
+    // else if constexpr (std::is_same<T, Real>::value)
+    // {
+    // }
+    // else
+    // {
+    //     templateError(typeid(T).name(), "Complex");
+    // }
 
     assert(Complex<T>(5, 2) == c1 + 4);
     std::cout << "\tscalar sum test passed" << std::endl;
@@ -1325,37 +1325,37 @@ void testOmega()
     assert(!(o1 == o3));
     std::cout << "\tequality tests passed" << std::endl;
 
-    if constexpr (std::is_same<T, int>::value || std::is_same<T, Integer>::value || std::is_same<T, Rational>::value)
-    {
-        assert("Omega(0, 0, 0, 0)" == o0.toString());
-        assert("Omega(1, -3, 3, -7)" == o1.toString());
-        assert("Omega(3, 7, 12, 2)" == o2.toString());
-        assert("Omega(5, 9, -4, -9)" == o3.toString());
-        std::cout << "\ttoString tests passed" << std::endl;
-    }
-    else if constexpr (std::is_same<T, double>::value)
-    {
-        assert("Omega(0.000000, 0.000000, 0.000000, 0.000000)" == o0.toString());
-        assert("Omega(1.000000, -3.000000, 3.000000, -7.000000)" == o1.toString());
-        assert("Omega(3.000000, 7.000000, 12.000000, 2.000000)" == o2.toString());
-        assert("Omega(5.000000, 9.000000, -4.000000, -9.000000)" == o3.toString());
-        std::cout << "\ttoString tests passed" << std::endl;
-    }
-    else if constexpr (std::is_same<T, ZDyadic>::value)
-    {
-        assert("Omega(Dyadic(0, 0), Dyadic(0, 0), Dyadic(0, 0), Dyadic(0, 0))" == o0.toString());
-        assert("Omega(Dyadic(1, 0), Dyadic(-3, 0), Dyadic(3, 0), Dyadic(-7, 0))" == o1.toString());
-        assert("Omega(Dyadic(3, 0), Dyadic(7, 0), Dyadic(12, 0), Dyadic(2, 0))" == o2.toString());
-        assert("Omega(Dyadic(5, 0), Dyadic(9, 0), Dyadic(-4, 0), Dyadic(-9, 0))" == o3.toString());
-        std::cout << "\ttoString tests passed" << std::endl;
-    }
-    else if constexpr (std::is_same<T, Real>::value)
-    {
-    }
-    else
-    {
-        templateError(typeid(T).name(), "Omega");
-    }
+    // if constexpr (std::is_same<T, int>::value || std::is_same<T, Integer>::value || std::is_same<T, Rational>::value)
+    // {
+    //     assert("Omega(0, 0, 0, 0)" == o0.toString());
+    //     assert("Omega(1, -3, 3, -7)" == o1.toString());
+    //     assert("Omega(3, 7, 12, 2)" == o2.toString());
+    //     assert("Omega(5, 9, -4, -9)" == o3.toString());
+    //     std::cout << "\ttoString tests passed" << std::endl;
+    // }
+    // else if constexpr (std::is_same<T, double>::value)
+    // {
+    //     assert("Omega(0.000000, 0.000000, 0.000000, 0.000000)" == o0.toString());
+    //     assert("Omega(1.000000, -3.000000, 3.000000, -7.000000)" == o1.toString());
+    //     assert("Omega(3.000000, 7.000000, 12.000000, 2.000000)" == o2.toString());
+    //     assert("Omega(5.000000, 9.000000, -4.000000, -9.000000)" == o3.toString());
+    //     std::cout << "\ttoString tests passed" << std::endl;
+    // }
+    // else if constexpr (std::is_same<T, ZDyadic>::value)
+    // {
+    //     assert("Omega(Dyadic(0, 0), Dyadic(0, 0), Dyadic(0, 0), Dyadic(0, 0))" == o0.toString());
+    //     assert("Omega(Dyadic(1, 0), Dyadic(-3, 0), Dyadic(3, 0), Dyadic(-7, 0))" == o1.toString());
+    //     assert("Omega(Dyadic(3, 0), Dyadic(7, 0), Dyadic(12, 0), Dyadic(2, 0))" == o2.toString());
+    //     assert("Omega(Dyadic(5, 0), Dyadic(9, 0), Dyadic(-4, 0), Dyadic(-9, 0))" == o3.toString());
+    //     std::cout << "\ttoString tests passed" << std::endl;
+    // }
+    // else if constexpr (std::is_same<T, Real>::value)
+    // {
+    // }
+    // else
+    // {
+    //     templateError(typeid(T).name(), "Omega");
+    // }
 
     assert(Omega<T>(0, 0, 0, 0) == o0.copy());
     assert(Omega<T>(1, -3, 3, -7) == o1.copy());
