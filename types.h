@@ -100,3 +100,15 @@ using U2 = Matrix<T, 2, 2>;
 
 template <typename T>
 using SO3 = Matrix<T, 3, 3>;
+
+template <typename T>
+using Point = std::tuple<T, T>;
+
+template <typename T>
+using Tuple2By2 = std::tuple<std::tuple<T, T>, std::tuple<T, T>>;
+
+template <typename T>
+using Operator = Matrix<T, 2, 2>;
+
+template <typename T>
+using OperatorPair = std::tuple<Operator<T>, Operator<T>>;

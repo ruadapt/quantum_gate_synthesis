@@ -6,18 +6,6 @@
 #include <tuple>
 
 template <typename T>
-using Point = std::tuple<T, T>;
-
-template <typename T>
-using Tuple2By2 = std::tuple<std::tuple<T, T>, std::tuple<T, T>>;
-
-template <typename T>
-using Operator = Matrix<T, 2, 2>;
-
-template <typename T>
-using OperatorPair = std::tuple<Operator<T>, Operator<T>>;
-
-template <typename T>
 class Ellipse
 {
 public:
