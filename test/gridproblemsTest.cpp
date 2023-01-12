@@ -6,6 +6,8 @@
 #include <iostream>
 #include <tuple>
 
+namespace tt = boost::test_tools;
+
 namespace gs = gridsynth;
 namespace gp = gridprob;
 
@@ -554,24 +556,79 @@ BOOST_AUTO_TEST_CASE(test_gridpoints2_increasing)
     BOOST_CHECK_EQUAL(1912, points5.size());
 }
 
-// TODO this test causes a failed assertion
-BOOST_AUTO_TEST_CASE(test_gridpoints2_increasing_epsilon_region)
-{
-    Real prec = 0.001;
-    Real theta = 1.5707963267948966; // pi/2
-    Real epsilon = bmp::pow(2, prec);
-    ConvexSet<Real> region = gs::epsilon_region(epsilon, theta);
-    std::function<List<DOmega>(Integer)> raw_candidates = gp::gridpoints2_increasing(region, gp::unitDisk<Real>());
-    List<DOmega> candidates = raw_candidates(0);
-}
-
-// TODO memory access violation
 BOOST_AUTO_TEST_CASE(test_gridpoints2_increasing_epsilon_region2)
 {
-    Real prec = 0.001;
-    Real theta = 1; // pi/2
-    Real epsilon = bmp::pow(2, prec);
+    Real prec = 10;
+    Real theta = 1;
+    Real epsilon = bmp::pow(2, -prec);
     ConvexSet<Real> region = gs::epsilon_region(epsilon, theta);
     std::function<List<DOmega>(Integer)> raw_candidates = gp::gridpoints2_increasing(region, gp::unitDisk<Real>());
-    List<DOmega> candidates = raw_candidates(0);
+    BOOST_CHECK_EQUAL(0, raw_candidates(0).size());
+    BOOST_CHECK_EQUAL(0, raw_candidates(1).size());
+    BOOST_CHECK_EQUAL(0, raw_candidates(2).size());
+}
+
+BOOST_AUTO_TEST_CASE(test_epsilon_region_to_upright_sets)
+{
+    Real prec = 10;
+    Real theta = 1;
+
+    Real epsilon = bmp::pow(2, -prec);
+    ConvexSet<Real> region = gs::epsilon_region(epsilon, theta);
+    ConvexSet<Real> disk = gp::unitDisk<Real>();
+    Operator<DRootTwo> op = gp::to_upright_sets(region, disk);
+
+    Operator<Real> op1 = region.el().op();
+    Operator<Real> op2 = disk.el().op();
+
+    Operator<DRootTwo> expected = ring::rootHalf<DRootTwo>() * matrix2x2<DRootTwo>(DRootTwo(-3, -2), DRootTwo(1, -1), DRootTwo(-5, -4), DRootTwo(1, -1));
+    for (unsigned long i = 0; i < 2; i++)
+    {
+        for (unsigned long j = 0; j < 2; j++)
+        {
+            BOOST_CHECK_EQUAL(expected(i, j), op(i, j));
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(test_epsilon_region_to_upright)
+{
+    Real prec = 10;
+    Real theta = 1;
+
+    Real epsilon = bmp::pow(2, -prec);
+    ConvexSet<Real> region = gs::epsilon_region(epsilon, theta);
+    ConvexSet<Real> disk = gp::unitDisk<Real>();
+
+    Operator<Real> op1 = region.el().op();
+    Operator<Real> op2 = disk.el().op();
+    Operator<DRootTwo> op = gp::to_upright(std::make_tuple(op1, op2));
+
+    Operator<DRootTwo> expected = ring::rootHalf<DRootTwo>() * matrix2x2<DRootTwo>(DRootTwo(-3, -2), DRootTwo(1, -1), DRootTwo(-5, -4), DRootTwo(1, -1));
+    for (unsigned long i = 0; i < 2; i++)
+    {
+        for (unsigned long j = 0; j < 2; j++)
+        {
+            BOOST_CHECK_EQUAL(expected(i, j), op(i, j));
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(test_action)
+{
+    Operator<Real> op1 = matrix2x2<Real>(162.334, 553.269, 553.269, 1885.67);
+    Operator<Real> op2 = matrix2x2<Real>(1, 0, 0, 1);
+    Operator<DRootTwo> g = matrix2x2<DRootTwo>(DRootTwo(1, 1), -2, 0, DRootTwo(-1, 1));
+    Operator<Real> expected1 = matrix2x2<Real>(946.15188886612, -230.54888887238, -230.54888887238, 56.17972991946);
+    Operator<Real> expected2 = matrix2x2<Real>(0.17157287525, 0.82842712474, 0.82842712474, 9.82842712473);
+    Operator<Real> actual1, actual2;
+    std::tie(actual1, actual2) = gp::action(std::make_tuple(op1, op2), g);
+    for (unsigned long i = 0; i < 2; i++)
+    {
+        for (unsigned long j = 0; j < 2; j++)
+        {
+            BOOST_TEST(expected1(i, j) == actual1(i, j), tt::tolerance(Real(0.001)));
+            BOOST_TEST(expected2(i, j) == actual2(i, j), tt::tolerance(Real(0.001)));
+        }
+    }
 }

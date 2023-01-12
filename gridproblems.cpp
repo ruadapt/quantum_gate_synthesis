@@ -80,13 +80,17 @@ namespace gridprob
         return operatorPow(base, utils::to_int(exp));
     }
 
+    /**
+     * This isn't just an elementwise adjoint. There's also a transpose operation afterwards,
+     * which is why the assignments to result(1, 0) and result(0, 1) are flipped.
+     */
     template <typename T>
     Operator<T> adj(Operator<T> op)
     {
         Operator<T> result;
         result(0, 0) = ring::adj(op(0, 0));
-        result(0, 1) = ring::adj(op(0, 1));
-        result(1, 0) = ring::adj(op(1, 0));
+        result(1, 0) = ring::adj(op(0, 1));
+        result(0, 1) = ring::adj(op(1, 0));
         result(1, 1) = ring::adj(op(1, 1));
         return result;
     }
@@ -690,31 +694,37 @@ namespace gridprob
 
         T l2z_minus_zeta = l2z / l2zeta;
 
-        auto wlog_using = [=](Operator<DRootTwo> op)
+        auto wlog_using = [=](Operator<DRootTwo> op) -> std::optional<Operator<DRootTwo>>
         {
             Operator<T> matA2, matB2;
             std::tie(matA2, matB2) = action(std::make_tuple(matA, matB), op);
             std::optional<Operator<DRootTwo>> maybe_op2 = step_lemma(std::make_tuple(matA2, matB2));
             std::optional<Operator<DRootTwo>> result;
-            if (maybe_op2.has_value())
+            if (!maybe_op2.has_value())
+            {
+                result = op;
+            }
+            else
             {
                 result = prod(op, maybe_op2.value());
             }
-            result = std::nullopt;
             return result;
         };
 
-        auto with_shift = [=](Integer k)
+        auto with_shift = [=](Integer k) -> std::optional<Operator<DRootTwo>>
         {
             Operator<T> matA2, matB2;
             std::tie(matA2, matB2) = shiftState(k, std::make_tuple(matA, matB));
             std::optional<Operator<DRootTwo>> maybe_op2 = step_lemma(std::make_tuple(matA2, matB2));
             std::optional<Operator<DRootTwo>> result;
-            if (maybe_op2.has_value())
+            if (!maybe_op2.has_value())
+            {
+                result = std::nullopt;
+            }
+            else
             {
                 result = shiftSigma(k, maybe_op2.value());
             }
-            result = std::nullopt;
             return result;
         };
 
