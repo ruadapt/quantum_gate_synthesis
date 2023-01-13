@@ -72,10 +72,18 @@ namespace utils
     }
 
     /**
-     * Uniform random integer. Both endpoints are inclusive.
+     * Uniform random integer. Both endpoints are inclusive. If lo > hi, the two values
+     * are swapped (hi becomes lo and lo becomes hi): this matches the Haskell behavior of
+     * randomR.
      */
     int randint(int lo, int hi)
     {
+        if (lo > hi)
+        {
+            int temp = hi;
+            hi = lo;
+            lo = temp;
+        }
         assert(lo <= hi);
         std::random_device r;
         std::default_random_engine e1(r());
@@ -87,10 +95,18 @@ namespace utils
     bool seeded = false;
 
     /**
-     * Uniform random integer. Both endpoints are inclusive.
+     * Uniform random integer. Both endpoints are inclusive. If lo > hi, the two values
+     * are swapped (hi becomes lo and lo becomes hi): this matches the Haskell behavior of
+     * randomR.
      */
     Integer randint(Integer lo, Integer hi)
     {
+        if (lo > hi)
+        {
+            Integer temp = hi;
+            hi = lo;
+            lo = temp;
+        }
         assert(lo <= hi);
 
         if (!seeded)

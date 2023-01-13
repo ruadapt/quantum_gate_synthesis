@@ -31,9 +31,6 @@ namespace gridsynth
             DRootTwo a = gp::iprod(v, v);
             DRootTwo b = DRootTwo(2) * gp::iprod(v, p);
             DRootTwo c = gp::iprod(p, p) - 1;
-            // std::cout << "a = " << a << std::endl;
-            // std::cout << "b = " << b << std::endl;
-            // std::cout << "c = " << c << std::endl;
             Maybe<Pair<T>> q = quadratic(ring::fromDRootTwo<QRootTwo>(a), ring::fromDRootTwo<QRootTwo>(b), ring::fromDRootTwo<QRootTwo>(c));
 
             if (!q.has_value())
@@ -53,9 +50,6 @@ namespace gridsynth
                 return Maybe<Pair<T>>();
             }
             T t2 = rhs / vz;
-            // std::cout << "t0 = " << t0 << std::endl;
-            // std::cout << "t1 = " << t1 << std::endl;
-            // std::cout << "t2 = " << t2 << std::endl;
             if (vz > 0)
             {
                 return Maybe<Pair<T>>(Pair<T>{std::max(t0, t2), t1});
