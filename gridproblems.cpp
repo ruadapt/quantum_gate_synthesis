@@ -930,10 +930,12 @@ namespace gridprob
 
                 Point<DRootTwo> p1B = std::make_tuple(x0_bul, beta_prime_bul);
                 Point<DRootTwo> p2B = std::make_tuple(dx_bul, DRootTwo(0));
-                std::optional<std::tuple<T, T>> iB = setA_prime.intersect(p1B, p2B);
+                std::optional<std::tuple<T, T>> iB = setB_prime.intersect(p1B, p2B);
 
-                assert(iA.has_value());
-                assert(iB.has_value());
+                if (!iA.has_value() || !iB.has_value())
+                {
+                    continue;
+                }
 
                 T t0A, t1A, t0B, t1B;
                 std::tie(t0A, t1A) = iA.value();

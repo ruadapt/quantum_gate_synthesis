@@ -578,10 +578,28 @@ BOOST_AUTO_TEST_CASE(test_epsilon_region_to_upright_sets)
     ConvexSet<Real> disk = gp::unitDisk<Real>();
     Operator<DRootTwo> op = gp::to_upright_sets(region, disk);
 
-    Operator<Real> op1 = region.el().op();
-    Operator<Real> op2 = disk.el().op();
-
     Operator<DRootTwo> expected = ring::rootHalf<DRootTwo>() * matrix2x2<DRootTwo>(DRootTwo(-3, -2), DRootTwo(1, -1), DRootTwo(-5, -4), DRootTwo(1, -1));
+    for (unsigned long i = 0; i < 2; i++)
+    {
+        for (unsigned long j = 0; j < 2; j++)
+        {
+            BOOST_CHECK_EQUAL(expected(i, j), op(i, j));
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(test_epsilon_region_to_upright_sets2)
+{
+    Real prec = 5;
+    Real theta = 1;
+
+    Real epsilon = bmp::pow(2, -prec);
+    ConvexSet<Real> region = gs::epsilon_region(epsilon, theta);
+    ConvexSet<Real> disk = gp::unitDisk<Real>();
+    Operator<DRootTwo> op = gp::to_upright_sets(region, disk);
+    std::cout << "op = " << op << std::endl;
+
+    Operator<DRootTwo> expected = matrix2x2<DRootTwo>(DRootTwo(-2, -1), -1, DRootTwo(-3, -2), DRootTwo(0, -1));
     for (unsigned long i = 0; i < 2; i++)
     {
         for (unsigned long j = 0; j < 2; j++)
@@ -631,4 +649,22 @@ BOOST_AUTO_TEST_CASE(test_action)
             BOOST_TEST(expected2(i, j) == actual2(i, j), tt::tolerance(Real(0.001)));
         }
     }
+}
+
+BOOST_AUTO_TEST_CASE(test_gridproblem_epsilon_region)
+{
+    Real prec = 5;
+    Real theta = 1;
+    Real epsilon = bmp::pow(2, -prec);
+    ConvexSet<Real> region = gs::epsilon_region(epsilon, theta);
+    ConvexSet<Real> disk = gp::unitDisk<Real>();
+    std::function<List<DOmega>(Integer)> points = gp::gridpoints2_increasing(region, disk);
+    List<DOmega> p = points(9);
+    List<DOmega> expected = List<DOmega>{
+        Omega(ZDyadic(-21, 5), ZDyadic(1, 5), ZDyadic(-3, 5), ZDyadic(15, 5)),
+        Omega(ZDyadic(-11, 5), ZDyadic(-5, 4), ZDyadic(3, 5), ZDyadic(9, 4)),
+        Omega(ZDyadic(-1, 5), ZDyadic(-21, 5), ZDyadic(9, 5), ZDyadic(21, 5)),
+        Omega(ZDyadic(-25, 5), ZDyadic(3, 4), ZDyadic(-5, 5), ZDyadic(7, 4)),
+        Omega(ZDyadic(-15, 5), ZDyadic(-5, 5), ZDyadic(1, 5), ZDyadic(17, 5))};
+    BOOST_CHECK_EQUAL(expected, p);
 }
