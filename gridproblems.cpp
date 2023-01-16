@@ -1,7 +1,6 @@
 #include "ring.h"
 #include "quadratic.h"
 #include <boost/math/constants/constants.hpp>
-#include <boost/numeric/ublas/io.hpp>
 #include <vector>
 
 namespace constants = boost::math::constants;
