@@ -597,7 +597,6 @@ BOOST_AUTO_TEST_CASE(test_epsilon_region_to_upright_sets2)
     ConvexSet<Real> region = gs::epsilon_region(epsilon, theta);
     ConvexSet<Real> disk = gp::unitDisk<Real>();
     Operator<DRootTwo> op = gp::to_upright_sets(region, disk);
-    std::cout << "op = " << op << std::endl;
 
     Operator<DRootTwo> expected = matrix2x2<DRootTwo>(DRootTwo(-2, -1), -1, DRootTwo(-3, -2), DRootTwo(0, -1));
     for (unsigned long i = 0; i < 2; i++)
@@ -668,3 +667,41 @@ BOOST_AUTO_TEST_CASE(test_gridproblem_epsilon_region)
         Omega(ZDyadic(-15, 5), ZDyadic(-5, 5), ZDyadic(1, 5), ZDyadic(17, 5))};
     BOOST_CHECK_EQUAL(expected, p);
 }
+
+BOOST_AUTO_TEST_CASE(test_intersect_epsilon_region)
+{
+    Real prec = 5;
+    Real theta = 1.56;
+    Real epsilon = bmp::pow(2, -prec);
+    ConvexSet<Real> setA = gs::epsilon_region(epsilon, theta);
+    ConvexSet<Real> setB = gp::unitDisk<Real>();
+    Operator<DRootTwo> opG = gp::to_upright_sets(setA, setB);
+    Operator<DRootTwo> opG_inv = gp::special_inverse(opG);
+    ConvexSet<Real> setA_prime = gp::convex_transform(opG_inv, setA);
+
+    DRootTwo x0 = 0;
+    DRootTwo dx = 1;
+    DRootTwo beta_prime = DRootTwo(1, 1);
+
+    Point<DRootTwo> p1A = std::make_tuple(x0, beta_prime);
+    Point<DRootTwo> p2A = std::make_tuple(dx, DRootTwo(0));
+    Maybe<Point<Real>> iA = setA_prime.intersect(p1A, p2A);
+
+    BOOST_REQUIRE(iA.has_value());
+    Point<Real> expected = {0, 0};
+    BOOST_CHECK(expected == iA.value());
+}
+
+BOOST_AUTO_TEST_CASE(test_gridproblem_epsilon_region2)
+{
+    Real prec = 5;
+    Real theta = 1.56;
+    Real epsilon = bmp::pow(2, -prec);
+    ConvexSet<Real> region = gs::epsilon_region(epsilon, theta);
+    ConvexSet<Real> disk = gp::unitDisk<Real>();
+    std::function<List<DOmega>(Integer)> points = gp::gridpoints2_increasing(region, disk);
+    List<DOmega> p = points(0);
+    List<DOmega> expected = List<DOmega>{DOmega(-1, 0, 0, 0)};
+    BOOST_CHECK_EQUAL(expected, p);
+}
+

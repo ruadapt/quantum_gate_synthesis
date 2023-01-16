@@ -1216,7 +1216,7 @@ std::string Dyadic<T>::toString() const
     {
         return ring::toString(a);
     }
-    return ring::toString(a) + " / " + "2^(" + ring::toString(n) + ")";
+    return ring::toString(a) + " / " + ring::toString(ring::powNonNeg<T>(T(2), n));
 }
 
 template <typename T>
