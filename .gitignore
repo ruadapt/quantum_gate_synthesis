@@ -10,4 +10,5 @@ euclideanDomainTest
 diophantineTest
 stepCompTest
 gridSynthTest
+multiQubitSynthesisTest
 temp
