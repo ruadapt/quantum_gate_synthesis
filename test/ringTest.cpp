@@ -67,6 +67,7 @@ void testUtilityFunctions()
     assert(ZOmega(0) == ring::powNonNeg(ZOmega(0), 5));
     assert(ZDyadic(1099511627776_mpz) == ring::powNonNeg(ZDyadic(2), 40));
     assert(1 == ring::powNonNeg(3, 0));
+    assert(1000_mpz == ring::powNonNeg<Integer>(10_mpz, 3));
     std::cout << "\tpowNonNeg tests passed" << std::endl;
 
     assert(QRootTwo(32) == ring::powInt(QRootTwo(2), 5));

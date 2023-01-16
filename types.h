@@ -2,6 +2,7 @@
 #include <gmpxx.h>
 #include <boost/multiprecision/cpp_dec_float.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
+#include <boost/numeric/ublas/io.hpp>
 #include <tuple>
 #include <variant>
 #include <optional>
