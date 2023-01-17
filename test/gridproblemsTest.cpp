@@ -579,9 +579,9 @@ BOOST_AUTO_TEST_CASE(test_epsilon_region_to_upright_sets)
     Operator<DRootTwo> op = gp::to_upright_sets(region, disk);
 
     Operator<DRootTwo> expected = ring::rootHalf<DRootTwo>() * matrix2x2<DRootTwo>(DRootTwo(-3, -2), DRootTwo(1, -1), DRootTwo(-5, -4), DRootTwo(1, -1));
-    for (unsigned long i = 0; i < 2; i++)
+    for (size_t i = 0; i < 2; i++)
     {
-        for (unsigned long j = 0; j < 2; j++)
+        for (size_t j = 0; j < 2; j++)
         {
             BOOST_CHECK_EQUAL(expected(i, j), op(i, j));
         }

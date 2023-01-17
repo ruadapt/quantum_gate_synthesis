@@ -6,7 +6,7 @@
 #include <optional>
 #include <tuple>
 
-BOOST_AUTO_TEST_CASE(simple_case)
+BOOST_AUTO_TEST_CASE(test_simple_case)
 {
     Integer a = 1;
     Integer b = 2;
@@ -20,7 +20,7 @@ BOOST_AUTO_TEST_CASE(simple_case)
     BOOST_CHECK_EQUAL(-1, s2);
 }
 
-BOOST_AUTO_TEST_CASE(no_solution)
+BOOST_AUTO_TEST_CASE(test_no_solution)
 {
     Integer a = 7;
     Integer b = 0;
@@ -29,7 +29,7 @@ BOOST_AUTO_TEST_CASE(no_solution)
     BOOST_REQUIRE(!rOpt.has_value());
 }
 
-BOOST_AUTO_TEST_CASE(non_integral1)
+BOOST_AUTO_TEST_CASE(test_non_integral1)
 {
     Integer a = 5;
     Integer b = 13;
@@ -45,7 +45,7 @@ BOOST_AUTO_TEST_CASE(non_integral1)
     BOOST_TEST(approx_equal(e2, s2));
 }
 
-BOOST_AUTO_TEST_CASE(non_integral2)
+BOOST_AUTO_TEST_CASE(test_non_integral2)
 {
     Integer a = 5;
     Integer b = -13;
