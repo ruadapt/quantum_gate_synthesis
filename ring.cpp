@@ -2028,6 +2028,7 @@ Omega<T> Omega<T>::adj2() const
 template <typename T>
 Omega<T> Omega<T>::recip() const
 {
+    // TODO check this constraint
     static_assert(std::is_same<T, Real>::value || std::is_same<T, Rational>::value,
                   "recip can only be called with T = Real or T = Rational.");
     assert((*this) != 0);

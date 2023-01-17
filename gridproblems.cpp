@@ -50,6 +50,8 @@ std::optional<std::tuple<T, T>> ConvexSet<T>::intersect(Point<DRootTwo> p1, Poin
 
 namespace gridprob
 {
+    namespace mat = matrix;
+
     template <typename T>
     Operator<T> operatorPow(Operator<T> base, int exp)
     {
@@ -57,7 +59,7 @@ namespace gridprob
         Operator<T> result;
         if (exp == 0)
         {
-            return matrix2x2<T>(1, 0, 0, 1);
+            return mat::matrix2x2<T>(1, 0, 0, 1);
         }
         if (exp == 1)
         {
@@ -232,7 +234,7 @@ namespace gridprob
         b = opG(0, 1);
         c = opG(1, 0);
         d = opG(1, 1);
-        return det(opG) * matrix2x2(d, -b, -c, a);
+        return det(opG) * mat::matrix2x2(d, -b, -c, a);
     }
 
     template <typename T>
@@ -431,7 +433,7 @@ namespace gridprob
     template <typename T>
     ConvexSet<T> unitDisk()
     {
-        Operator<T> op = matrix2x2<T>(1, 0, 0, 1);
+        Operator<T> op = mat::matrix2x2<T>(1, 0, 0, 1);
         Point<T> p = std::make_tuple<T, T>(0, 0);
         Ellipse<T> el = Ellipse<T>(op, p);
 
@@ -462,7 +464,7 @@ namespace gridprob
             throw std::invalid_argument("s > 0 is required");
         }
         T r = ring::recip<T>(ring::fromDRootTwo<T>(s));
-        Operator<T> op = matrix2x2<T>(r, 0, 0, r);
+        Operator<T> op = mat::matrix2x2<T>(r, 0, 0, r);
         Point<T> p = std::make_tuple<T, T>(0, 0);
         Ellipse<T> el = Ellipse<T>(op, p);
 
@@ -557,13 +559,13 @@ namespace gridprob
     }
 
     template <typename T>
-    Operator<T> opR() { return ring::rootHalf<T>() * matrix2x2<T>(1, -1, 1, 1); }
+    Operator<T> opR() { return ring::rootHalf<T>() * mat::matrix2x2<T>(1, -1, 1, 1); }
 
     template <typename T>
-    Operator<T> opA() { return matrix2x2<T>(1, -2, 0, 1); }
+    Operator<T> opA() { return mat::matrix2x2<T>(1, -2, 0, 1); }
 
     template <typename T>
-    Operator<T> opAInv() { return matrix2x2<T>(1, 2, 0, 1); }
+    Operator<T> opAInv() { return mat::matrix2x2<T>(1, 2, 0, 1); }
 
     template <typename T>
     Operator<T> opAPower(Integer k)
@@ -572,10 +574,10 @@ namespace gridprob
     }
 
     template <typename T>
-    Operator<T> opB() { return matrix2x2<T>(1, ring::rootTwo<T>(), 0, 1); }
+    Operator<T> opB() { return mat::matrix2x2<T>(1, ring::rootTwo<T>(), 0, 1); }
 
     template <typename T>
-    Operator<T> opBInv() { return matrix2x2<T>(1, -ring::rootTwo<T>(), 0, 1); }
+    Operator<T> opBInv() { return mat::matrix2x2<T>(1, -ring::rootTwo<T>(), 0, 1); }
 
     template <typename T>
     Operator<T> opBPower(Integer k)
@@ -584,19 +586,19 @@ namespace gridprob
     }
 
     template <typename T>
-    Operator<T> opK() { return ring::rootHalf<T>() * matrix2x2<T>(-lambdaInv<T>(), -1, lambda<T>(), 1); }
+    Operator<T> opK() { return ring::rootHalf<T>() * mat::matrix2x2<T>(-lambdaInv<T>(), -1, lambda<T>(), 1); }
 
     template <typename T>
-    Operator<T> opX() { return matrix2x2<T>(0, 1, 1, 0); }
+    Operator<T> opX() { return mat::matrix2x2<T>(0, 1, 1, 0); }
 
     template <typename T>
-    Operator<T> opZ() { return matrix2x2<T>(1, 0, 0, -1); }
+    Operator<T> opZ() { return mat::matrix2x2<T>(1, 0, 0, -1); }
 
     template <typename T>
-    Operator<T> opS() { return matrix2x2<T>(lambda<T>(), 0, 0, lambdaInv<T>()); }
+    Operator<T> opS() { return mat::matrix2x2<T>(lambda<T>(), 0, 0, lambdaInv<T>()); }
 
     template <typename T>
-    Operator<T> opSInv() { return matrix2x2<T>(lambdaInv<T>(), 0, 0, lambda<T>()); }
+    Operator<T> opSInv() { return mat::matrix2x2<T>(lambdaInv<T>(), 0, 0, lambda<T>()); }
 
     template <typename T>
     Operator<T> opSPower(Integer k)
@@ -773,7 +775,7 @@ namespace gridprob
         std::optional<Operator<DRootTwo>> sl = step_lemma(st);
         if (!sl.has_value())
         {
-            return matrix2x2<DRootTwo>(DRootTwo(1), DRootTwo(0), DRootTwo(0), DRootTwo(1));
+            return mat::matrix2x2<DRootTwo>(DRootTwo(1), DRootTwo(0), DRootTwo(0), DRootTwo(1));
         }
         Operator<DRootTwo> opG = sl.value();
         Operator<DRootTwo> opG2 = reduction<T>(action<T>(st, opG));

@@ -8,6 +8,7 @@ namespace gridsynth
     namespace dio = diophantine;
     namespace gp = gridprob;
     namespace sc = stepcomp;
+    namespace mat = matrix;
     namespace bmp = boost::multiprecision;
 
     template <typename T>
@@ -19,8 +20,8 @@ namespace gridsynth
         Point<T> z = Point<T>{zx, zy};
         T ev1 = 4 * bmp::pow(1 / epsilon, 4);
         T ev2 = bmp::pow(1 / epsilon, 2);
-        Operator<T> mmat = matrix2x2<T>(ev1, 0, 0, ev2);
-        Operator<T> bmat = matrix2x2<T>(zx, -zy, zy, zx);
+        Operator<T> mmat = mat::matrix2x2<T>(ev1, 0, 0, ev2);
+        Operator<T> bmat = mat::matrix2x2<T>(zx, -zy, zy, zx);
         Operator<T> temp1 = prod(bmat, mmat);
         Operator<T> mat = prod(temp1, gp::special_inverse(bmat));
         Point<T> ctr = Point<T>{d * zx, d * zy};
@@ -108,11 +109,11 @@ namespace gridsynth
                 U2<DOmega> uU;
                 if (ring::denomExp(u + t) < ring::denomExp(u + omega * t))
                 {
-                    uU = matrix2x2(u, -t.adj(), t, u.adj());
+                    uU = mat::matrix2x2(u, -t.adj(), t, u.adj());
                 }
                 else
                 {
-                    uU = matrix2x2(u, -((omega * t).adj()), omega * t, u.adj());
+                    uU = mat::matrix2x2(u, -((omega * t).adj()), omega * t, u.adj());
                 }
                 return { uU, 1.0, candidate_info }; 
                 // TODO add error calculation

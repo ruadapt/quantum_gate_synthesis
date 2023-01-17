@@ -59,7 +59,7 @@ namespace utils
         return q;
     }
 
-    int div (int x, int y)
+    int div(int x, int y)
     {
         return to_int(div(Integer(x), Integer(y)));
     }

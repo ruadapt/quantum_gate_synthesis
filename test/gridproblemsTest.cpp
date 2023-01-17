@@ -10,6 +10,7 @@ namespace tt = boost::test_tools;
 
 namespace gs = gridsynth;
 namespace gp = gridprob;
+namespace mat = matrix;
 
 BOOST_AUTO_TEST_CASE(test_lambda)
 {
@@ -256,7 +257,7 @@ BOOST_AUTO_TEST_CASE(test_point_construction)
 
 BOOST_AUTO_TEST_CASE(test_makeOperator)
 {
-    Operator<Integer> op = matrix2x2<Integer>(6, 7, 8, 9);
+    Operator<Integer> op = mat::matrix2x2<Integer>(6, 7, 8, 9);
     assert(op(0, 0) == 6);
     assert(op(0, 1) == 7);
     assert(op(1, 0) == 8);
@@ -273,7 +274,7 @@ BOOST_AUTO_TEST_CASE(test_pointFromDRootTwo)
 BOOST_AUTO_TEST_CASE(test_Ellipse_construction)
 {
     Point<Integer> p = std::make_tuple(10, 12);
-    Operator<Integer> op = matrix2x2<Integer>(6, 7, 8, 9);
+    Operator<Integer> op = mat::matrix2x2<Integer>(6, 7, 8, 9);
     Ellipse<Integer> e = Ellipse<Integer>(op, p);
     Operator<Integer> op2 = e.op();
     Point<Integer> p2 = e.p();
@@ -333,7 +334,7 @@ BOOST_AUTO_TEST_CASE(test_disk)
 
 BOOST_AUTO_TEST_CASE(test_opFromDRootTwo)
 {
-    Operator<DRootTwo> op1 = matrix2x2(DRootTwo(1, 2), DRootTwo(3, 4), DRootTwo(7), DRootTwo(8));
+    Operator<DRootTwo> op1 = mat::matrix2x2(DRootTwo(1, 2), DRootTwo(3, 4), DRootTwo(7), DRootTwo(8));
     Operator<QRootTwo> op2 = gridprob::opFromDRootTwo<QRootTwo>(op1);
     assert(QRootTwo(1, 2) == op2(0, 0));
     assert(QRootTwo(3, 4) == op2(0, 1));
@@ -578,7 +579,7 @@ BOOST_AUTO_TEST_CASE(test_epsilon_region_to_upright_sets)
     ConvexSet<Real> disk = gp::unitDisk<Real>();
     Operator<DRootTwo> op = gp::to_upright_sets(region, disk);
 
-    Operator<DRootTwo> expected = ring::rootHalf<DRootTwo>() * matrix2x2<DRootTwo>(DRootTwo(-3, -2), DRootTwo(1, -1), DRootTwo(-5, -4), DRootTwo(1, -1));
+    Operator<DRootTwo> expected = ring::rootHalf<DRootTwo>() * mat::matrix2x2<DRootTwo>(DRootTwo(-3, -2), DRootTwo(1, -1), DRootTwo(-5, -4), DRootTwo(1, -1));
     for (size_t i = 0; i < 2; i++)
     {
         for (size_t j = 0; j < 2; j++)
@@ -598,7 +599,7 @@ BOOST_AUTO_TEST_CASE(test_epsilon_region_to_upright_sets2)
     ConvexSet<Real> disk = gp::unitDisk<Real>();
     Operator<DRootTwo> op = gp::to_upright_sets(region, disk);
 
-    Operator<DRootTwo> expected = matrix2x2<DRootTwo>(DRootTwo(-2, -1), -1, DRootTwo(-3, -2), DRootTwo(0, -1));
+    Operator<DRootTwo> expected = mat::matrix2x2<DRootTwo>(DRootTwo(-2, -1), -1, DRootTwo(-3, -2), DRootTwo(0, -1));
     for (unsigned long i = 0; i < 2; i++)
     {
         for (unsigned long j = 0; j < 2; j++)
@@ -621,7 +622,7 @@ BOOST_AUTO_TEST_CASE(test_epsilon_region_to_upright)
     Operator<Real> op2 = disk.el().op();
     Operator<DRootTwo> op = gp::to_upright(std::make_tuple(op1, op2));
 
-    Operator<DRootTwo> expected = ring::rootHalf<DRootTwo>() * matrix2x2<DRootTwo>(DRootTwo(-3, -2), DRootTwo(1, -1), DRootTwo(-5, -4), DRootTwo(1, -1));
+    Operator<DRootTwo> expected = ring::rootHalf<DRootTwo>() * mat::matrix2x2<DRootTwo>(DRootTwo(-3, -2), DRootTwo(1, -1), DRootTwo(-5, -4), DRootTwo(1, -1));
     for (unsigned long i = 0; i < 2; i++)
     {
         for (unsigned long j = 0; j < 2; j++)
@@ -633,11 +634,11 @@ BOOST_AUTO_TEST_CASE(test_epsilon_region_to_upright)
 
 BOOST_AUTO_TEST_CASE(test_action)
 {
-    Operator<Real> op1 = matrix2x2<Real>(162.334, 553.269, 553.269, 1885.67);
-    Operator<Real> op2 = matrix2x2<Real>(1, 0, 0, 1);
-    Operator<DRootTwo> g = matrix2x2<DRootTwo>(DRootTwo(1, 1), -2, 0, DRootTwo(-1, 1));
-    Operator<Real> expected1 = matrix2x2<Real>(946.15188886612, -230.54888887238, -230.54888887238, 56.17972991946);
-    Operator<Real> expected2 = matrix2x2<Real>(0.17157287525, 0.82842712474, 0.82842712474, 9.82842712473);
+    Operator<Real> op1 = mat::matrix2x2<Real>(162.334, 553.269, 553.269, 1885.67);
+    Operator<Real> op2 = mat::matrix2x2<Real>(1, 0, 0, 1);
+    Operator<DRootTwo> g = mat::matrix2x2<DRootTwo>(DRootTwo(1, 1), -2, 0, DRootTwo(-1, 1));
+    Operator<Real> expected1 = mat::matrix2x2<Real>(946.15188886612, -230.54888887238, -230.54888887238, 56.17972991946);
+    Operator<Real> expected2 = mat::matrix2x2<Real>(0.17157287525, 0.82842712474, 0.82842712474, 9.82842712473);
     Operator<Real> actual1, actual2;
     std::tie(actual1, actual2) = gp::action(std::make_tuple(op1, op2), g);
     for (unsigned long i = 0; i < 2; i++)

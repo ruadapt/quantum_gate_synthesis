@@ -8,6 +8,8 @@
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/multiprecision/number.hpp>
 
+namespace mat = matrix;
+
 BOOST_AUTO_TEST_CASE(test_indexing)
 {
     Vector<QRootTwo, 7> v;
@@ -103,7 +105,7 @@ BOOST_AUTO_TEST_CASE(test_matrix_of_function)
     {
         return int(i + j);
     };
-    Matrix<int, 3, 4> m = matrix_of_function<int, 3, 4>(f);
+    Matrix<int, 3, 4> m = mat::matrix_of_function<int, 3, 4>(f);
     BOOST_CHECK_EQUAL(0, m(0, 0));
     BOOST_CHECK_EQUAL(1, m(0, 1));
     BOOST_CHECK_EQUAL(2, m(0, 2));

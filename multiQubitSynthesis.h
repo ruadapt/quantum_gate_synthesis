@@ -1,7 +1,7 @@
 #pragma once
 #include "types.h"
 
-using Index = int;
+using Index = size_t;
 
 enum TwoLevelType
 {
@@ -20,6 +20,10 @@ public:
      */
     TwoLevel(TwoLevelType type, int pow, Index i1, Index i2) : type_{type}, pow_{pow}, i1_{i1}, i2_{i2}
     {
+    }
+    bool operator==(const TwoLevel &tl) const
+    {
+        return (type_ == tl.type_) && (pow_ == tl.pow_) && (i1_ == tl.i1_) && (i2_ == tl.i2_);
     }
     TwoLevelType type() const { return type_; }
     int pow() const
@@ -47,14 +51,43 @@ private:
     Index i2_;
 };
 
+std::ostream &operator<<(std::ostream &os, const TwoLevel &tl)
+{
+    switch (tl.type())
+    {
+            case TL_X:
+            {
+                os << "TL_X(" << tl.i1() << ", " << tl.i2() << ")";
+                break;
+            }
+            case TL_H:
+            {
+                os << "TL_H(" << tl.i1() << ", " << tl.i2() << ")";
+                break;
+            }
+            case TL_T:
+            {
+                os << "TL_T(" << tl.pow() << ", " << tl.i1() << ", " << tl.i2() << ")";
+                break;
+            }
+            case TL_omega:
+            {
+                os << "TL_omega(" << tl.pow() << ", " << tl.i1() << ")";
+                break;
+            }
+    }
+    return os;
+}
+
+
 TwoLevel make_TL_X(Index i1, Index i2)
 {
-    return TwoLevel(TL_X, -1, i1, i2);
+    return TwoLevel(TL_X, 0, i1, i2);
 }
 
 TwoLevel make_TL_H(Index i1, Index i2)
 {
-    return TwoLevel(TL_H, -1, i1, i2);
+    return TwoLevel(TL_H, 0, i1, i2);
 }
 
 TwoLevel make_TL_T(int pow, Index i1, Index i2)
@@ -64,7 +97,7 @@ TwoLevel make_TL_T(int pow, Index i1, Index i2)
 
 TwoLevel make_TL_omega(int pow, Index i1)
 {
-    return TwoLevel(TL_omega, pow, i1, -1);
+    return TwoLevel(TL_omega, pow, i1, 0);
 }
 
 #include "multiQubitSynthesis.cpp"
