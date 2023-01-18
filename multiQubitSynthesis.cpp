@@ -142,4 +142,174 @@ namespace multi_qubit_synthesis
         }
         return result;
     }
+
+    template <typename T>
+    List<T> list_insert(Index n, T x, List<T> lst)
+    {
+        if (n >= lst.size())
+        {
+            return lst;
+        }
+        List<T> result = lst;
+        result.at(n) = x;
+        return result;
+    }
+
+    template <typename T>
+    List<T> transform_at(std::function<T(T)> op, Index i, List<T> lst)
+    {
+        if (i >= lst.size())
+        {
+            return lst;
+        }
+        T x = lst.at(i);
+        List<T> result = lst;
+        result.at(i) = op(x);
+        return result;
+    }
+
+    template <typename T>
+    List<T> transform_at2(std::function<Pair<T>(Pair<T>)> op, Index i, Index j, List<T> lst)
+    {
+        if (i >= lst.size())
+        {
+            return lst;
+        }
+        T x = lst.at(i);
+        T y = lst.at(j);
+        T x_prime, y_prime;
+        std::tie(x_prime, y_prime) = op(Pair<T>{x, y});
+        List<T> result = lst;
+        result.at(i) = x_prime;
+        result.at(j) = y_prime;
+        return result;
+    }
+
+    template <typename T>
+    std::tuple<List<Pair<T>>, Maybe<T>> list_pairs(List<T> lst)
+    {
+        List<Pair<T>> pairs;
+        bool even = lst.size() % 2 == 0;
+        size_t n = even ? lst.size() : (lst.size() - 1);
+        for (size_t i = 0; i < n; i += 2)
+        {
+            pairs.push_back(Pair<T>{lst.at(i), lst.at(i + 1)});
+        }
+        Maybe<T> last = even ? Maybe<T>() : Maybe<T>(lst.at(lst.size() - 1));
+        return {pairs, last};
+    }
+
+    Maybe<int> log_omega(ZOmega z)
+    {
+        if (z == ZOmega(0, 0, 0, 1))
+        {
+            return 0;
+        }
+        if (z == ZOmega(0, 0, 1, 0))
+        {
+            return 1;
+        }
+        if (z == ZOmega(0, 1, 0, 0))
+        {
+            return 2;
+        }
+        if (z == ZOmega(1, 0, 0, 0))
+        {
+            return 3;
+        }
+        if (z == ZOmega(0, 0, 0, -1))
+        {
+            return 4;
+        }
+        if (z == ZOmega(0, 0, -1, 0))
+        {
+            return 5;
+        }
+        if (z == ZOmega(0, -1, 0, 0))
+        {
+            return 6;
+        }
+        if (z == ZOmega(-1, 0, 0, 0))
+        {
+            return 7;
+        }
+        return Maybe<int>();
+    }
+
+    template <typename T>
+    T omega_power(int n, T x)
+    {
+        return x * ring::powNonNeg(ring::omega<T>(), utils::mod(n, 8));
+    }
+
+    ZOmega reduce_ZOmega(ZOmega z)
+    {
+        Integer a, b, c, d;
+        a = z.a();
+        b = z.b();
+        c = z.c();
+        d = z.d();
+        if (ring::even(a - c) && ring::even(b - d))
+        {
+            Integer a_prime = utils::div(b - d, 2_mpz);
+            Integer b_prime = utils::div(c + a, 2_mpz);
+            Integer c_prime = utils::div(b + d, 2_mpz);
+            Integer d_prime = utils::div(c - a, 2_mpz);
+            return ZOmega(a_prime, b_prime, c_prime, d_prime);
+        }
+        else
+        {
+            throw std::invalid_argument("Argument is not reducible");
+        }
+    }
+
+    Pair<ZOmega> opX_zomega(Pair<ZOmega> p)
+    {
+        return Pair<ZOmega>(snd(p), fst(p));
+    }
+
+    Pair<ZOmega> opH_zomega(Pair<ZOmega> p)
+    {
+        ZOmega x, y;
+        std::tie(x, y) = p;
+        return Pair<ZOmega>{reduce_ZOmega(x + y), reduce_ZOmega(x - y)};
+    }
+
+    List<ZOmega> apply_twolevel_zomega(TwoLevel tl, List<ZOmega> w)
+    {
+        switch (tl.type())
+        {
+        case TL_X:
+        {
+            return transform_at2<ZOmega>(opX_zomega, tl.i1(), tl.i2(), w);
+        }
+        case TL_H:
+        {
+            return transform_at2<ZOmega>(opH_zomega, tl.i1(), tl.i2(), w);
+        }
+        case TL_T:
+        {
+            int k = tl.pow();
+            auto f = [=](ZOmega z) -> ZOmega
+            {
+                return omega_power(k, z);
+            };
+            return transform_at<ZOmega>(f, tl.i2(), w);
+        }
+        case TL_omega:
+        {
+            int k = tl.pow();
+            auto f = [=](ZOmega z) -> ZOmega
+            {
+                return omega_power(k, z);
+            };
+            return transform_at<ZOmega>(f, tl.i1(), w);
+        }
+        }
+    }
+
+    List<ZOmega> apply_twolevels_zomega(List<TwoLevel> gs, List<ZOmega> w)
+    {
+        return utils::foldr<TwoLevel, List<ZOmega>>(apply_twolevel_zomega, w, gs);
+    }
 }

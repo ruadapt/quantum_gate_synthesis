@@ -37,6 +37,25 @@ namespace utils
         return result;
     }
 
+    /**
+     * This function should match the behavior of Haskell's foldr, but with an iterative
+     * implementation.
+     */
+    template <typename A, typename B>
+    B foldr(std::function<B(A, B)> f, B z, List<A> lst)
+    {
+        if (lst.empty())
+        {
+            return z;
+        }
+        B result = z;
+        for (size_t i = lst.size() - 1; i >= 0; i--)
+        {
+            result = f(lst.at(i), result);
+        }
+        return result;
+    }
+
     template <typename T>
     T product(List<T> list)
     {
