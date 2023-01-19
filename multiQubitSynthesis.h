@@ -11,6 +11,13 @@ enum TwoLevelType
     TL_omega
 };
 
+enum ResidueType
+{
+    RT_0000,
+    RT_0001,
+    RT_1010
+};
+
 class TwoLevel
 {
 public:

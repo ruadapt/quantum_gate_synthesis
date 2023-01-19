@@ -89,6 +89,11 @@ namespace utils
         mpz_fdiv_r(r.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
         return r;
     }
+    
+    int mod(int x, int y)
+    {
+        return to_int(mod(Integer(x), Integer(y)));
+    }
 
     /**
      * Uniform random integer. Both endpoints are inclusive. If lo > hi, the two values

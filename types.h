@@ -59,11 +59,11 @@ std::ostream& operator<<(std::ostream& os, const Maybe<T> &m)
 template <typename T>
 using Pair = std::tuple<T, T>;
 
-template <typename T>
-T fst(Pair<T> p) { return std::get<0>(p); }
+template <typename A, typename B>
+A fst(std::tuple<A, B> t) { return std::get<0>(t); }
 
-template <typename T>
-T snd(Pair<T> p) { return std::get<1>(p); }
+template <typename A, typename B>
+B snd(std::tuple<A, B> t) { return std::get<1>(t); }
 
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const Pair<T> &p)

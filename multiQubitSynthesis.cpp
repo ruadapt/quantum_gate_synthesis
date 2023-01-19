@@ -312,4 +312,94 @@ namespace multi_qubit_synthesis
     {
         return utils::foldr<TwoLevel, List<ZOmega>>(apply_twolevel_zomega, w, gs);
     }
+
+    std::tuple<ResidueType, int> residue_type_shift(Omega<Z2> r)
+    {
+        if (r == Omega<Z2>(0, 0, 0, 0))
+        {
+            return {RT_0000, 0};
+        }
+        if (r == Omega<Z2>(0, 0, 0, 1))
+        {
+            return {RT_0001, 0};
+        }
+        if (r == Omega<Z2>(0, 0, 1, 0))
+        {
+            return {RT_0001, 1};
+        }
+        if (r == Omega<Z2>(0, 0, 1, 1))
+        {
+            return {RT_1010, 0};
+        }
+        if (r == Omega<Z2>(0, 1, 0, 0))
+        {
+            return {RT_0001, 2};
+        }
+        if (r == Omega<Z2>(0, 1, 0, 1))
+        {
+            return {RT_0000, 0};
+        }
+        if (r == Omega<Z2>(0, 1, 1, 0))
+        {
+            return {RT_1010, 1};
+        }
+        if (r == Omega<Z2>(0, 1, 1, 1))
+        {
+            return {RT_0001, 3};
+        }
+        if (r == Omega<Z2>(1, 0, 0, 0))
+        {
+            return {RT_0001, 3};
+        }
+        if (r == Omega<Z2>(1, 0, 0, 1))
+        {
+            return {RT_1010, 3};
+        }
+        if (r == Omega<Z2>(1, 0, 1, 0))
+        {
+            return {RT_0000, 0};
+        }
+        if (r == Omega<Z2>(1, 0, 1, 1))
+        {
+            return {RT_0001, 2};
+        }
+        if (r == Omega<Z2>(1, 1, 0, 0))
+        {
+            return {RT_1010, 2};
+        }
+        if (r == Omega<Z2>(1, 1, 0, 1))
+        {
+            return {RT_0001, 1};
+        }
+        if (r == Omega<Z2>(1, 1, 1, 0))
+        {
+            return {RT_0001, 0};
+        }
+        if (r == Omega<Z2>(1, 1, 1, 1))
+        {
+            return {RT_0000, 0};
+        }
+        // Since Z2 can only be 0 or 1, we should never reach this point.
+        throw std::invalid_argument("This exception shouldn't be reachable");
+    }
+
+    ResidueType residue_type(Omega<Z2> r)
+    {
+        return fst(residue_type_shift(r));
+    }
+
+    int residue_shift(Omega<Z2> r)
+    {
+        return snd(residue_type_shift(r));
+    }
+
+    int residue_offset(Omega<Z2> a, Omega<Z2> b)
+    {
+        return utils::mod(residue_shift(a) - residue_shift(b), 4);
+    }
+
+    bool reducible(Omega<Z2> r)
+    {
+        return (r.a() == r.c()) && (r.b() == r.d());
+    }
 }
