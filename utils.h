@@ -2,6 +2,7 @@
 #include "types.h"
 #include "ring.h"
 #include <gmpxx.h>
+#include <algorithm>
 #include <random>
 
 namespace utils
@@ -35,6 +36,47 @@ namespace utils
         List<T> result = x;
         result.insert(result.end(), y.begin(), y.end());
         return result;
+    }
+
+    /**
+     * Flatten a list of lists into a single list.
+     */
+    template <typename T>
+    List<T> concat(List<List<T>> list_of_lists)
+    {
+        List<T> result{};
+        for (List<T> lst : list_of_lists)
+        {
+            result.insert(result.end(), lst.begin(), lst.end());
+        }
+        return result;
+    }
+
+    /**
+     * Add an element to the front of a list.
+     */
+    template <typename T>
+    List<T> cons(T x, List<T> lst)
+    {
+        return concat(List<T>{x}, lst);
+    }
+
+    template <typename A, typename B>
+    List<B> map(std::function<B(A)> f, List<A> lst)
+    {
+        List<B> result;
+        std::transform(lst.begin(), lst.end(), std::back_inserter(result), f);
+        return result;
+    }
+
+    template <typename T>
+    T max(List<T> lst, T if_empty)
+    {
+        if (lst.empty())
+        {
+            return if_empty;
+        }
+        return *std::max_element(lst.begin(), lst.end());
     }
 
     /**
@@ -89,7 +131,7 @@ namespace utils
         mpz_fdiv_r(r.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
         return r;
     }
-    
+
     int mod(int x, int y)
     {
         return to_int(mod(Integer(x), Integer(y)));

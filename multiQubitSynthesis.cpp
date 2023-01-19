@@ -14,13 +14,13 @@ namespace multi_qubit_synthesis
     template <typename A, typename B>
     Omega<B> residue(Omega<A> o)
     {
-        return Omega<B>(residue(o.A()), reside(o.b()), reside(o.c()), reside(o.d()));
+        return Omega<B>(residue(o.a()), residue(o.b()), residue(o.c()), residue(o.d()));
     }
 
     template <typename A, typename B>
-    Omega<B> residue(RootTwo<A> r)
+    RootTwo<B> residue(RootTwo<A> r)
     {
-        return RootTwo<B>(residue(r.A()), reside(r.b()));
+        return RootTwo<B>(residue(r.A()), residue(r.b()));
     }
 
     TwoLevel invert_twolevel(TwoLevel tl)
@@ -401,5 +401,148 @@ namespace multi_qubit_synthesis
     bool reducible(Omega<Z2> r)
     {
         return (r.a() == r.c()) && (r.b() == r.d());
+    }
+
+    List<TwoLevel> row_step(Pair<std::tuple<Index, Omega<Z2>, ZOmega>> p)
+    {
+        std::tuple<Index, Omega<Z2>, ZOmega> t1, t2;
+        std::tie(t1, t2) = p;
+        Index i, j;
+        Omega<Z2> a, b;
+        ZOmega x, y;
+        std::tie(i, a, x) = t1;
+        std::tie(j, b, y) = t2;
+        if (reducible(a) && reducible(b))
+        {
+            return List<TwoLevel>{};
+        }
+        int offs = residue_offset(b, a);
+        if (offs != 0)
+        {
+            ZOmega y_prime = omega_power(-offs, y);
+            Omega<Z2> b_prime = residue<Integer, Z2>(y_prime);
+            std::tuple<Index, Omega<Z2>, ZOmega> t2_prime{j, b_prime, y_prime};
+            return utils::cons(make_TL_T(offs, i, j), row_step({t1, t2_prime}));
+        }
+        ZOmega x1, y1;
+        std::tie(x1, y1) = opH_zomega(Pair<ZOmega>{x, y});
+        Omega<Z2> a1 = residue<Integer, Z2>(x1);
+        Omega<Z2> b1 = residue<Integer, Z2>(y1);
+        std::tuple<Index, Omega<Z2>, ZOmega> t1_prime{i, a1, x1};
+        std::tuple<Index, Omega<Z2>, ZOmega> t2_prime{j, b1, y1};
+        return utils::cons(make_TL_H(i, j), row_step({t1_prime, t2_prime}));
+    }
+
+    List<TwoLevel> reduce_column_aux(List<ZOmega> w, Integer k, Index i)
+    {
+        if (k == 0)
+        {
+            int non_zero_count = 0;
+            Index j;
+            for (Index idx = 0; idx < w.size(); idx++)
+            {
+                if (w.at(idx) != 0)
+                {
+                    j = idx;
+                    non_zero_count++;
+                    if (non_zero_count > 1)
+                    {
+                        break;
+                    }
+                }
+            }
+            if (non_zero_count != 1)
+            {
+                throw std::invalid_argument("Input was not a unit vector");
+            }
+            ZOmega wj = w.at(j);
+            Maybe<int> log = log_omega(wj);
+            if (!log.has_value())
+            {
+                throw std::invalid_argument("Input was not a unit vector");
+            }
+            int l = log.value();
+            List<TwoLevel> m1 = (i == j) ? List<TwoLevel>{} : List<TwoLevel>{make_TL_X(i, j)};
+            List<TwoLevel> m2{make_TL_omega(l, i)};
+            return utils::concat(m1, m2);
+        }
+        auto residue_omega = [](ZOmega z) -> Omega<Z2>
+        { return residue<Integer, Z2>(z); };
+        List<Omega<Z2>> res = utils::map<ZOmega, Omega<Z2>>(residue_omega, w);
+        using C = std::tuple<Index, Omega<Z2>, ZOmega>;
+        List<C> res1010;
+        List<C> res0001;
+        for (Index i = 0; i < res.size(); i++)
+        {
+            Omega<Z2> a = res.at(i);
+            ZOmega x = w.at(i);
+            ResidueType rt = residue_type(a);
+            if (rt == RT_1010)
+            {
+                res1010.push_back({i, a, x});
+            }
+            else if (rt == RT_0001)
+            {
+                res0001.push_back({i, a, x});
+            }
+        }
+        List<Pair<C>> res1010_pairs, res0001_pairs;
+        Maybe<C> extra1010, extra0001;
+        std::tie(res1010_pairs, extra1010) = list_pairs(res1010);
+        std::tie(res0001_pairs, extra0001) = list_pairs(res0001);
+        if (extra1010.has_value() || extra0001.has_value())
+        {
+            throw std::invalid_argument("Input was not a unit vector");
+        }
+        List<TwoLevel> m1010 = utils::concat(utils::map<Pair<C>, List<TwoLevel>>(row_step, res1010_pairs));
+        List<TwoLevel> m0001 = utils::concat(utils::map<Pair<C>, List<TwoLevel>>(row_step, res0001_pairs));
+        List<TwoLevel> gates = utils::concat(m1010, m0001);
+        List<ZOmega> applied = apply_twolevels_zomega(invert_twolevels(gates), w);
+        List<ZOmega> w_prime = utils::map<ZOmega, ZOmega>(reduce_ZOmega, applied);
+        return utils::concat(gates, reduce_column_aux(w_prime, k - 1, i));
+    }
+
+    // TODO move to ring namespace
+    std::tuple<List<ZOmega>, Integer> denomexp_decompose(List<DOmega> lst)
+    {
+        List<Integer> exponents = utils::map<DOmega, Integer>(ring::denomExp<DOmega>, lst);
+        Integer k = utils::max(exponents, 0_mpz);
+        auto factor = [k](DOmega z) -> DOmega
+        { return ring::denomExpFactor<DOmega>(z, k); };
+        List<DOmega> factored = utils::map<DOmega, DOmega>(factor, lst);
+        List<ZOmega> whole = utils::map<DOmega, ZOmega>(ring::toWhole<DOmega, ZOmega>, factored);
+        return {whole, k};
+    }
+
+    template <int N>
+    List<TwoLevel> reduce_column(Matrix<DOmega, N, 1> v, Index i)
+    {
+        List<DOmega> vlist = mat::get_col(v, 0);
+        List<ZOmega> w;
+        Integer k;
+        std::tie(w, k) = denomexp_decompose(vlist);
+        return reduce_column_aux(w, k, i);
+    }
+
+    template <int M, int N>
+    List<TwoLevel> synthesis_nqubit_aux(Matrix<DOmega, M, N> m, Index i)
+    {
+        if (N == 0)
+        {
+            return List<TwoLevel>{};
+        }
+        Matrix<DOmega, M, 1> c;
+        Matrix<DOmega, M, N - 1> cs;
+        std::tie(c, cs) = mat::col_split(m);
+        List<TwoLevel> gates = reduce_column(c, i);
+        Matrix<DOmega, M, M> gates_matrix = matrix_of_twolevels<DOmega, M>(invert_twolevels(gates));
+        Matrix<DOmega, M, N - 1> m_prime = prod(gates_matrix, cs);
+        return utils::concat(gates, synthesis_nqubit_aux(m_prime, i + 1));
+    }
+
+    template <int N>
+    List<TwoLevel> synthesis_nqubit(Matrix<DOmega, N, N> m)
+    {
+        return synthesis_nqubit_aux(m, 0);
     }
 }

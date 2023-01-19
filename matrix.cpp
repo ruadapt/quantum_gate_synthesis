@@ -28,6 +28,7 @@ namespace matrix
         return result;
     }
 
+    // TODO move to ring namespace
     template <typename T, int N>
     Matrix<T, N, N> fromInteger(int x)
     {
@@ -40,5 +41,56 @@ namespace matrix
             return 0;
         };
         return matrix_of_function<T, N, N>(f);
+    }
+
+    // TODO find a more efficient way to do this with some kind of range/view
+    template <typename T, int M, int N>
+    List<T> get_row(Matrix<T, M, N> m, size_t r)
+    {
+        assert(r > 0 && r < M);
+        List<T> row;
+        row.reserve(N);
+        for (size_t c = 0; c < N; c++)
+        {
+            row.push_back(m(r, c));
+        }
+        return row;
+    }
+
+    // TODO find a more efficient way to do this with some kind of range/view
+    template <typename T, int M, int N>
+    List<T> get_col(Matrix<T, M, N> m, size_t c)
+    {
+        assert(c > 0 && c < N);
+        List<T> col;
+        col.reserve(M);
+        for (size_t r = 0; r < M; r++)
+        {
+            col.push_back(m(r, c));
+        }
+        return col;
+    }
+
+    /**
+     * Break a matrix into its first column and the rest.
+     */
+    // TODO find a more efficient way to do this with some kind of range/view
+    template <typename T, int M, int N>
+    std::tuple<Matrix<T, M, 1>, Matrix<T, M, N - 1>> col_split(Matrix<T, M, N> m)
+    {
+        Matrix<T, M, 1> first_col;
+        Matrix<T, M, N - 1> rest;
+        for (size_t i = 0; i < M; i++)
+        {
+            first_col(i, 0) = m(i, 0);
+        }
+        for (size_t i = 0; i < M; i++)
+        {
+            for (size_t j = 1; j < N; j++)
+            {
+                rest(i, j - 1) = m(i, j);
+            }
+        }
+        return {first_col, rest};
     }
 }

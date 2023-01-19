@@ -75,12 +75,14 @@ namespace gridprob
         return prod(base, operatorPow(newBase, newExp));
     }
 
+    // TODO make it possible to use power methods in ring on operators
     template <typename T>
     Operator<T> operatorPow(Operator<T> base, Integer exp)
     {
         return operatorPow(base, utils::to_int(exp));
     }
 
+    // TODO move to ring namespace
     /**
      * This isn't just an elementwise adjoint. There's also a transpose operation afterwards,
      * which is why the assignments to result(1, 0) and result(0, 1) are flipped.
@@ -96,6 +98,7 @@ namespace gridprob
         return result;
     }
 
+    // TODO move to ring namespace
     template <typename T>
     Operator<T> adj2(Operator<T> op)
     {
