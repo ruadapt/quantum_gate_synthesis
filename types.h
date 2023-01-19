@@ -90,10 +90,10 @@ A fst(Either<A, B> e) { return std::get<1>(e); }
 template <typename A, typename B>
 B snd(Either<A, B> e) { return std::get<2>(e); }
 
-template <typename T, int N>
+template <typename T, size_t N>
 using Vector = boost::numeric::ublas::c_vector<T, N>;
 
-template <typename T, int M, int N>
+template <typename T, size_t M, size_t N>
 using Matrix = boost::numeric::ublas::c_matrix<T, M, N>;
 
 template <typename T>

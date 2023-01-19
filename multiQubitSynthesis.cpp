@@ -54,7 +54,7 @@ namespace multi_qubit_synthesis
         return inverted;
     }
 
-    template <typename T, int N>
+    template <typename T, size_t N>
     Matrix<T, N, N> twolevel_matrix(Pair<T> p1, Pair<T> p2, Index i, Index j)
     {
         T a, b, c, d;
@@ -87,7 +87,7 @@ namespace multi_qubit_synthesis
         return mat::matrix_of_function<T, N, N>(f);
     }
 
-    template <typename T, int N>
+    template <typename T, size_t N>
     Matrix<T, N, N> onelevel_matrix(T a, Index i)
     {
         auto f = [=](size_t x, size_t y) -> T
@@ -105,7 +105,7 @@ namespace multi_qubit_synthesis
         return mat::matrix_of_function<T, N, N>(f);
     }
 
-    template <typename T, int N>
+    template <typename T, size_t N>
     Matrix<T, N, N> matrix_of_twolevel(TwoLevel tl)
     {
         switch (tl.type())
@@ -132,7 +132,7 @@ namespace multi_qubit_synthesis
         }
     }
 
-    template <typename T, int N>
+    template <typename T, size_t N>
     Matrix<T, N, N> matrix_of_twolevels(List<TwoLevel> gs)
     {
         Matrix<T, N, N> result = mat::fromInteger<T, N>(1);
@@ -514,7 +514,7 @@ namespace multi_qubit_synthesis
         return {whole, k};
     }
 
-    template <int N>
+    template <size_t N>
     List<TwoLevel> reduce_column(Matrix<DOmega, N, 1> v, Index i)
     {
         List<DOmega> vlist = mat::get_col(v, 0);
@@ -524,7 +524,7 @@ namespace multi_qubit_synthesis
         return reduce_column_aux(w, k, i);
     }
 
-    template <int M, int N>
+    template <size_t M, size_t N>
     List<TwoLevel> synthesis_nqubit_aux(Matrix<DOmega, M, N> m, Index i)
     {
         if (N == 0)
@@ -540,7 +540,7 @@ namespace multi_qubit_synthesis
         return utils::concat(gates, synthesis_nqubit_aux(m_prime, i + 1));
     }
 
-    template <int N>
+    template <size_t N>
     List<TwoLevel> synthesis_nqubit(Matrix<DOmega, N, N> m)
     {
         return synthesis_nqubit_aux(m, 0);

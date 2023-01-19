@@ -29,7 +29,7 @@ namespace matrix
     }
 
     // TODO move to ring namespace
-    template <typename T, int N>
+    template <typename T, size_t N>
     Matrix<T, N, N> fromInteger(int x)
     {
         auto f = [=](size_t i, size_t j) -> T
@@ -44,7 +44,7 @@ namespace matrix
     }
 
     // TODO find a more efficient way to do this with some kind of range/view
-    template <typename T, int M, int N>
+    template <typename T, size_t M, size_t N>
     List<T> get_row(Matrix<T, M, N> m, size_t r)
     {
         assert(r > 0 && r < M);
@@ -58,7 +58,7 @@ namespace matrix
     }
 
     // TODO find a more efficient way to do this with some kind of range/view
-    template <typename T, int M, int N>
+    template <typename T, size_t M, size_t N>
     List<T> get_col(Matrix<T, M, N> m, size_t c)
     {
         assert(c > 0 && c < N);
@@ -75,7 +75,7 @@ namespace matrix
      * Break a matrix into its first column and the rest.
      */
     // TODO find a more efficient way to do this with some kind of range/view
-    template <typename T, int M, int N>
+    template <typename T, size_t M, size_t N>
     std::tuple<Matrix<T, M, 1>, Matrix<T, M, N - 1>> col_split(Matrix<T, M, N> m)
     {
         Matrix<T, M, 1> first_col;
