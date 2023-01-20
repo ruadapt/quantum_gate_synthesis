@@ -1,6 +1,5 @@
 #pragma once
 #include "types.h"
-#include "ring.h"
 #include <gmpxx.h>
 #include <algorithm>
 #include <random>

@@ -11,4 +11,5 @@ diophantineTest
 stepCompTest
 gridSynthTest
 multiQubitSynthesisTest
+cliffordTTest
 temp

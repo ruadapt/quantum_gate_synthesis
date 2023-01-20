@@ -23,7 +23,7 @@ template <typename T>
 using List = std::vector<T>;
 
 template <typename T>
-std::ostream& operator<<(std::ostream& os, const List<T> &l)
+std::ostream &operator<<(std::ostream &os, const List<T> &l)
 {
     os << "[";
     for (size_t i = 0; i < l.size(); i++)
@@ -38,16 +38,15 @@ std::ostream& operator<<(std::ostream& os, const List<T> &l)
     return os;
 }
 
-
 template <typename T>
 using Maybe = std::optional<T>;
 
 template <typename T>
-std::ostream& operator<<(std::ostream& os, const Maybe<T> &m)
+std::ostream &operator<<(std::ostream &os, const Maybe<T> &m)
 {
     if (m.has_value())
     {
-        os << "Just(" << m.value() << ")"; 
+        os << "Just(" << m.value() << ")";
     }
     else
     {
@@ -66,7 +65,7 @@ template <typename A, typename B>
 B snd(std::tuple<A, B> t) { return std::get<1>(t); }
 
 template <typename T>
-std::ostream& operator<<(std::ostream& os, const Pair<T> &p)
+std::ostream &operator<<(std::ostream &os, const Pair<T> &p)
 {
     os << "(" << fst(p) << ", " << snd(p) << ")";
     return os;
