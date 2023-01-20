@@ -91,9 +91,9 @@ namespace utils
             return z;
         }
         B result = z;
-        for (size_t i = lst.size() - 1; i >= 0; i--)
+        for (auto it = lst.rbegin(); it != lst.rend(); it++)
         {
-            result = f(lst.at(i), result);
+            result = f(*it, result);
         }
         return result;
     }

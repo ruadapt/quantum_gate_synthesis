@@ -469,6 +469,7 @@ namespace multi_qubit_synthesis
         auto residue_omega = [](ZOmega z) -> Omega<Z2>
         { return residue<Integer, Z2>(z); };
         List<Omega<Z2>> res = utils::map<ZOmega, Omega<Z2>>(residue_omega, w);
+        // Make a temporary type alias since this type is used several times.
         using C = std::tuple<Index, Omega<Z2>, ZOmega>;
         List<C> res1010;
         List<C> res0001;
@@ -527,17 +528,22 @@ namespace multi_qubit_synthesis
     template <size_t M, size_t N>
     List<TwoLevel> synthesis_nqubit_aux(Matrix<DOmega, M, N> m, Index i)
     {
-        if (N == 0)
+        // We need the constexpr because otherwise, N - 1 will cause an overflow
+        // since size_t is unsigned, which causes an error when allocating cs.
+        if constexpr (N == 0)
         {
             return List<TwoLevel>{};
         }
-        Matrix<DOmega, M, 1> c;
-        Matrix<DOmega, M, N - 1> cs;
-        std::tie(c, cs) = mat::col_split(m);
-        List<TwoLevel> gates = reduce_column(c, i);
-        Matrix<DOmega, M, M> gates_matrix = matrix_of_twolevels<DOmega, M>(invert_twolevels(gates));
-        Matrix<DOmega, M, N - 1> m_prime = prod(gates_matrix, cs);
-        return utils::concat(gates, synthesis_nqubit_aux(m_prime, i + 1));
+        else
+        {
+            Matrix<DOmega, M, 1> c;
+            Matrix<DOmega, M, N - 1> cs;
+            std::tie(c, cs) = mat::col_split(m);
+            List<TwoLevel> gates = reduce_column(c, i);
+            Matrix<DOmega, M, M> gates_matrix = matrix_of_twolevels<DOmega, M>(invert_twolevels(gates));
+            Matrix<DOmega, M, N - 1> m_prime = prod(gates_matrix, cs);
+            return utils::concat(gates, synthesis_nqubit_aux(m_prime, i + 1));
+        }
     }
 
     template <size_t N>

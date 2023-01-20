@@ -47,7 +47,7 @@ namespace matrix
     template <typename T, size_t M, size_t N>
     List<T> get_row(Matrix<T, M, N> m, size_t r)
     {
-        assert(r > 0 && r < M);
+        assert(0 <= r && r < M);
         List<T> row;
         row.reserve(N);
         for (size_t c = 0; c < N; c++)
@@ -61,7 +61,7 @@ namespace matrix
     template <typename T, size_t M, size_t N>
     List<T> get_col(Matrix<T, M, N> m, size_t c)
     {
-        assert(c > 0 && c < N);
+        assert(0 <= c && c < N);
         List<T> col;
         col.reserve(M);
         for (size_t r = 0; r < M; r++)

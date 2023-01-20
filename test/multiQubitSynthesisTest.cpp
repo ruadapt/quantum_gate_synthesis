@@ -3,6 +3,7 @@
 #include <boost/test/included/unit_test.hpp>
 
 namespace mqs = multi_qubit_synthesis;
+namespace mat = matrix;
 
 BOOST_AUTO_TEST_CASE(test_invert_twolevel)
 {
@@ -93,4 +94,33 @@ BOOST_AUTO_TEST_CASE(test_matrix_of_twolevels)
     BOOST_CHECK_EQUAL(DOmega(0, 0, 0, 0), m(2, 0));
     BOOST_CHECK_EQUAL(DOmega(0, 0, 0, 0), m(2, 1));
     BOOST_CHECK_EQUAL(DOmega(ZDyadic(-1, 1), 0, ZDyadic(1, 1), 0), m(2, 2));
+}
+
+BOOST_AUTO_TEST_CASE(test_reduce_column)
+{
+    Matrix<DOmega, 2, 1> v;
+    v(0, 0) = DOmega(ZDyadic(1, 2), 0, ZDyadic(1, 3), 0);
+    v(1, 0) = DOmega(ZDyadic(5, 3), 0, ZDyadic(5, 3), ZDyadic(3, 3));
+    Index i = 0;
+    List<TwoLevel> gs = mqs::reduce_column(v, i);
+    List<TwoLevel> expected{make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(3, 0, 1), make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(3, 0, 1), make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(3, 0, 1), make_TL_H(0, 1), make_TL_T(3, 0, 1), make_TL_H(0, 1), make_TL_omega(0, 0)};
+    BOOST_CHECK_EQUAL(expected, gs);
+}
+
+BOOST_AUTO_TEST_CASE(test_synthesis_nqubit)
+{
+    U2<DOmega> m = mat::matrix2x2(1, 0, 0, 1);
+    List<TwoLevel> gs = mqs::synthesis_nqubit(m);
+    List<TwoLevel> expected{make_TL_omega(0, 0), make_TL_omega(0, 1)};
+    BOOST_CHECK_EQUAL(expected, gs);
+}
+
+BOOST_AUTO_TEST_CASE(test_synthesis_nqubit2)
+{
+    DOmega u = DOmega(ZDyadic(1, 2), 0, ZDyadic(1, 3), 0);
+    DOmega t = DOmega(ZDyadic(5, 3), 0, ZDyadic(5, 3), ZDyadic(3, 3));
+    U2<DOmega> m = mat::matrix2x2(u, -t.adj(), t, u.adj());
+    List<TwoLevel> gs = mqs::synthesis_nqubit(m);
+    List<TwoLevel> expected{make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(3, 0, 1), make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(3, 0, 1), make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(3, 0, 1), make_TL_H(0, 1), make_TL_T(3, 0, 1), make_TL_H(0, 1), make_TL_omega(0, 0), make_TL_omega(1, 1)};
+    BOOST_CHECK_EQUAL(expected, gs);
 }
