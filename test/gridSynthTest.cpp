@@ -1,5 +1,5 @@
 #define BOOST_TEST_MODULE gridSynth
-#include "utils.h"
+#include "comparisons.h"
 #include "../gridSynth.h"
 #include <boost/test/included/unit_test.hpp>
 

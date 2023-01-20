@@ -1,5 +1,5 @@
 #define BOOST_TEST_MODULE euclideanDomain
-#include "utils.h"
+#include "comparisons.h"
 #include "../euclideanDomain.h"
 #include <boost/test/included/unit_test.hpp>
 

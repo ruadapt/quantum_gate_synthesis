@@ -1,4 +1,4 @@
-#include "utils.h"
+#include "comparisons.h"
 #include "../ring.h"
 #include <assert.h>
 #include <iostream>

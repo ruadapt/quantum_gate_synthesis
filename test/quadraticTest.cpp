@@ -1,5 +1,5 @@
 #define BOOST_TEST_MODULE quadratic
-#include "utils.h"
+#include "comparisons.h"
 #include "../types.h"
 #include "../quadratic.h"
 #include <boost/test/included/unit_test.hpp>

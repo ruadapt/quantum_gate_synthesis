@@ -1,5 +1,5 @@
 #define BOOST_TEST_MODULE toReal
-#include "utils.h"
+#include "comparisons.h"
 #include "../toReal.h"
 #include <boost/test/included/unit_test.hpp>
 
