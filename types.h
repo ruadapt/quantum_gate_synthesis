@@ -23,6 +23,18 @@ template <typename T>
 using List = std::vector<T>;
 
 template <typename T>
+struct is_list : std::false_type
+{
+};
+
+template <typename T>
+struct is_list<List<T>> : std::true_type
+{
+};
+
+template <typename T> constexpr bool is_list_v = is_list<T>::value;
+
+template <typename T>
 std::ostream &operator<<(std::ostream &os, const List<T> &l)
 {
     os << "[";

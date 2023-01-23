@@ -35,7 +35,15 @@ namespace clifford_t
     }
 
     template <typename T>
-    List<Gate> to_gates(T other_form);
+    List<Gate> to_gates(T other_form)
+    {
+        if constexpr (is_list_v<T>)
+        {
+            using I = typename T::value_type;
+            List<List<Gate>> all_gates = utils::map<I, List<Gate>>(to_gates<I>, other_form);
+            return utils::concat(all_gates);
+        }
+    }
 
     template <>
     List<Gate> to_gates(TwoLevel tl)
