@@ -12,4 +12,5 @@ stepCompTest
 gridSynthTest
 multiQubitSynthesisTest
 cliffordTTest
+cliffordTest
 temp
