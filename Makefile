@@ -14,7 +14,10 @@ tests = $(tests_cpp:%.cpp=%)
 
 runtests = $(subst $(space), && ,$(tests))
 
-all: tests
+all: main tests
+
+main: main.o
+main.o: $(headers) $(modules)
 
 runtests: $(tests)
 	$(runtests)
