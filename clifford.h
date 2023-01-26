@@ -11,6 +11,9 @@ enum Axis
 class Clifford
 {
 public:
+    Clifford(): a_{0}, b_{0}, c_{0}, d_{0}
+    {
+    }
     Clifford(int a, int b, int c, int d) : a_{a}, b_{b}, c_{c}, d_{d}
     {
     }
@@ -43,22 +46,33 @@ std::ostream &operator<<(std::ostream &os, const Clifford &c)
 namespace clifford
 {
     Clifford clifford_X();
+
     Clifford clifford_Y();
+
     Clifford clifford_Z();
+
     Clifford clifford_H();
+
     Clifford clifford_S();
+
     Clifford clifford_SH();
+
     Clifford clifford_E();
+
     Clifford clifford_W();
 
     template <typename T>
     Clifford to_clifford(T arg);
+
     template <>
     Clifford to_clifford(Clifford c);
+
     template <>
     Clifford to_clifford(char c);
+
     template <>
     Clifford to_clifford(std::string s);
+
     template <>
     Clifford to_clifford(Axis arg);
 

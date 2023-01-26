@@ -97,6 +97,26 @@ namespace utils
         return result;
     }
 
+    /**
+     * This function should match the behavior of Haskell's foldl or foldl', but with an
+     * iterative implementation. 
+     */
+    template <typename A, typename B>
+    B foldl(std::function<B(B, A)> f, B z, List<A> lst)
+    {
+        if (lst.empty())
+        {
+            return z;
+        }
+        B result = z;
+        for (auto it = lst.begin(); it != lst.end(); it++)
+        {
+            result = f(result, *it);
+        }
+        return result;
+    }
+
+
     template <typename T>
     T product(List<T> list)
     {

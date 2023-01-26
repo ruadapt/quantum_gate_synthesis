@@ -145,6 +145,7 @@ namespace clifford
             assert(op2.a() == 0); // TODO see comment above about this
             return {Axis_SH, op2.b(), op2.c(), op2.d()};
         }
+        throw std::invalid_argument("Invalid input to clifford_decompose_coset");
     }
 
     Clifford clifford_id()
@@ -171,7 +172,7 @@ namespace clifford
         Clifford c = to_clifford(op);
         int a2, b2, c2, d2;
         std::tie(a2, b2, c2, d2) = cinv(c.a(), c.b(), c.c());
-        int d3 = utils::mod(d2 - op.d(), 8);
+        int d3 = utils::mod(d2 - c.d(), 8);
         return Clifford(a2, b2, c2, d3);
     }
 
