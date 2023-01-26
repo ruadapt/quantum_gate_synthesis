@@ -138,7 +138,6 @@ namespace clifford_t
         throw std::invalid_argument("Invalid TwoLevel input to to_gates");
     }
 
-    // TODO test
     template <>
     List<Gate> to_gates(Syllables s)
     {
@@ -151,12 +150,14 @@ namespace clifford_t
             {
                 reverse_result.push_back(T);
                 reverse_result.push_back(H);
+                break;
             }
             case SHT:
             {
                 reverse_result.push_back(T);
                 reverse_result.push_back(H);
                 reverse_result.push_back(S);
+                break;
             }
             }
         }

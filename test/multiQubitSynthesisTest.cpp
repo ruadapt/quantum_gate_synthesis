@@ -124,3 +124,15 @@ BOOST_AUTO_TEST_CASE(test_synthesis_nqubit2)
     List<TwoLevel> expected{make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(3, 0, 1), make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(3, 0, 1), make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(3, 0, 1), make_TL_H(0, 1), make_TL_T(3, 0, 1), make_TL_H(0, 1), make_TL_omega(0, 0), make_TL_omega(1, 1)};
     BOOST_CHECK_EQUAL(expected, gs);
 }
+
+BOOST_AUTO_TEST_CASE(test_synthesis_nqubit3)
+{
+    DOmega a = DOmega(ZDyadic(-1, 1), ZDyadic(-5, 3), ZDyadic(9, 4), ZDyadic(1, 4));
+    DOmega b = DOmega(ZDyadic(1, 4), ZDyadic(-1, 3), ZDyadic(1, 3), ZDyadic(-1, 4));
+    DOmega c = DOmega(ZDyadic(1, 3), ZDyadic(-1, 3), ZDyadic(1, 4), ZDyadic(1, 4));
+    DOmega d = DOmega(ZDyadic(-9, 4), ZDyadic(5, 3), ZDyadic(1, 1), ZDyadic(1, 4));
+    U2<DOmega> m = mat::matrix2x2<DOmega>(a, b, c, d);
+    List<TwoLevel> gs = mqs::synthesis_nqubit(m);
+    List<TwoLevel> expected{make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(3, 0, 1), make_TL_H(0, 1), make_TL_T(3, 0, 1), make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_T(3, 0, 1), make_TL_H(0, 1), make_TL_T(3, 0, 1), make_TL_H(0, 1), make_TL_T(1, 0, 1), make_TL_H(0, 1), make_TL_X(0, 1), make_TL_omega(2, 0), make_TL_omega(5, 1)};
+    BOOST_CHECK_EQUAL(expected, gs);
+}
