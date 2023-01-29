@@ -93,4 +93,61 @@ namespace matrix
         }
         return {first_col, rest};
     }
+
+    template <typename T, size_t M, size_t N>
+    Matrix<T, N, M> adjoint(Matrix<T, M, N> m)
+    {
+        Matrix<T, N, M> result;
+        for (size_t i = 0; i < M; i++)
+        {
+            for (size_t j = 0; j < N; j++)
+            {
+                result(j, i) = ring::adj(m(i, j));
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Trace of a matrix (sum of the main diagonal).
+     */
+    template <typename T, size_t N>
+    T tr(Matrix<T, N, N> m)
+    {
+        T result = T(0);
+        for (size_t i = 0; i < N; i++)
+        {
+            result += m(i, i);
+        }
+        return result;
+    }
+
+    template <typename T, size_t M, size_t N>
+    T hs_sqnorm(Matrix<T, M, N> m)
+    {
+        Matrix<T, N, M> m_adj = adjoint(m);
+        Matrix<T, M, M> p = prod(m, m_adj);
+        return tr(p);
+    }
+
+    template <typename A, typename B, size_t M, size_t N>
+    Matrix<B, M, N> matrix_map(std::function<B(A)> f, Matrix<A, M, N> m)
+    {
+        Matrix<B, M, N> result;
+        for (size_t i = 0; i < M; i++)
+        {
+            for (size_t j = 0; j < N; j++)
+            {
+                result(i, j) = f(m(i, j));
+            }
+        }
+        return result;
+    }
+
+    template <typename T>
+    U2<Complex<T>> zrot(T theta)
+    {
+        Complex<T> u = Complex(bmp::cos(theta / 2), -bmp::sin(theta / 2));
+        return matrix2x2<Complex<T>>(u, 0, 0, u.adj());
+    }
 }

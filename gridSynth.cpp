@@ -115,8 +115,20 @@ namespace gridsynth
                 {
                     uU = mat::matrix2x2(u, -((omega * t).adj()), omega * t, u.adj());
                 }
-                return { uU, 1.0, candidate_info }; 
-                // TODO add error calculation
+                U2<Complex<T>> uU_fixed = mat::matrix_map<DOmega, Complex<T>>(ring::fromDOmega<Complex<T>>, uU);
+                U2<Complex<T>> zrot_fixed = mat::zrot<T>(theta);
+                U2<Complex<T>> diff = uU_fixed - zrot_fixed;
+                T err = bmp::sqrt(ring::real(mat::hs_sqnorm(diff)) / 2);
+                Maybe<double> log_err;
+                if (err <= 0)
+                {
+                    log_err = Maybe<double>();
+                }
+                else
+                {
+                    log_err = gp::logBaseDouble<T>(0.5, err);
+                }
+                return { uU, log_err, candidate_info }; 
             }
             k++;
         }
