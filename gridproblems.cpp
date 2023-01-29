@@ -220,7 +220,7 @@ namespace gridprob
         {
             return std::numeric_limits<double>::infinity();
         }
-        return logBaseDouble(ring::recip(b), x);
+        return -logBaseDouble(ring::recip(b), x);
     }
 
     template <typename T>
