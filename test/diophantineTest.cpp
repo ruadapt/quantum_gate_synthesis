@@ -1,5 +1,5 @@
 #define BOOST_TEST_MODULE diophantine
-#include "../diophantine.h"
+#include "../src/diophantine.h"
 #include <boost/test/included/unit_test.hpp>
 
 namespace dio = diophantine;

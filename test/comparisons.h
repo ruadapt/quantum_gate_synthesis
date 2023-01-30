@@ -1,4 +1,4 @@
-#include "../types.h"
+#include "../src/types.h"
 
 bool approx_equal(Real x1, Real x2)
 {

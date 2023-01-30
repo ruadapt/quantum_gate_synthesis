@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE euclideanDomain
 #include "comparisons.h"
-#include "../euclideanDomain.h"
+#include "../src/euclideanDomain.h"
 #include <boost/test/included/unit_test.hpp>
 
 namespace ed = euclidean_domain;

@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE matrix
-#include "../matrix.h"
-#include "../ring.h"
+#include "../src/matrix.h"
+#include "../src/ring.h"
 #include <iostream>
 #include <boost/test/included/unit_test.hpp>
 #include <boost/numeric/ublas/matrix.hpp>

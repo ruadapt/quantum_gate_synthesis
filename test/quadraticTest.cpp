@@ -1,7 +1,7 @@
 #define BOOST_TEST_MODULE quadratic
 #include "comparisons.h"
-#include "../types.h"
-#include "../quadratic.h"
+#include "../src/types.h"
+#include "../src/quadratic.h"
 #include <boost/test/included/unit_test.hpp>
 #include <optional>
 #include <tuple>

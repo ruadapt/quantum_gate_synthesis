@@ -1,7 +1,7 @@
 #define BOOST_TEST_MODULE gridProblems
 #include "comparisons.h"
-#include "../gridproblems.h"
-#include "../gridSynth.h"
+#include "../src/gridproblems.h"
+#include "../src/gridSynth.h"
 #include <boost/test/included/unit_test.hpp>
 #include <iostream>
 #include <tuple>

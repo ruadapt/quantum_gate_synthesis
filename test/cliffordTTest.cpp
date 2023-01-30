@@ -1,5 +1,5 @@
 #define BOOST_TEST_MODULE cliffordT
-#include "../cliffordT.h"
+#include "../src/cliffordT.h"
 #include <boost/test/included/unit_test.hpp>
 
 namespace ct = clifford_t;

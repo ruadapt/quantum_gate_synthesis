@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE gridSynth
 #include "comparisons.h"
-#include "../gridSynth.h"
+#include "../src/gridSynth.h"
 #include <boost/test/included/unit_test.hpp>
 
 namespace gs = gridsynth;

@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE stepComp
-#include "../stepComp.h"
-#include "../types.h"
+#include "../src/stepComp.h"
+#include "../src/types.h"
 #include <boost/test/included/unit_test.hpp>
 
 namespace sc = stepcomp;

@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE toReal
 #include "comparisons.h"
-#include "../toReal.h"
+#include "../src/toReal.h"
 #include <boost/test/included/unit_test.hpp>
 
 BOOST_AUTO_TEST_CASE(test_simple_types)

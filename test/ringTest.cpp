@@ -1,5 +1,5 @@
 #include "comparisons.h"
-#include "../ring.h"
+#include "../src/ring.h"
 #include <assert.h>
 #include <iostream>
 

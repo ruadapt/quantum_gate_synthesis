@@ -1,16 +1,4 @@
 .vscode
 *.o
-main
-ringTest
-gridProblemsTest
-matrixTest
-quadraticTest
-toRealTest
-euclideanDomainTest
-diophantineTest
-stepCompTest
-gridSynthTest
-multiQubitSynthesisTest
-cliffordTTest
-cliffordTest
+build
 temp
