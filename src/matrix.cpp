@@ -1,3 +1,5 @@
+/** \file matrix.cpp
+ */
 #include "matrix.h"
 #include "ring.h"
 

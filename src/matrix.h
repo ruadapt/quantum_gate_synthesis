@@ -1,3 +1,5 @@
+/** \file matrix.h
+ */
 #pragma once
 #include "types.h"
 

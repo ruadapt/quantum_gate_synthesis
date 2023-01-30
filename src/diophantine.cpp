@@ -1,3 +1,5 @@
+/** \file diophantine.cpp
+ */
 #include "diophantine.h"
 #include "types.h"
 #include "utils.h"

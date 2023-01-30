@@ -1,3 +1,5 @@
+/** \file euclideanDomain.h
+ */
 #pragma once
 
 namespace euclidean_domain

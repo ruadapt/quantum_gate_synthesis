@@ -1,3 +1,5 @@
+/** \file stepComp.h
+ */
 #pragma once
 #include "types.h"
 #include <optional>

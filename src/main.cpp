@@ -1,3 +1,5 @@
+/** \file main.cpp
+ */
 #include "types.h"
 #include "gridSynth.h"
 #include "multiQubitSynthesis.h"

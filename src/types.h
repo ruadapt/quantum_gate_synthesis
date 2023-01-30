@@ -1,3 +1,5 @@
+/** \file types.h
+ */
 #pragma once
 #include <gmpxx.h>
 #include <boost/multiprecision/cpp_dec_float.hpp>

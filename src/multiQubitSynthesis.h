@@ -1,3 +1,5 @@
+/** \file multiQubitSynthesis.h
+ */
 #pragma once
 #include "types.h"
 

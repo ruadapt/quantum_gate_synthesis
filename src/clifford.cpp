@@ -1,3 +1,5 @@
+/** \file clifford.cpp
+ */
 #include "clifford.h"
 #include "utils.h"
 

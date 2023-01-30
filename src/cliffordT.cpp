@@ -1,3 +1,5 @@
+/** \file cliffordT.cpp
+ */
 #include "cliffordT.h"
 #include "clifford.h"
 #include "multiQubitSynthesis.h"

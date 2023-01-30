@@ -1,3 +1,5 @@
+/** \file ring.h
+ */
 #pragma once
 #include "types.h"
 #include <iostream>

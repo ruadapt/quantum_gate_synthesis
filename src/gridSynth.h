@@ -1,3 +1,5 @@
+/** \file gridSynth.h
+ */
 #pragma once
 #include "ring.h"
 #include "types.h"

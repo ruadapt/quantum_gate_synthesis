@@ -1,3 +1,5 @@
+/** \file diophantine.h
+ */
 #pragma once
 #include "ring.h"
 #include "stepComp.h"

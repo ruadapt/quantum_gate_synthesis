@@ -1,3 +1,5 @@
+/** \file gridproblems.cpp
+ */
 #include "ring.h"
 #include "quadratic.h"
 #include <boost/math/constants/constants.hpp>

@@ -1,3 +1,5 @@
+/** \file gridSynth.cpp
+ */
 #include "gridSynth.h"
 #include "quadratic.h"
 #include "ring.h"

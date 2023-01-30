@@ -1,3 +1,5 @@
+/** \file cliffordT.h
+ */
 #pragma once
 #include "ring.h"
 #include "types.h"

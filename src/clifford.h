@@ -1,3 +1,5 @@
+/** \file clifford.h
+ */
 #pragma once
 #include "types.h"
 

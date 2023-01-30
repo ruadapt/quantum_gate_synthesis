@@ -1,3 +1,5 @@
+/** \file stepComp.cpp
+ */
 #include "stepComp.h"
 #include "types.h"
 

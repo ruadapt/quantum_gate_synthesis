@@ -1,3 +1,5 @@
+/** \file euclideanDomain.cpp
+ */
 #include "euclideanDomain.h"
 #include "ring.h"
 #include <tuple>
