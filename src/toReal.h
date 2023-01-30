@@ -3,15 +3,15 @@
 #include "ring.h"
 
 template <typename T>
-T toReal(Rational r);
+T to_real(Rational r);
 
 template <typename T>
-T toReal(Integer n);
+T to_real(Integer n);
 
 template <typename T>
-T toReal(int n);
+T to_real(int n);
 
 template <typename T>
-T toReal(Real d);
+T to_real(Real d);
 
 #include "toReal.cpp"

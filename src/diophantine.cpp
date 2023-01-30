@@ -34,9 +34,9 @@ namespace diophantine
                 return StepComp(Maybe<ZOmega>());
             }
             ZOmega t = t_opt.value();
-            ZRootTwo xi_associate = ring::zRootTwoOfZOmega(t.adj() * t);
+            ZRootTwo xi_associate = ring::zroottwo_of_zomega(t.adj() * t);
             ZRootTwo u = ed::euclid_div(xi, xi_associate);
-            Maybe<ZRootTwo> root = ring::zRootTwoRoot(u);
+            Maybe<ZRootTwo> root = ring::zroottwo_root(u);
             if (!root.has_value())
             {
                 return StepComp(Maybe<ZOmega>());
@@ -49,11 +49,11 @@ namespace diophantine
 
     StepComp<Maybe<DOmega>> diophantine_dyadic(DRootTwo xi)
     {
-        Integer k = ring::denomExp(xi);
+        Integer k = ring::denomexp(xi);
         Integer k2, k3;
         std::tie(k2, k3) = ed::divMod(k, 2_mpz);
-        DRootTwo prod = ring::powNonNeg((gp::lambda<DRootTwo>() * ring::rootTwo<DRootTwo>()), k3) * DRootTwo(ring::powNonNeg(2_mpz, k2)) * xi;
-        ZRootTwo xi2 = ring::toWhole<DRootTwo, ZRootTwo>(prod);
+        DRootTwo prod = ring::pow_non_neg((gp::lambda<DRootTwo>() * ring::roottwo<DRootTwo>()), k3) * DRootTwo(ring::pow_non_neg(2_mpz, k2)) * xi;
+        ZRootTwo xi2 = ring::to_whole<DRootTwo, ZRootTwo>(prod);
         StepComp<Maybe<ZOmega>> sc = diophantine(xi2);
         auto g = [k2, k3](Maybe<ZOmega> t2_opt) -> StepComp<Maybe<DOmega>>
         {
@@ -62,8 +62,8 @@ namespace diophantine
                 return StepComp(Maybe<DOmega>());
             }
             ZOmega t2 = t2_opt.value();
-            DOmega u = ring::rootHalf<DOmega>() * (ring::omega<DOmega>() - ring::i<DOmega>());
-            DOmega prod = ring::powNonNeg(u, k3) * ring::powNonNeg(ring::rootHalf<DOmega>(), k2) * ring::fromWhole<DOmega, ZOmega>(t2);
+            DOmega u = ring::roothalf<DOmega>() * (ring::omega<DOmega>() - ring::i<DOmega>());
+            DOmega prod = ring::pow_non_neg(u, k3) * ring::pow_non_neg(ring::roothalf<DOmega>(), k2) * ring::from_whole<DOmega, ZOmega>(t2);
             return StepComp(Maybe<DOmega>(prod));
         };
         return sc::bind<Maybe<ZOmega>, Maybe<DOmega>>(sc, g);
@@ -294,7 +294,7 @@ namespace diophantine
         }
         if (n == 2)
         {
-            return StepComp(Maybe<ZOmega>(ring::rootTwo<ZOmega>()));
+            return StepComp(Maybe<ZOmega>(ring::roottwo<ZOmega>()));
         }
         if (utils::mod(n, 4) == 1)
         {
@@ -314,7 +314,7 @@ namespace diophantine
             auto g = [n](Integer h) -> StepComp<Maybe<ZOmega>>
             {
                 ZOmega t = ed::euclid_gcd<ZOmega>(
-                    ring::fromInteger<ZOmega>(h) + ring::i<ZOmega>() * ring::rootTwo<ZOmega>(),
+                    ring::fromInteger<ZOmega>(h) + ring::i<ZOmega>() * ring::roottwo<ZOmega>(),
                     ring::fromInteger<ZOmega>(n));
                 assert(t.adj() * t == ring::fromInteger<ZOmega>(n)); // Make sure solution is correct.
                 return StepComp<Maybe<ZOmega>>(Maybe<ZOmega>(t));
@@ -403,7 +403,7 @@ namespace diophantine
         std::tie(n, k) = p;
         if (ring::even(k))
         {
-            ZOmega val = ring::fromInteger<ZOmega>(ring::powNonNeg<Integer>(n, utils::div(k, 2)));
+            ZOmega val = ring::fromInteger<ZOmega>(ring::pow_non_neg<Integer>(n, utils::div(k, 2)));
             return StepComp(Maybe<ZOmega>(val));
         }
         StepComp<Maybe<ZOmega>> sc = dioph_int_assoc(n);
@@ -411,7 +411,7 @@ namespace diophantine
         {
             if (t.has_value())
             {
-                return StepComp(Maybe<ZOmega>(ring::powNonNeg(t.value(), k)));
+                return StepComp(Maybe<ZOmega>(ring::pow_non_neg(t.value(), k)));
             }
             return StepComp(Maybe<ZOmega>());
         };
@@ -436,7 +436,7 @@ namespace diophantine
                 return StepComp(Maybe<ZOmega>());
             }
             ZOmega t = res.value();
-            if (ed::euclid_divides(ring::rootTwo<ZRootTwo>(), r))
+            if (ed::euclid_divides(ring::roottwo<ZRootTwo>(), r))
             {
                 return StepComp(Maybe<ZOmega>((ZOmega(1) + ring::omega<ZOmega>()) * t));
             }
@@ -537,7 +537,7 @@ namespace diophantine
         std::tie(xi, k) = p;
         if (ring::even(k))
         {
-            return StepComp(Maybe<ZOmega>(ring::fromZRootTwo<ZOmega>(ring::powNonNeg(xi, utils::div(k, 2)))));
+            return StepComp(Maybe<ZOmega>(ring::fromZRootTwo<ZOmega>(ring::pow_non_neg(xi, utils::div(k, 2)))));
         }
         StepComp<Maybe<ZOmega>> sc = dioph_zroottwo_assoc(xi);
         auto g = [k](Maybe<ZOmega> t) -> StepComp<Maybe<ZOmega>>
@@ -546,7 +546,7 @@ namespace diophantine
             {
                 return StepComp(Maybe<ZOmega>());
             }
-            return StepComp(Maybe<ZOmega>(ring::powNonNeg(t.value(), k)));
+            return StepComp(Maybe<ZOmega>(ring::pow_non_neg(t.value(), k)));
         };
         return sc::bind<Maybe<ZOmega>, Maybe<ZOmega>>(sc, g);
     }

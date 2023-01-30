@@ -165,7 +165,7 @@ BOOST_AUTO_TEST_CASE(test_diophantine)
         BOOST_REQUIRE(mz.has_value());
         ZOmega z = mz.value();
         ZOmega prod = z.adj() * z;
-        ZOmega expected_prod = ZOmega(a) + ZOmega(b) * ring::rootTwo<ZOmega>();
+        ZOmega expected_prod = ZOmega(a) + ZOmega(b) * ring::roottwo<ZOmega>();
         BOOST_CHECK_EQUAL(expected_prod, prod);
     };
     test(6_mpz, 1_mpz, true);

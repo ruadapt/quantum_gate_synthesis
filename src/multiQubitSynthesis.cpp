@@ -116,17 +116,17 @@ namespace multi_qubit_synthesis
         }
         case TL_H:
         {
-            T s = ring::rootHalf<T>();
+            T s = ring::roothalf<T>();
             return twolevel_matrix<T, N>(Pair<T>{s, s}, Pair<T>{s, -s}, tl.i1(), tl.i2());
         }
         case TL_T:
         {
-            T o = ring::powNonNeg(ring::omega<T>(), utils::mod(tl.pow(), 8));
+            T o = ring::pow_non_neg(ring::omega<T>(), utils::mod(tl.pow(), 8));
             return twolevel_matrix<T, N>(Pair<T>{1, 0}, Pair<T>{0, o}, tl.i1(), tl.i2());
         }
         case TL_omega:
         {
-            T o = ring::powNonNeg(ring::omega<T>(), utils::mod(tl.pow(), 8));
+            T o = ring::pow_non_neg(ring::omega<T>(), utils::mod(tl.pow(), 8));
             return onelevel_matrix<T, N>(o, tl.i1());
         }
         }
@@ -239,7 +239,7 @@ namespace multi_qubit_synthesis
     template <typename T>
     T omega_power(int n, T x)
     {
-        return x * ring::powNonNeg(ring::omega<T>(), utils::mod(n, 8));
+        return x * ring::pow_non_neg(ring::omega<T>(), utils::mod(n, 8));
     }
 
     ZOmega reduce_ZOmega(ZOmega z)
@@ -506,12 +506,12 @@ namespace multi_qubit_synthesis
     // TODO move to ring namespace
     std::tuple<List<ZOmega>, Integer> denomexp_decompose(List<DOmega> lst)
     {
-        List<Integer> exponents = utils::map<DOmega, Integer>(ring::denomExp<DOmega>, lst);
+        List<Integer> exponents = utils::map<DOmega, Integer>(ring::denomexp<DOmega>, lst);
         Integer k = utils::max(exponents, 0_mpz);
         auto factor = [k](DOmega z) -> DOmega
-        { return ring::denomExpFactor<DOmega>(z, k); };
+        { return ring::denomexp_factor<DOmega>(z, k); };
         List<DOmega> factored = utils::map<DOmega, DOmega>(factor, lst);
-        List<ZOmega> whole = utils::map<DOmega, ZOmega>(ring::toWhole<DOmega, ZOmega>, factored);
+        List<ZOmega> whole = utils::map<DOmega, ZOmega>(ring::to_whole<DOmega, ZOmega>, factored);
         return {whole, k};
     }
 

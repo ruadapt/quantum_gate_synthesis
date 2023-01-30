@@ -6,9 +6,9 @@
 template <typename T>
 std::optional<std::tuple<Real, Real>> quadratic(T a_, T b_, T c_)
 {
-    Real a = toReal<Real>(a_);
-    Real b = toReal<Real>(b_);
-    Real c = toReal<Real>(c_);
+    Real a = to_real<Real>(a_);
+    Real b = to_real<Real>(b_);
+    Real c = to_real<Real>(c_);
     // This check isn't in the Haskell version, but without it we get NaN
     // in this case.
     if (b == 0 && c == 0)

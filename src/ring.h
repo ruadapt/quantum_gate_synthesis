@@ -69,10 +69,10 @@ public:
     int signum() const;
     Dyadic adj() const;
     Dyadic adj2() const;
-    std::tuple<T, T> decomposeDyadic() const;
-    T integerOfDyadic(T k) const;
+    std::tuple<T, T> decompose_dyadic() const;
+    T integer_of_dyadic(T k) const;
     QOmega toQOmega() const;
-    std::string toString() const;
+    std::string to_string() const;
     void print(std::string prefix) const;
     static Dyadic fromInteger(int n);
     static Dyadic fromInteger(Integer n);
@@ -113,11 +113,11 @@ public:
     RootTwo recip() const;
     Integer norm() const;
     QOmega toQOmega() const;
-    std::string toString() const;
+    std::string to_string() const;
     void print(std::string prefix) const;
     static RootTwo half();
-    static RootTwo rootTwo();
-    static RootTwo rootHalf();
+    static RootTwo roottwo();
+    static RootTwo roothalf();
     static RootTwo i();
     static RootTwo omega();
     static RootTwo fromInteger(int n);
@@ -156,14 +156,14 @@ public:
     Complex adj2() const;
     Complex recip() const;
     Integer norm() const;
-    Integer denomExp() const;
-    Complex denomExpFactor(Integer k) const;
+    Integer denomexp() const;
+    Complex denomexp_factor(Integer k) const;
     QOmega toQOmega() const;
-    std::string toString() const;
+    std::string to_string() const;
     void print(std::string prefix) const;
     static Complex half();
-    static Complex rootTwo();
-    static Complex rootHalf();
+    static Complex roottwo();
+    static Complex roothalf();
     static Complex i();
     static Complex omega();
     static Complex fromInteger(int n);
@@ -197,7 +197,7 @@ public:
     int signum() const;
     Z2 adj() const;
     Z2 adj2() const;
-    std::string toString() const;
+    std::string to_string() const;
     void print(std::string prefix) const;
     static Z2 fromInteger(int n);
     static Z2 fromInteger(Integer n);
@@ -233,11 +233,11 @@ public:
     Omega recip() const;
     Integer norm() const;
     QOmega toQOmega() const;
-    std::string toString() const;
+    std::string to_string() const;
     void print(std::string prefix) const;
     static Omega half();
-    static Omega rootTwo();
-    static Omega rootHalf();
+    static Omega roottwo();
+    static Omega roothalf();
     static Omega i();
     static Omega omega();
     static Omega fromInteger(int n);
@@ -319,7 +319,7 @@ namespace ring
     template <>
     Integer abs(Integer arg);
 
-    bool getBit(int n, int bit);
+    bool get_bit(int n, int bit);
 
     int lobit(int n);
 
@@ -382,16 +382,16 @@ namespace ring
     Rational fromRational(Rational r);
 
     template <typename T>
-    T powNonNeg(T base, int exp);
+    T pow_non_neg(T base, int exp);
 
     template <typename T>
-    T powNonNeg(T base, Integer exp);
+    T pow_non_neg(T base, Integer exp);
 
     template <typename T>
-    T powInt(T base, int exp);
+    T pow_int(T base, int exp);
 
     template <typename T>
-    T powInt(T base, Integer exp);
+    T pow_int(T base, Integer exp);
 
     template <typename T>
     T half();
@@ -415,19 +415,19 @@ namespace ring
     T fromDyadic(ZDyadic d);
 
     template <typename T>
-    T rootTwo();
+    T roottwo();
 
     template <>
-    Real rootTwo();
+    Real roottwo();
 
     template <typename T>
     T fromZRootTwo(ZRootTwo arg);
 
     template <typename T>
-    T rootHalf();
+    T roothalf();
 
     template <>
-    Real rootHalf();
+    Real roothalf();
 
     template <typename T>
     T fromDRootTwo(DRootTwo arg);
@@ -501,34 +501,34 @@ namespace ring
     T omega();
 
     template <typename T, typename U>
-    std::optional<U> maybeDyadic(T arg);
+    std::optional<U> maybe_dyadic(T arg);
 
     template <typename T, typename U>
-    std::optional<RootTwo<U>> maybeDyadic(RootTwo<T> arg);
+    std::optional<RootTwo<U>> maybe_dyadic(RootTwo<T> arg);
 
     template <typename T, typename U>
-    std::optional<Complex<U>> maybeDyadic(Complex<T> arg);
+    std::optional<Complex<U>> maybe_dyadic(Complex<T> arg);
 
     template <typename T, typename U>
-    std::optional<Omega<U>> maybeDyadic(Omega<T> arg);
+    std::optional<Omega<U>> maybe_dyadic(Omega<T> arg);
 
     template <>
-    std::optional<ZDyadic> maybeDyadic(ZDyadic arg);
+    std::optional<ZDyadic> maybe_dyadic(ZDyadic arg);
 
     template <>
-    std::optional<ZDyadic> maybeDyadic(Rational r);
+    std::optional<ZDyadic> maybe_dyadic(Rational r);
 
     template <typename T, typename U>
-    U toDyadic(T arg);
+    U to_dyadic(T arg);
 
     template <typename T, typename U>
-    RootTwo<U> toDyadic(RootTwo<T> arg);
+    RootTwo<U> to_dyadic(RootTwo<T> arg);
 
     template <typename T, typename U>
-    Complex<U> toDyadic(Complex<T> arg);
+    Complex<U> to_dyadic(Complex<T> arg);
 
     template <typename T, typename U>
-    Omega<U> toDyadic(Omega<T> arg);
+    Omega<U> to_dyadic(Omega<T> arg);
 
     template <typename T>
     T real(Complex<T> arg);
@@ -537,46 +537,46 @@ namespace ring
     RootTwo<T> real(Omega<T> arg);
 
     template <typename T, typename U>
-    T fromWhole(U arg);
+    T from_whole(U arg);
 
     template <>
-    ZDyadic fromWhole(Integer arg);
+    ZDyadic from_whole(Integer arg);
 
     template <>
-    DOmega fromWhole(ZOmega arg);
+    DOmega from_whole(ZOmega arg);
 
     template <>
-    DRootTwo fromWhole(ZRootTwo arg);
+    DRootTwo from_whole(ZRootTwo arg);
 
     template <typename T, typename U>
-    U toWhole(T arg);
+    U to_whole(T arg);
 
     template <>
-    Integer toWhole(ZDyadic arg);
+    Integer to_whole(ZDyadic arg);
 
     template <>
-    ZOmega toWhole(DOmega arg);
+    ZOmega to_whole(DOmega arg);
 
     template <>
-    ZRootTwo toWhole(DRootTwo arg);
+    ZRootTwo to_whole(DRootTwo arg);
 
     template <typename T>
-    Integer denomExp(T arg);
+    Integer denomexp(T arg);
 
     template <>
-    Integer denomExp(DOmega arg);
+    Integer denomexp(DOmega arg);
 
     template <>
-    Integer denomExp(DRootTwo arg);
+    Integer denomexp(DRootTwo arg);
 
     template <typename T>
-    T denomExpFactor(T arg, Integer k);
+    T denomexp_factor(T arg, Integer k);
 
     template <>
-    DOmega denomExpFactor(DOmega arg, Integer k);
+    DOmega denomexp_factor(DOmega arg, Integer k);
 
     template <>
-    DRootTwo denomExpFactor(DRootTwo arg, Integer k);
+    DRootTwo denomexp_factor(DRootTwo arg, Integer k);
 
     template <typename T>
     QOmega toQOmega(T arg);
@@ -623,26 +623,26 @@ namespace ring
     template <typename T>
     T fromQOmega(QOmega z);
 
-    std::optional<ZRootTwo> zRootTwoRoot(ZRootTwo arg);
+    std::optional<ZRootTwo> zroottwo_root(ZRootTwo arg);
 
-    ZRootTwo zRootTwoOfZOmega(ZOmega arg);
+    ZRootTwo zroottwo_of_zomega(ZOmega arg);
 
     template <typename T>
-    std::string toString(const T &arg);
+    std::string to_string(const T &arg);
 
     template <>
-    std::string toString(const int &arg);
+    std::string to_string(const int &arg);
 
     template <>
-    std::string toString(const Integer &arg);
+    std::string to_string(const Integer &arg);
 
     template <>
-    std::string toString(const double &arg);
+    std::string to_string(const double &arg);
 
-    std::string toString(const Real &arg);
+    std::string to_string(const Real &arg);
 
     template <>
-    std::string toString(const Rational &arg);
+    std::string to_string(const Rational &arg);
 }
 
 #include "ring.cpp"

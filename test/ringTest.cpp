@@ -63,15 +63,15 @@ void testUtilityFunctions()
     assert(!ring::log2(1606938044258990275541962092341162602522202993782792835301377_mpz).has_value());
     std::cout << "\tlog2 tests passed" << std::endl;
 
-    assert(QRootTwo(32) == ring::powNonNeg(QRootTwo(2), 5));
-    assert(ZOmega(0) == ring::powNonNeg(ZOmega(0), 5));
-    assert(ZDyadic(1099511627776_mpz) == ring::powNonNeg(ZDyadic(2), 40));
-    assert(1 == ring::powNonNeg(3, 0));
-    assert(1000_mpz == ring::powNonNeg<Integer>(10_mpz, 3));
+    assert(QRootTwo(32) == ring::pow_non_neg(QRootTwo(2), 5));
+    assert(ZOmega(0) == ring::pow_non_neg(ZOmega(0), 5));
+    assert(ZDyadic(1099511627776_mpz) == ring::pow_non_neg(ZDyadic(2), 40));
+    assert(1 == ring::pow_non_neg(3, 0));
+    assert(1000_mpz == ring::pow_non_neg<Integer>(10_mpz, 3));
     std::cout << "\tpowNonNeg tests passed" << std::endl;
 
-    assert(QRootTwo(32) == ring::powInt(QRootTwo(2), 5));
-    assert(QRootTwo(1_mpq / 27, 0) == ring::powInt(QRootTwo(3), -3));
+    assert(QRootTwo(32) == ring::pow_int(QRootTwo(2), 5));
+    assert(QRootTwo(1_mpq / 27, 0) == ring::pow_int(QRootTwo(3), -3));
     std::cout << "\tpowInt tests passed" << std::endl;
 
     assert(3_mpz == ring::div(10_mpz, 3_mpz));
@@ -324,14 +324,14 @@ void testRootTwoRing()
 {
     std::cout << "RootTwoRing testing:" << std::endl;
 
-    assert(approx_equal(1.4142135623730951, ring::rootTwo<Real>()));
-    assert(approx_equal(1.4142135623730951, ring::rootTwo<CReal>().a()));
-    assert(0 == ring::rootTwo<CReal>().b());
-    assert(ZRootTwo(0, 1) == ring::rootTwo<ZRootTwo>());
-    assert(QRootTwo(0_mpq, 1_mpq) == ring::rootTwo<QRootTwo>());
-    assert(ZOmega(-1, 0, 1, 0) == ring::rootTwo<ZOmega>());
-    assert(DOmega(-1, 0, 1, 0) == ring::rootTwo<DOmega>());
-    assert(QOmega(-1, 0, 1, 0) == ring::rootTwo<QOmega>());
+    assert(approx_equal(1.4142135623730951, ring::roottwo<Real>()));
+    assert(approx_equal(1.4142135623730951, ring::roottwo<CReal>().a()));
+    assert(0 == ring::roottwo<CReal>().b());
+    assert(ZRootTwo(0, 1) == ring::roottwo<ZRootTwo>());
+    assert(QRootTwo(0_mpq, 1_mpq) == ring::roottwo<QRootTwo>());
+    assert(ZOmega(-1, 0, 1, 0) == ring::roottwo<ZOmega>());
+    assert(DOmega(-1, 0, 1, 0) == ring::roottwo<DOmega>());
+    assert(QOmega(-1, 0, 1, 0) == ring::roottwo<QOmega>());
     std::cout << "\trootTwo tests passed" << std::endl;
 
     ZRootTwo z = ZRootTwo(10, -7);
@@ -350,12 +350,12 @@ void testRootHalfRing()
 {
     std::cout << "RootHalfRing testing:" << std::endl;
 
-    assert(approx_equal(0.7071067811865476, ring::rootHalf<Real>()));
-    assert(approx_equal(0.7071067811865476, ring::rootHalf<CReal>().a()));
-    assert(0 == ring::rootHalf<CReal>().b());
-    assert(QRootTwo(0, 1_mpq / 2) == ring::rootHalf<QRootTwo>());
-    assert(DOmega(ZDyadic(-1, 1), 0, ZDyadic(1, 1), 0) == ring::rootHalf<DOmega>());
-    assert(QOmega(-1_mpq / 2, 0, 1_mpq / 2, 0) == ring::rootHalf<QOmega>());
+    assert(approx_equal(0.7071067811865476, ring::roothalf<Real>()));
+    assert(approx_equal(0.7071067811865476, ring::roothalf<CReal>().a()));
+    assert(0 == ring::roothalf<CReal>().b());
+    assert(QRootTwo(0, 1_mpq / 2) == ring::roothalf<QRootTwo>());
+    assert(DOmega(ZDyadic(-1, 1), 0, ZDyadic(1, 1), 0) == ring::roothalf<DOmega>());
+    assert(QOmega(-1_mpq / 2, 0, 1_mpq / 2, 0) == ring::roothalf<QOmega>());
     std::cout << "\trootHalf tests passed" << std::endl;
 
     DRootTwo d = DRootTwo(ZDyadic(5, 2), ZDyadic(-3, 5));
@@ -542,36 +542,36 @@ void testToDyadic()
 {
     std::cout << "ToDyadic testing:" << std::endl;
 
-    assert(ZDyadic(5, 8) == (ring::maybeDyadic<ZDyadic, ZDyadic>(ZDyadic(5, 8))));
-    assert(ZDyadic(5, 8) == (ring::maybeDyadic<Rational, ZDyadic>(5_mpq / 256)));
-    assert(!(ring::maybeDyadic<Rational, ZDyadic>(5_mpq / 252).has_value()));
+    assert(ZDyadic(5, 8) == (ring::maybe_dyadic<ZDyadic, ZDyadic>(ZDyadic(5, 8))));
+    assert(ZDyadic(5, 8) == (ring::maybe_dyadic<Rational, ZDyadic>(5_mpq / 256)));
+    assert(!(ring::maybe_dyadic<Rational, ZDyadic>(5_mpq / 252).has_value()));
 
     assert(DRootTwo(ZDyadic(3, 2), ZDyadic(1, 3)) ==
-           (ring::maybeDyadic<Rational, ZDyadic>(QRootTwo(3_mpq / 4, 1_mpq / 8))));
-    assert(!(ring::maybeDyadic<Rational, ZDyadic>(QRootTwo(3_mpq / 5, 1_mpq / 8)).has_value()));
-    assert(!(ring::maybeDyadic<Rational, ZDyadic>(QRootTwo(3_mpq / 4, 1_mpq / 7)).has_value()));
+           (ring::maybe_dyadic<Rational, ZDyadic>(QRootTwo(3_mpq / 4, 1_mpq / 8))));
+    assert(!(ring::maybe_dyadic<Rational, ZDyadic>(QRootTwo(3_mpq / 5, 1_mpq / 8)).has_value()));
+    assert(!(ring::maybe_dyadic<Rational, ZDyadic>(QRootTwo(3_mpq / 4, 1_mpq / 7)).has_value()));
 
     assert(DComplex(ZDyadic(3, 2), ZDyadic(1, 3)) ==
-           (ring::maybeDyadic<Rational, ZDyadic>(QComplex(3_mpq / 4, 1_mpq / 8))));
-    assert(!(ring::maybeDyadic<Rational, ZDyadic>(QComplex(3_mpq / 5, 1_mpq / 8)).has_value()));
-    assert(!(ring::maybeDyadic<Rational, ZDyadic>(QComplex(3_mpq / 4, 1_mpq / 7)).has_value()));
+           (ring::maybe_dyadic<Rational, ZDyadic>(QComplex(3_mpq / 4, 1_mpq / 8))));
+    assert(!(ring::maybe_dyadic<Rational, ZDyadic>(QComplex(3_mpq / 5, 1_mpq / 8)).has_value()));
+    assert(!(ring::maybe_dyadic<Rational, ZDyadic>(QComplex(3_mpq / 4, 1_mpq / 7)).has_value()));
 
     assert(DOmega(ZDyadic(3, 2), ZDyadic(1, 3), 2, 3) ==
-           (ring::maybeDyadic<Rational, ZDyadic>(QOmega(3_mpq / 4, 1_mpq / 8, 2, 3))));
-    assert(!(ring::maybeDyadic<Rational, ZDyadic>(QOmega(3_mpq / 5, 1_mpq / 8, 2, 2)).has_value()));
-    assert(!(ring::maybeDyadic<Rational, ZDyadic>(QOmega(3_mpq / 4, 1_mpq / 7, 2, 2)).has_value()));
-    assert(!(ring::maybeDyadic<Rational, ZDyadic>(QOmega(2, 2, 3_mpq / 7, 2)).has_value()));
-    assert(!(ring::maybeDyadic<Rational, ZDyadic>(QOmega(2, 2, 2, 3_mpq / 7)).has_value()));
+           (ring::maybe_dyadic<Rational, ZDyadic>(QOmega(3_mpq / 4, 1_mpq / 8, 2, 3))));
+    assert(!(ring::maybe_dyadic<Rational, ZDyadic>(QOmega(3_mpq / 5, 1_mpq / 8, 2, 2)).has_value()));
+    assert(!(ring::maybe_dyadic<Rational, ZDyadic>(QOmega(3_mpq / 4, 1_mpq / 7, 2, 2)).has_value()));
+    assert(!(ring::maybe_dyadic<Rational, ZDyadic>(QOmega(2, 2, 3_mpq / 7, 2)).has_value()));
+    assert(!(ring::maybe_dyadic<Rational, ZDyadic>(QOmega(2, 2, 2, 3_mpq / 7)).has_value()));
     std::cout << "\tmaybeDyadic tests passed" << std::endl;
 
-    assert(ZDyadic(5, 8) == (ring::toDyadic<ZDyadic, ZDyadic>(ZDyadic(5, 8))));
-    assert(ZDyadic(5, 8) == (ring::toDyadic<Rational, ZDyadic>(5_mpq / 256)));
+    assert(ZDyadic(5, 8) == (ring::to_dyadic<ZDyadic, ZDyadic>(ZDyadic(5, 8))));
+    assert(ZDyadic(5, 8) == (ring::to_dyadic<Rational, ZDyadic>(5_mpq / 256)));
     assert(DRootTwo(ZDyadic(3, 2), ZDyadic(1, 3)) ==
-           (ring::toDyadic<Rational, ZDyadic>(QRootTwo(3_mpq / 4, 1_mpq / 8))));
+           (ring::to_dyadic<Rational, ZDyadic>(QRootTwo(3_mpq / 4, 1_mpq / 8))));
     assert(DComplex(ZDyadic(3, 2), ZDyadic(1, 3)) ==
-           (ring::toDyadic<Rational, ZDyadic>(QComplex(3_mpq / 4, 1_mpq / 8))));
+           (ring::to_dyadic<Rational, ZDyadic>(QComplex(3_mpq / 4, 1_mpq / 8))));
     assert(DOmega(ZDyadic(3, 2), ZDyadic(1, 3), 2, 3) ==
-           (ring::toDyadic<Rational, ZDyadic>(QOmega(3_mpq / 4, 1_mpq / 8, 2, 3))));
+           (ring::to_dyadic<Rational, ZDyadic>(QOmega(3_mpq / 4, 1_mpq / 8, 2, 3))));
     std::cout << "\ttoDyadic tests passed" << std::endl;
 }
 
@@ -593,14 +593,14 @@ void testWholePart()
 {
     std::cout << "WholePart testing:" << std::endl;
 
-    assert(ZDyadic(5) == (ring::fromWhole<ZDyadic, Integer>(5)));
-    assert(DOmega(1, 2, 3, 4) == (ring::fromWhole<DOmega, ZOmega>(ZOmega(1, 2, 3, 4))));
-    assert(DRootTwo(1, 2) == (ring::fromWhole<DRootTwo, ZRootTwo>(ZRootTwo(1, 2))));
+    assert(ZDyadic(5) == (ring::from_whole<ZDyadic, Integer>(5)));
+    assert(DOmega(1, 2, 3, 4) == (ring::from_whole<DOmega, ZOmega>(ZOmega(1, 2, 3, 4))));
+    assert(DRootTwo(1, 2) == (ring::from_whole<DRootTwo, ZRootTwo>(ZRootTwo(1, 2))));
     std::cout << "\tfromWhole tests passed" << std::endl;
 
-    assert(5 == (ring::toWhole<ZDyadic, Integer>(ZDyadic(5))));
-    assert(ZOmega(1, 2, 3, 4) == (ring::toWhole<DOmega, ZOmega>(DOmega(1, 2, 3, 4))));
-    assert(ZRootTwo(1, 2) == (ring::toWhole<DRootTwo, ZRootTwo>(DRootTwo(1, 2))));
+    assert(5 == (ring::to_whole<ZDyadic, Integer>(ZDyadic(5))));
+    assert(ZOmega(1, 2, 3, 4) == (ring::to_whole<DOmega, ZOmega>(DOmega(1, 2, 3, 4))));
+    assert(ZRootTwo(1, 2) == (ring::to_whole<DRootTwo, ZRootTwo>(DRootTwo(1, 2))));
     std::cout << "\ttoWhole tests passed" << std::endl;
 }
 
@@ -608,18 +608,18 @@ void testDenomExp()
 {
     std::cout << "DenomExp testing:" << std::endl;
 
-    assert(21 == ring::denomExp(DRootTwo(ZDyadic(3, 7), ZDyadic(4, 13))));
-    assert(34 == ring::denomExp(DOmega(ZDyadic(12, 3), ZDyadic(15, 17), ZDyadic(13, 2), ZDyadic(5, 9))));
-    assert(18 == ring::denomExp(
+    assert(21 == ring::denomexp(DRootTwo(ZDyadic(3, 7), ZDyadic(4, 13))));
+    assert(34 == ring::denomexp(DOmega(ZDyadic(12, 3), ZDyadic(15, 17), ZDyadic(13, 2), ZDyadic(5, 9))));
+    assert(18 == ring::denomexp(
                      DRComplex(DRootTwo(ZDyadic(1, 9), ZDyadic(2, 8)), DRootTwo(ZDyadic(3, 7), ZDyadic(4, 6)))));
     std::cout << "\tdenomExp tests passed" << std::endl;
 
     assert(DRootTwo(ZDyadic(64, 13), ZDyadic(1536, 13)) ==
-           ring::denomExpFactor(DRootTwo(ZDyadic(3, 7), ZDyadic(4, 13)), 7));
+           ring::denomexp_factor(DRootTwo(ZDyadic(3, 7), ZDyadic(4, 13)), 7));
     assert(DOmega(ZDyadic(12582912, 17), ZDyadic(960, 17), ZDyadic(27262976, 17), ZDyadic(81920, 17)) ==
-           ring::denomExpFactor(DOmega(ZDyadic(12, 3), ZDyadic(15, 17), ZDyadic(13, 2), ZDyadic(5, 9)), 12));
+           ring::denomexp_factor(DOmega(ZDyadic(12, 3), ZDyadic(15, 17), ZDyadic(13, 2), ZDyadic(5, 9)), 12));
     assert(DRComplex(DRootTwo(ZDyadic(32, 9), ZDyadic(4, 9)), DRootTwo(ZDyadic(64, 7), ZDyadic(12, 7))) ==
-           ring::denomExpFactor(DRComplex(DRootTwo(ZDyadic(1, 9), ZDyadic(2, 8)), DRootTwo(ZDyadic(3, 7), ZDyadic(4, 6))), 5));
+           ring::denomexp_factor(DRComplex(DRootTwo(ZDyadic(1, 9), ZDyadic(2, 8)), DRootTwo(ZDyadic(3, 7), ZDyadic(4, 6))), 5));
     std::cout << "\tdenomExpFactor tests passed" << std::endl;
 }
 
@@ -684,9 +684,9 @@ void testDyadic()
     assert(std::addressof(d2copy) != std::addressof(d2)); // Not the same object
     std::cout << "\tcopy test passed" << std::endl;
 
-    // assert("Dyadic(1, 5)" == d.toString());
-    // assert("Dyadic(-2, 6)" == dneg.toString());
-    // std::cout << "\ttoString tests passed" << std::endl;
+    // assert("Dyadic(1, 5)" == d.to_string());
+    // assert("Dyadic(-2, 6)" == dneg.to_string());
+    // std::cout << "\tto_string tests passed" << std::endl;
 
     assert(LT == d.compare(d4));
     assert(d < d4);
@@ -735,15 +735,15 @@ void testDyadic()
     std::cout << "\tadj2 tests passed" << std::endl;
 
     Dyadic<T> dnegDenom = Dyadic<T>(3, -5);
-    assert(std::make_tuple(96, 0) == dnegDenom.decomposeDyadic());
-    assert(std::make_tuple(1, 5) == d.decomposeDyadic());
-    assert(std::make_tuple(-1, 5) == dneg.decomposeDyadic());
+    assert(std::make_tuple(96, 0) == dnegDenom.decompose_dyadic());
+    assert(std::make_tuple(1, 5) == d.decompose_dyadic());
+    assert(std::make_tuple(-1, 5) == dneg.decompose_dyadic());
     Dyadic<T> veryReducible = Dyadic<T>(128, 9);
-    assert(std::make_tuple(1, 2) == veryReducible.decomposeDyadic());
+    assert(std::make_tuple(1, 2) == veryReducible.decompose_dyadic());
     std::cout << "\tdecomposeDyadic tests passed" << std::endl;
 
-    assert(2 == d.integerOfDyadic(6));
-    assert(-1 == dneg.integerOfDyadic(5));
+    assert(2 == d.integer_of_dyadic(6));
+    assert(-1 == dneg.integer_of_dyadic(5));
     std::cout << "\tintegerOfDyadic tests passed" << std::endl;
 
     assert(Dyadic<T>(6, 0) == Dyadic<T>::fromInteger(6));
@@ -782,9 +782,9 @@ void testRootTwoIntegral()
     assert(!(r != rcopy));
     std::cout << "\tequality tests passed" << std::endl;
 
-    // assert("RootTwo(1, 2)" == r.toString());
-    // assert("RootTwo(4, 9)" == r2.toString());
-    // std::cout << "\ttoString tests passed" << std::endl;
+    // assert("RootTwo(1, 2)" == r.to_string());
+    // assert("RootTwo(4, 9)" == r2.to_string());
+    // std::cout << "\tto_string tests passed" << std::endl;
 
     assert(rneg2 < r);
     assert(r < r3);
@@ -852,7 +852,7 @@ void testRootTwoIntegral()
     assert(-1 == rneg2.signum());
     std::cout << "\tsignum tests passed" << std::endl;
 
-    assert(RootTwo<T>(0, 1) == RootTwo<T>::rootTwo());
+    assert(RootTwo<T>(0, 1) == RootTwo<T>::roottwo());
     std::cout << "\trootTwo test passed" << std::endl;
 
     assert(RootTwo<T>(5, 0) == RootTwo<T>::fromInteger(5));
@@ -885,9 +885,9 @@ void testRootTwoDyadic()
     assert(!(r != rcopy));
     std::cout << "\tequality tests passed" << std::endl;
 
-    // assert("RootTwo(Dyadic(1, 2), Dyadic(2, 3))" == r.toString());
-    // assert("RootTwo(Dyadic(1, 2), Dyadic(-2, 5))" == r2.toString());
-    // std::cout << "\ttoString tests passed" << std::endl;
+    // assert("RootTwo(Dyadic(1, 2), Dyadic(2, 3))" == r.to_string());
+    // assert("RootTwo(Dyadic(1, 2), Dyadic(-2, 5))" == r2.to_string());
+    // std::cout << "\tto_string tests passed" << std::endl;
 
     // r3 < r4 < r2 < r
     assert(r3 < r4);
@@ -981,12 +981,12 @@ void testRootTwoDyadic()
 
     RootTwo<Dyadic<T>> expectedRootTwo = RootTwo<Dyadic<T>>(
         Dyadic<T>(0, 0), Dyadic<T>(1, 0));
-    assert(expectedRootTwo == RootTwo<Dyadic<T>>::rootTwo());
+    assert(expectedRootTwo == RootTwo<Dyadic<T>>::roottwo());
     std::cout << "\trootTwo test passed" << std::endl;
 
     RootTwo<Dyadic<T>> expectedRootHalf = RootTwo<Dyadic<T>>(
         Dyadic<T>(0, 0), Dyadic<T>(1, 1));
-    assert(expectedRootHalf == RootTwo<Dyadic<T>>::rootHalf());
+    assert(expectedRootHalf == RootTwo<Dyadic<T>>::roothalf());
     std::cout << "\trootHalf test passed" << std::endl;
 
     RootTwo<Dyadic<T>> expectedFrom5 = RootTwo<Dyadic<T>>(
@@ -1032,11 +1032,11 @@ void testRootTwoRational()
     assert(!(r2 == r3));
     std::cout << "\tequality tests passed" << std::endl;
 
-    // assert("RootTwo(0, 0)" == r0.toString());
-    // assert("RootTwo(-7/13, 33/20)" == r2.toString());
-    // assert("RootTwo(9/17, -100/3)" == r3.toString());
-    // assert("RootTwo(5, -7)" == r4.toString());
-    // std::cout << "\ttoString tests passed" << std::endl;
+    // assert("RootTwo(0, 0)" == r0.to_string());
+    // assert("RootTwo(-7/13, 33/20)" == r2.to_string());
+    // assert("RootTwo(9/17, -100/3)" == r3.to_string());
+    // assert("RootTwo(5, -7)" == r4.to_string());
+    // std::cout << "\tto_string tests passed" << std::endl;
 
     // // r3 < r4 < r0 < r1 < r2
     assert(r3 < r4);
@@ -1125,10 +1125,10 @@ void testRootTwoRational()
     assert(QRootTwo(1_mpq / 2, 0_mpq) == QRootTwo::half());
     std::cout << "\thalf test passed" << std::endl;
 
-    assert(QRootTwo(0_mpq, 1_mpq) == QRootTwo::rootTwo());
+    assert(QRootTwo(0_mpq, 1_mpq) == QRootTwo::roottwo());
     std::cout << "\trootTwo test passed" << std::endl;
 
-    assert(QRootTwo(0_mpq, 1_mpq / 2) == QRootTwo::rootHalf());
+    assert(QRootTwo(0_mpq, 1_mpq / 2) == QRootTwo::roothalf());
     std::cout << "\trootHalf test passed" << std::endl;
 
     assert(QRootTwo(5_mpq, 0_mpq) == QRootTwo::fromInteger(5));
@@ -1138,13 +1138,13 @@ void testRootTwoRational()
 
 void testZRootTwoRoot()
 {
-    std::cout << "zRootTwoRoot Testing:" << std::endl;
+    std::cout << "zroottwo_root Testing:" << std::endl;
 
-    assert(!ring::zRootTwoRoot(ZRootTwo(1, 2)).has_value());
-    assert(ZRootTwo(5, 9) == ring::zRootTwoRoot(ZRootTwo(187, 90)));
-    assert(ZRootTwo(5, 9) == ring::zRootTwoRoot(ZRootTwo(187, 90)));
+    assert(!ring::zroottwo_root(ZRootTwo(1, 2)).has_value());
+    assert(ZRootTwo(5, 9) == ring::zroottwo_root(ZRootTwo(187, 90)));
+    assert(ZRootTwo(5, 9) == ring::zroottwo_root(ZRootTwo(187, 90)));
     assert(ZRootTwo(12345678912345, 98765432198765) ==
-           ring::zRootTwoRoot(ZRootTwo(19661636982624412467128449475_mpz, 2438652627129865854104507850_mpz)));
+           ring::zroottwo_root(ZRootTwo(19661636982624412467128449475_mpz, 2438652627129865854104507850_mpz)));
     std::cout << "\tzRootTwoRoot tests passed" << std::endl;
 }
 
@@ -1162,9 +1162,9 @@ void testZ2()
     assert(Z2(0) != Z2(1));
     std::cout << "\tequality tests passed" << std::endl;
 
-    // assert(Z2(0).toString() == "Z2(0)");
-    // assert(Z2(1).toString() == "Z2(1)");
-    // std::cout << "\ttoString tests passed" << std::endl;
+    // assert(Z2(0).to_string() == "Z2(0)");
+    // assert(Z2(1).to_string() == "Z2(1)");
+    // std::cout << "\tto_string tests passed" << std::endl;
 
     assert(Z2(0) == Z2(0) + Z2(0));
     assert(Z2(1) == Z2(0) + Z2(1));
@@ -1230,33 +1230,33 @@ void testComplex()
 
     // if constexpr (std::is_same<T, int>::value || std::is_same<T, Integer>::value || std::is_same<T, Rational>::value)
     // {
-    //     assert("Complex(1, 2)" == c1.toString());
-    //     assert("Complex(4, 9)" == c2.toString());
-    //     std::cout << "\ttoString tests passed" << std::endl;
+    //     assert("Complex(1, 2)" == c1.to_string());
+    //     assert("Complex(4, 9)" == c2.to_string());
+    //     std::cout << "\tto_string tests passed" << std::endl;
     // }
     // else if constexpr (std::is_same<T, double>::value)
     // {
-    //     assert("Complex(1.000000, 2.000000)" == c1.toString());
-    //     assert("Complex(4.000000, 9.000000)" == c2.toString());
-    //     std::cout << "\ttoString tests passed" << std::endl;
+    //     assert("Complex(1.000000, 2.000000)" == c1.to_string());
+    //     assert("Complex(4.000000, 9.000000)" == c2.to_string());
+    //     std::cout << "\tto_string tests passed" << std::endl;
     // }
     // else if constexpr (std::is_same<T, ZDyadic>::value)
     // {
-    //     assert("Complex(Dyadic(1, 0), Dyadic(2, 0))" == c1.toString());
-    //     assert("Complex(Dyadic(4, 0), Dyadic(9, 0))" == c2.toString());
-    //     std::cout << "\ttoString tests passed" << std::endl;
+    //     assert("Complex(Dyadic(1, 0), Dyadic(2, 0))" == c1.to_string());
+    //     assert("Complex(Dyadic(4, 0), Dyadic(9, 0))" == c2.to_string());
+    //     std::cout << "\tto_string tests passed" << std::endl;
     // }
     // else if constexpr (std::is_same<T, DRootTwo>::value)
     // {
-    //     assert("Complex(RootTwo(Dyadic(1, 0), Dyadic(0, 0)), RootTwo(Dyadic(2, 0), Dyadic(0, 0)))" == c1.toString());
-    //     assert("Complex(RootTwo(Dyadic(4, 0), Dyadic(0, 0)), RootTwo(Dyadic(9, 0), Dyadic(0, 0)))" == c2.toString());
-    //     std::cout << "\ttoString tests passed" << std::endl;
+    //     assert("Complex(RootTwo(Dyadic(1, 0), Dyadic(0, 0)), RootTwo(Dyadic(2, 0), Dyadic(0, 0)))" == c1.to_string());
+    //     assert("Complex(RootTwo(Dyadic(4, 0), Dyadic(0, 0)), RootTwo(Dyadic(9, 0), Dyadic(0, 0)))" == c2.to_string());
+    //     std::cout << "\tto_string tests passed" << std::endl;
     // }
     // else if constexpr (std::is_same<T, QRootTwo>::value)
     // {
-    //     assert("Complex(RootTwo(1, 0), RootTwo(2, 0))" == c1.toString());
-    //     assert("Complex(RootTwo(4, 0), RootTwo(9, 0))" == c2.toString());
-    //     std::cout << "\ttoString tests passed" << std::endl;
+    //     assert("Complex(RootTwo(1, 0), RootTwo(2, 0))" == c1.to_string());
+    //     assert("Complex(RootTwo(4, 0), RootTwo(9, 0))" == c2.to_string());
+    //     std::cout << "\tto_string tests passed" << std::endl;
     // }
     // else if constexpr (std::is_same<T, Real>::value)
     // {
@@ -1328,27 +1328,27 @@ void testOmega()
 
     // if constexpr (std::is_same<T, int>::value || std::is_same<T, Integer>::value || std::is_same<T, Rational>::value)
     // {
-    //     assert("Omega(0, 0, 0, 0)" == o0.toString());
-    //     assert("Omega(1, -3, 3, -7)" == o1.toString());
-    //     assert("Omega(3, 7, 12, 2)" == o2.toString());
-    //     assert("Omega(5, 9, -4, -9)" == o3.toString());
-    //     std::cout << "\ttoString tests passed" << std::endl;
+    //     assert("Omega(0, 0, 0, 0)" == o0.to_string());
+    //     assert("Omega(1, -3, 3, -7)" == o1.to_string());
+    //     assert("Omega(3, 7, 12, 2)" == o2.to_string());
+    //     assert("Omega(5, 9, -4, -9)" == o3.to_string());
+    //     std::cout << "\tto_string tests passed" << std::endl;
     // }
     // else if constexpr (std::is_same<T, double>::value)
     // {
-    //     assert("Omega(0.000000, 0.000000, 0.000000, 0.000000)" == o0.toString());
-    //     assert("Omega(1.000000, -3.000000, 3.000000, -7.000000)" == o1.toString());
-    //     assert("Omega(3.000000, 7.000000, 12.000000, 2.000000)" == o2.toString());
-    //     assert("Omega(5.000000, 9.000000, -4.000000, -9.000000)" == o3.toString());
-    //     std::cout << "\ttoString tests passed" << std::endl;
+    //     assert("Omega(0.000000, 0.000000, 0.000000, 0.000000)" == o0.to_string());
+    //     assert("Omega(1.000000, -3.000000, 3.000000, -7.000000)" == o1.to_string());
+    //     assert("Omega(3.000000, 7.000000, 12.000000, 2.000000)" == o2.to_string());
+    //     assert("Omega(5.000000, 9.000000, -4.000000, -9.000000)" == o3.to_string());
+    //     std::cout << "\tto_string tests passed" << std::endl;
     // }
     // else if constexpr (std::is_same<T, ZDyadic>::value)
     // {
-    //     assert("Omega(Dyadic(0, 0), Dyadic(0, 0), Dyadic(0, 0), Dyadic(0, 0))" == o0.toString());
-    //     assert("Omega(Dyadic(1, 0), Dyadic(-3, 0), Dyadic(3, 0), Dyadic(-7, 0))" == o1.toString());
-    //     assert("Omega(Dyadic(3, 0), Dyadic(7, 0), Dyadic(12, 0), Dyadic(2, 0))" == o2.toString());
-    //     assert("Omega(Dyadic(5, 0), Dyadic(9, 0), Dyadic(-4, 0), Dyadic(-9, 0))" == o3.toString());
-    //     std::cout << "\ttoString tests passed" << std::endl;
+    //     assert("Omega(Dyadic(0, 0), Dyadic(0, 0), Dyadic(0, 0), Dyadic(0, 0))" == o0.to_string());
+    //     assert("Omega(Dyadic(1, 0), Dyadic(-3, 0), Dyadic(3, 0), Dyadic(-7, 0))" == o1.to_string());
+    //     assert("Omega(Dyadic(3, 0), Dyadic(7, 0), Dyadic(12, 0), Dyadic(2, 0))" == o2.to_string());
+    //     assert("Omega(Dyadic(5, 0), Dyadic(9, 0), Dyadic(-4, 0), Dyadic(-9, 0))" == o3.to_string());
+    //     std::cout << "\tto_string tests passed" << std::endl;
     // }
     // else if constexpr (std::is_same<T, Real>::value)
     // {
@@ -1400,10 +1400,10 @@ void testOmega()
 
 void testZRootTwoOfZOmega()
 {
-    std::cout << "zRootTwoOfZOmega Testing:" << std::endl;
+    std::cout << "zroottwo_of_zomega Testing:" << std::endl;
 
-    assert(ZRootTwo(4, -3) == ring::zRootTwoOfZOmega(ZOmega(3, 0, -3, 4)));
-    assert(ZRootTwo(25, 7) == ring::zRootTwoOfZOmega(ZOmega(-7, 0, 7, 25)));
+    assert(ZRootTwo(4, -3) == ring::zroottwo_of_zomega(ZOmega(3, 0, -3, 4)));
+    assert(ZRootTwo(25, 7) == ring::zroottwo_of_zomega(ZOmega(-7, 0, 7, 25)));
     std::cout << "\tzRootTwoOfZOmega tests passed" << std::endl;
 }
 

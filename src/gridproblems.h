@@ -33,8 +33,8 @@ public:
     {
     }
     Ellipse<T> el() const;
-    CharFun testFun() const;
-    LineIntersector<T> intersectFun() const;
+    CharFun test_fun() const;
+    LineIntersector<T> intersect_fun() const;
     bool test(Point<DRootTwo> p) const;
     std::optional<std::tuple<T, T>> intersect(Point<DRootTwo> p1, Point<DRootTwo> p2) const;
 
@@ -52,7 +52,7 @@ namespace gridprob
     T lambda();
 
     template <typename T>
-    T lambdaInv();
+    T lambda_inv();
 
     template <typename T>
     bool within(T x, T low, T high);
@@ -61,43 +61,43 @@ namespace gridprob
     std::tuple<Integer, T> floorlog(T b, T x);
 
     template <typename T>
-    double logBaseDouble(T b, T x);
+    double logBase_double(T b, T x);
 
     template <typename T>
     T iprod(Point<T> p1, Point<T> p2);
 
     template <typename T>
-    std::vector<ZRootTwo> gridpointsInternal(T x0, T x1, T y0, T y1);
+    std::vector<ZRootTwo> gridpoints_internal(T x0, T x1, T y0, T y1);
 
     template <typename T>
     std::vector<ZRootTwo> gridpoints(T x0, T x1, T y0, T y1);
 
     template <typename T>
-    std::vector<DRootTwo> gridpointsScaled(T x0, T x1, T y0, T y1, Integer k);
+    std::vector<DRootTwo> gridpoints_scaled(T x0, T x1, T y0, T y1, Integer k);
 
     template <typename T>
-    std::vector<DRootTwo> gridpointsScaledParity(DRootTwo beta, T x0, T x1, T y0, T y1, Integer k);
+    std::vector<DRootTwo> gridpoints_scaled_parity(DRootTwo beta, T x0, T x1, T y0, T y1, Integer k);
 
     template <typename T>
-    Point<T> pointFromDRootTwo(Point<DRootTwo>);
+    Point<T> point_fromDRootTwo(Point<DRootTwo>);
 
     template <typename T>
-    ConvexSet<T> unitDisk();
+    ConvexSet<T> unitdisk();
 
     template <typename T>
     ConvexSet<T> disk(DRootTwo s);
 
     template <typename T>
-    Operator<T> opFromDRootTwo(Operator<DRootTwo> op);
+    Operator<T> op_fromDRootTwo(Operator<DRootTwo> op);
 
     template <typename T>
-    std::tuple<T, double> operatorToBz(Operator<T> op);
+    std::tuple<T, double> operator_to_bz(Operator<T> op);
 
     template <typename T>
     T det(Operator<T> op);
 
     template <typename T>
-    T operatorSkew(Operator<T> op);
+    T operator_skew(Operator<T> op);
 
     template <typename T>
     T uprightness(Operator<T> op);

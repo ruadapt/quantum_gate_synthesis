@@ -40,8 +40,8 @@ namespace gridsynth
             }
             T t0, t1;
             std::tie(t0, t1) = q.value();
-            T vz = gp::iprod(gp::pointFromDRootTwo<T>(v), z);
-            T rhs = d - gp::iprod(gp::pointFromDRootTwo<T>(p), z);
+            T vz = gp::iprod(gp::point_fromDRootTwo<T>(v), z);
+            T rhs = d - gp::iprod(gp::point_fromDRootTwo<T>(p), z);
             if (vz == 0 && rhs <= 0)
             {
                 return Maybe<Pair<T>>(Pair<T>{t0, t1});
@@ -76,7 +76,7 @@ namespace gridsynth
     {
         T epsilon = bmp::pow(2, -prec);
         ConvexSet<T> region = epsilon_region(epsilon, theta);
-        std::function<List<DOmega>(Integer)> raw_candidates = gp::gridpoints2_increasing(region, gp::unitDisk<T>());
+        std::function<List<DOmega>(Integer)> raw_candidates = gp::gridpoints2_increasing(region, gp::unitdisk<T>());
 
         auto tcount = [](Integer k) -> Integer
         {
@@ -107,7 +107,7 @@ namespace gridsynth
                 DOmega t = answer_t.value().value();
                 DOmega omega = ring::omega<DOmega>();
                 U2<DOmega> uU;
-                if (ring::denomExp(u + t) < ring::denomExp(u + omega * t))
+                if (ring::denomexp(u + t) < ring::denomexp(u + omega * t))
                 {
                     uU = mat::matrix2x2(u, -t.adj(), t, u.adj());
                 }
@@ -126,7 +126,7 @@ namespace gridsynth
                 }
                 else
                 {
-                    log_err = gp::logBaseDouble<T>(0.5, err);
+                    log_err = gp::logBase_double<T>(0.5, err);
                 }
                 return { uU, log_err, candidate_info }; 
             }
