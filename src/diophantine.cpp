@@ -219,7 +219,6 @@ namespace diophantine
             {
                 return sc::diverge<Integer>();
             }
-            // TODO wrap this in a stepcomp?
             return root_of_negative_one(n); });
     }
 

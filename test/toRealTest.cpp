@@ -8,7 +8,6 @@ BOOST_AUTO_TEST_CASE(test_simple_types)
     BOOST_TEST(1.25 == to_real<Real>(5_mpq / 4));
     BOOST_TEST(12.0 == to_real<Real>(12_mpz));
     BOOST_TEST(12.0 == to_real<Real>(12));
-    // BOOST_TEST(1.56 == to_real<Real>(1.56)); // TODO look back at this
 }
 
 BOOST_AUTO_TEST_CASE(test_root_two)

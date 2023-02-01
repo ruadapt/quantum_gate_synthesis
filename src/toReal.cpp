@@ -21,13 +21,6 @@ T to_real(int n)
     return to_real<T>(Integer(n));
 }
 
-// TODO see if this is needed
-// template <typename T>
-// T to_real(Real r)
-// {
-//     return ring::fromRational<T>(Rational(r));
-// }
-
 template <typename T>
 T to_real(ZDyadic d)
 {
