@@ -108,7 +108,7 @@ namespace euclidean_domain
     }
 
     template <typename T>
-    std::optional<T> euclid_inverse(T x)
+    Maybe<T> euclid_inverse(T x)
     {
         if (x == 0)
         {
@@ -130,11 +130,11 @@ namespace euclidean_domain
     }
 
     template <typename T>
-    std::optional<T> inv_mod(T p, T a)
+    Maybe<T> inv_mod(T p, T a)
     {
         T b, d;
         std::tie(b, std::ignore, std::ignore, std::ignore, d) = extended_euclid(a, p);
-        std::optional<T> inv = euclid_inverse(d);
+        Maybe<T> inv = euclid_inverse(d);
         if (inv.has_value())
         {
             T d2 = inv.value();

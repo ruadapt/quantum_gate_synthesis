@@ -267,7 +267,7 @@ namespace diophantine
 
         auto res = [n, a, b, c, d]()
         {
-            std::optional<Integer> imod = ed::inv_mod(n, c);
+            Maybe<Integer> imod = ed::inv_mod(n, c);
             if (imod.has_value())
             {
                 Integer c2 = imod.value();

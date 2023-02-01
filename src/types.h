@@ -119,7 +119,7 @@ template <typename T>
 using Point = std::tuple<T, T>;
 
 template <typename T>
-using Tuple2By2 = std::tuple<std::tuple<T, T>, std::tuple<T, T>>;
+using Tuple2By2 = std::tuple<Pair<T>, Pair<T>>;
 
 template <typename T>
 using Operator = Matrix<T, 2, 2>;

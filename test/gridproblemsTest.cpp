@@ -36,10 +36,10 @@ BOOST_AUTO_TEST_CASE(test_floorlog)
 
 BOOST_AUTO_TEST_CASE(test_gridpointsInternal_simple)
 {
-    assert(std::vector<ZRootTwo>{3} == gridprob::gridpoints_internal<QRootTwo>(2, 3, 3, 4));
-    assert(std::vector<ZRootTwo>{3} == gridprob::gridpoints_internal<QRootTwo>(3, 3, 3, 4));
-    assert(std::vector<ZRootTwo>{3} == gridprob::gridpoints_internal<QRootTwo>(2, 3, 3, 3));
-    assert(std::vector<ZRootTwo>{3} == gridprob::gridpoints_internal<QRootTwo>(3, 3, 3, 3));
+    assert(List<ZRootTwo>{3} == gridprob::gridpoints_internal<QRootTwo>(2, 3, 3, 4));
+    assert(List<ZRootTwo>{3} == gridprob::gridpoints_internal<QRootTwo>(3, 3, 3, 4));
+    assert(List<ZRootTwo>{3} == gridprob::gridpoints_internal<QRootTwo>(2, 3, 3, 3));
+    assert(List<ZRootTwo>{3} == gridprob::gridpoints_internal<QRootTwo>(3, 3, 3, 3));
 }
 
 BOOST_AUTO_TEST_CASE(test_gridpointsInternal_1)
@@ -48,7 +48,7 @@ BOOST_AUTO_TEST_CASE(test_gridpointsInternal_1)
     QRootTwo x1 = QRootTwo(2, 6);
     QRootTwo y0 = QRootTwo(100, -6);
     QRootTwo y1 = QRootTwo(200, 0);
-    std::vector<ZRootTwo> points = gridprob::gridpoints_internal<QRootTwo>(x0, x1, y0, y1);
+    List<ZRootTwo> points = gridprob::gridpoints_internal<QRootTwo>(x0, x1, y0, y1);
     std::sort(points.begin(), points.end());
     assert(744 == points.size());
     assert(ZRootTwo(42, -36) == points.at(0));
@@ -62,9 +62,9 @@ BOOST_AUTO_TEST_CASE(test_gridpointsInternal_2)
     QRootTwo x1 = QRootTwo(2, 6);
     QRootTwo y0 = QRootTwo(100, -6);
     QRootTwo y1 = QRootTwo(50, 0);
-    std::vector<ZRootTwo> points = gridprob::gridpoints_internal<QRootTwo>(x0, x1, y0, y1);
+    List<ZRootTwo> points = gridprob::gridpoints_internal<QRootTwo>(x0, x1, y0, y1);
     std::sort(points.begin(), points.end());
-    assert(std::vector<ZRootTwo>{} == points); // There are no points returned.
+    assert(List<ZRootTwo>{} == points); // There are no points returned.
 }
 
 BOOST_AUTO_TEST_CASE(test_gridpointsInternal_3)
@@ -73,7 +73,7 @@ BOOST_AUTO_TEST_CASE(test_gridpointsInternal_3)
     QRootTwo x1 = QRootTwo(2, 2);
     QRootTwo y0 = QRootTwo(1, 2);
     QRootTwo y1 = QRootTwo(7, 2);
-    std::vector<ZRootTwo> points = gridprob::gridpoints_internal<QRootTwo>(x0, x1, y0, y1);
+    List<ZRootTwo> points = gridprob::gridpoints_internal<QRootTwo>(x0, x1, y0, y1);
     std::sort(points.begin(), points.end());
     assert(30 == points.size());
     assert(ZRootTwo(0, -6) == points.at(0));
@@ -87,9 +87,9 @@ BOOST_AUTO_TEST_CASE(test_gridpointsInternal_4)
     QRootTwo x1 = QRootTwo(2, 2);
     QRootTwo y0 = QRootTwo(2, 4);
     QRootTwo y1 = QRootTwo(1, 5);
-    std::vector<ZRootTwo> points = gridprob::gridpoints_internal<QRootTwo>(x0, x1, y0, y1);
+    List<ZRootTwo> points = gridprob::gridpoints_internal<QRootTwo>(x0, x1, y0, y1);
     std::sort(points.begin(), points.end());
-    assert((std::vector<ZRootTwo>{ZRootTwo(2, -4), ZRootTwo(5, -2)} == points));
+    assert((List<ZRootTwo>{ZRootTwo(2, -4), ZRootTwo(5, -2)} == points));
 }
 
 BOOST_AUTO_TEST_CASE(test_gridpointsInternal_5)
@@ -98,9 +98,9 @@ BOOST_AUTO_TEST_CASE(test_gridpointsInternal_5)
     QRootTwo x1 = QRootTwo(2, 4);
     QRootTwo y0 = QRootTwo(2, 7);
     QRootTwo y1 = QRootTwo(15, -2);
-    std::vector<ZRootTwo> points = gridprob::gridpoints_internal<QRootTwo>(x0, x1, y0, y1);
+    List<ZRootTwo> points = gridprob::gridpoints_internal<QRootTwo>(x0, x1, y0, y1);
     std::sort(points.begin(), points.end());
-    assert((std::vector<ZRootTwo>{ZRootTwo(5, -5), 12} == points));
+    assert((List<ZRootTwo>{ZRootTwo(5, -5), 12} == points));
 }
 
 BOOST_AUTO_TEST_CASE(test_gridpointsInternal_6)
@@ -109,17 +109,17 @@ BOOST_AUTO_TEST_CASE(test_gridpointsInternal_6)
     QRootTwo x1 = 5;
     QRootTwo y0 = 9;
     QRootTwo y1 = 8;
-    std::vector<ZRootTwo> points = gridprob::gridpoints_internal<QRootTwo>(x0, x1, y0, y1);
+    List<ZRootTwo> points = gridprob::gridpoints_internal<QRootTwo>(x0, x1, y0, y1);
     std::sort(points.begin(), points.end());
-    assert((std::vector<ZRootTwo>{} == points));
+    assert((List<ZRootTwo>{} == points));
 }
 
 BOOST_AUTO_TEST_CASE(test_gridpoints_simple)
 {
-    assert(std::vector<ZRootTwo>{3} == gridprob::gridpoints<QRootTwo>(2, 3, 3, 4));
-    assert(std::vector<ZRootTwo>{3} == gridprob::gridpoints<QRootTwo>(3, 3, 3, 4));
-    assert(std::vector<ZRootTwo>{3} == gridprob::gridpoints<QRootTwo>(2, 3, 3, 3));
-    assert(std::vector<ZRootTwo>{3} == gridprob::gridpoints<QRootTwo>(3, 3, 3, 3));
+    assert(List<ZRootTwo>{3} == gridprob::gridpoints<QRootTwo>(2, 3, 3, 4));
+    assert(List<ZRootTwo>{3} == gridprob::gridpoints<QRootTwo>(3, 3, 3, 4));
+    assert(List<ZRootTwo>{3} == gridprob::gridpoints<QRootTwo>(2, 3, 3, 3));
+    assert(List<ZRootTwo>{3} == gridprob::gridpoints<QRootTwo>(3, 3, 3, 3));
 }
 
 BOOST_AUTO_TEST_CASE(test_gridpoints_1)
@@ -128,7 +128,7 @@ BOOST_AUTO_TEST_CASE(test_gridpoints_1)
     QRootTwo x1 = QRootTwo(2, 6);
     QRootTwo y0 = QRootTwo(100, -6);
     QRootTwo y1 = QRootTwo(200, 0);
-    std::vector<ZRootTwo> points = gridprob::gridpoints<QRootTwo>(x0, x1, y0, y1);
+    List<ZRootTwo> points = gridprob::gridpoints<QRootTwo>(x0, x1, y0, y1);
     std::sort(points.begin(), points.end());
     BOOST_REQUIRE_EQUAL(742, points.size());
     BOOST_CHECK_EQUAL(ZRootTwo(59, -48), points.at(0));
@@ -142,9 +142,9 @@ BOOST_AUTO_TEST_CASE(test_gridpoints_2)
     QRootTwo x1 = QRootTwo(2, 6);
     QRootTwo y0 = QRootTwo(100, -6);
     QRootTwo y1 = QRootTwo(50, 0);
-    std::vector<ZRootTwo> points = gridprob::gridpoints<QRootTwo>(x0, x1, y0, y1);
+    List<ZRootTwo> points = gridprob::gridpoints<QRootTwo>(x0, x1, y0, y1);
     std::sort(points.begin(), points.end());
-    assert(std::vector<ZRootTwo>{} == points); // There are no points returned.
+    assert(List<ZRootTwo>{} == points); // There are no points returned.
 }
 
 BOOST_AUTO_TEST_CASE(test_gridpoints_3)
@@ -153,7 +153,7 @@ BOOST_AUTO_TEST_CASE(test_gridpoints_3)
     QRootTwo x1 = QRootTwo(2, 2);
     QRootTwo y0 = QRootTwo(1, 2);
     QRootTwo y1 = QRootTwo(7, 2);
-    std::vector<ZRootTwo> points = gridprob::gridpoints<QRootTwo>(x0, x1, y0, y1);
+    List<ZRootTwo> points = gridprob::gridpoints<QRootTwo>(x0, x1, y0, y1);
     std::sort(points.begin(), points.end());
     assert(30 == points.size());
     assert(ZRootTwo(0, -6) == points.at(0));
@@ -167,9 +167,9 @@ BOOST_AUTO_TEST_CASE(test_gridpoints_4)
     QRootTwo x1 = QRootTwo(2, 2);
     QRootTwo y0 = QRootTwo(2, 4);
     QRootTwo y1 = QRootTwo(1, 5);
-    std::vector<ZRootTwo> points = gridprob::gridpoints<QRootTwo>(x0, x1, y0, y1);
+    List<ZRootTwo> points = gridprob::gridpoints<QRootTwo>(x0, x1, y0, y1);
     std::sort(points.begin(), points.end());
-    assert((std::vector<ZRootTwo>{ZRootTwo(2, -4), ZRootTwo(5, -2)} == points));
+    assert((List<ZRootTwo>{ZRootTwo(2, -4), ZRootTwo(5, -2)} == points));
 }
 
 BOOST_AUTO_TEST_CASE(test_gridpoints_5)
@@ -178,9 +178,9 @@ BOOST_AUTO_TEST_CASE(test_gridpoints_5)
     QRootTwo x1 = QRootTwo(2, 4);
     QRootTwo y0 = QRootTwo(2, 7);
     QRootTwo y1 = QRootTwo(15, -2);
-    std::vector<ZRootTwo> points = gridprob::gridpoints<QRootTwo>(x0, x1, y0, y1);
+    List<ZRootTwo> points = gridprob::gridpoints<QRootTwo>(x0, x1, y0, y1);
     std::sort(points.begin(), points.end());
-    assert((std::vector<ZRootTwo>{} == points));
+    assert((List<ZRootTwo>{} == points));
 }
 
 BOOST_AUTO_TEST_CASE(test_gridpoints_6)
@@ -189,17 +189,17 @@ BOOST_AUTO_TEST_CASE(test_gridpoints_6)
     QRootTwo x1 = 5;
     QRootTwo y0 = 9;
     QRootTwo y1 = 8;
-    std::vector<ZRootTwo> points = gridprob::gridpoints<QRootTwo>(x0, x1, y0, y1);
+    List<ZRootTwo> points = gridprob::gridpoints<QRootTwo>(x0, x1, y0, y1);
     std::sort(points.begin(), points.end());
-    assert((std::vector<ZRootTwo>{} == points));
+    assert((List<ZRootTwo>{} == points));
 }
 
 BOOST_AUTO_TEST_CASE(test_gridpointsScaled_simple)
 {
-    assert(std::vector<DRootTwo>{3} == gridprob::gridpoints_scaled<QRootTwo>(2, 3, 3, 4, 0));
-    assert(std::vector<DRootTwo>{3} == gridprob::gridpoints_scaled<QRootTwo>(3, 3, 3, 4, 0));
-    assert(std::vector<DRootTwo>{3} == gridprob::gridpoints_scaled<QRootTwo>(2, 3, 3, 3, 0));
-    assert(std::vector<DRootTwo>{3} == gridprob::gridpoints_scaled<QRootTwo>(3, 3, 3, 3, 0));
+    assert(List<DRootTwo>{3} == gridprob::gridpoints_scaled<QRootTwo>(2, 3, 3, 4, 0));
+    assert(List<DRootTwo>{3} == gridprob::gridpoints_scaled<QRootTwo>(3, 3, 3, 4, 0));
+    assert(List<DRootTwo>{3} == gridprob::gridpoints_scaled<QRootTwo>(2, 3, 3, 3, 0));
+    assert(List<DRootTwo>{3} == gridprob::gridpoints_scaled<QRootTwo>(3, 3, 3, 3, 0));
 }
 
 BOOST_AUTO_TEST_CASE(test_gridpointsScaled)
@@ -208,7 +208,7 @@ BOOST_AUTO_TEST_CASE(test_gridpointsScaled)
     QRootTwo x1 = QRootTwo(2, 6);
     QRootTwo y0 = QRootTwo(0, 3);
     QRootTwo y1 = QRootTwo(10, 2);
-    std::vector<DRootTwo> points = gridprob::gridpoints_scaled<QRootTwo>(x0, x1, y0, y1, 7);
+    List<DRootTwo> points = gridprob::gridpoints_scaled<QRootTwo>(x0, x1, y0, y1, 7);
     std::sort(points.begin(), points.end());
     assert(8084 == points.size());
     assert(DRootTwo(1, -8) == points.at(0));
@@ -224,7 +224,7 @@ BOOST_AUTO_TEST_CASE(test_gridpointsScaledParity_1)
     QRootTwo y0 = QRootTwo(0, 3);
     QRootTwo y1 = QRootTwo(5, 2);
     Integer k = 4;
-    std::vector<DRootTwo> points = gridprob::gridpoints_scaled_parity<QRootTwo>(beta, x0, x1, y0, y1, k);
+    List<DRootTwo> points = gridprob::gridpoints_scaled_parity<QRootTwo>(beta, x0, x1, y0, y1, k);
     std::sort(points.begin(), points.end());
     assert(211 == points.size());
     assert(DRootTwo(ZDyadic(-5, 1), ZDyadic(-11, 1)) == points.at(0));
@@ -240,7 +240,7 @@ BOOST_AUTO_TEST_CASE(test_gridpointsScaledParity_2)
     QRootTwo y0 = QRootTwo(0, 3);
     QRootTwo y1 = QRootTwo(5, 2);
     Integer k = 6;
-    std::vector<DRootTwo> points = gridprob::gridpoints_scaled_parity<QRootTwo>(beta, x0, x1, y0, y1, k);
+    List<DRootTwo> points = gridprob::gridpoints_scaled_parity<QRootTwo>(beta, x0, x1, y0, y1, k);
     std::sort(points.begin(), points.end());
     assert(638 == points.size());
     assert(DRootTwo(ZDyadic(-23, 3), ZDyadic(-21, 2)) == points.at(0));
@@ -300,7 +300,7 @@ BOOST_AUTO_TEST_CASE(test_unitDisk)
     Point<DRootTwo> p5 = std::make_tuple(a, b);
     Point<DRootTwo> p6 = std::make_tuple(c, d);
 
-    std::optional<std::tuple<Real, Real>> x = u.intersect(p5, p6);
+    Maybe<std::tuple<Real, Real>> x = u.intersect(p5, p6);
     BOOST_TEST(x.has_value());
     BOOST_TEST(approx_equal(Real(-0.00222851183), std::get<0>(x.value())));
     BOOST_TEST(approx_equal(Real(0.00169393714), std::get<1>(x.value())));
@@ -326,7 +326,7 @@ BOOST_AUTO_TEST_CASE(test_disk)
     Point<DRootTwo> p5 = std::make_tuple(d1, d2);
     Point<DRootTwo> p6 = std::make_tuple(d3, d4);
 
-    std::optional<std::tuple<Real, Real>> x = d.intersect(p5, p6);
+    Maybe<std::tuple<Real, Real>> x = d.intersect(p5, p6);
     BOOST_TEST(x.has_value());
     BOOST_TEST(approx_equal(Real(-0.01164753904), std::get<0>(x.value())));
     BOOST_TEST(approx_equal(Real(0.01111296434), std::get<1>(x.value())));
@@ -423,7 +423,7 @@ BOOST_AUTO_TEST_CASE(test_step_lemma)
 {
     Operator<Real> oA = gridprob::opA<Real>();
     Operator<Real> oB = gridprob::opB<Real>();
-    std::optional<Operator<DRootTwo>> op = gridprob::step_lemma(std::make_tuple(oA, oB));
+    Maybe<Operator<DRootTwo>> op = gridprob::step_lemma(std::make_tuple(oA, oB));
     BOOST_TEST(!op.has_value());
 }
 
@@ -530,9 +530,9 @@ BOOST_AUTO_TEST_CASE(test_gridpoints2_scaled)
 {
     ConvexSet<Real> u = gridprob::unitdisk<Real>();
     ConvexSet<Real> u2 = gridprob::unitdisk<Real>();
-    std::function<std::vector<DOmega>(Integer)> solver = gridprob::gridpoints2_scaled<Real>(u, u2);
-    std::vector<DOmega> points1 = solver(1);
-    std::vector<DOmega> points2 = solver(2);
+    std::function<List<DOmega>(Integer)> solver = gridprob::gridpoints2_scaled<Real>(u, u2);
+    List<DOmega> points1 = solver(1);
+    List<DOmega> points2 = solver(2);
     BOOST_CHECK_EQUAL(17, points1.size());
     BOOST_CHECK_EQUAL(57, points2.size());
 }
@@ -541,13 +541,13 @@ BOOST_AUTO_TEST_CASE(test_gridpoints2_increasing)
 {
     ConvexSet<Real> u = gridprob::unitdisk<Real>();
     ConvexSet<Real> u2 = gridprob::unitdisk<Real>();
-    std::function<std::vector<DOmega>(Integer)> solver = gridprob::gridpoints2_increasing<Real>(u, u2);
-    std::vector<DOmega> points0 = solver(0);
-    std::vector<DOmega> points1 = solver(1);
-    std::vector<DOmega> points2 = solver(2);
-    std::vector<DOmega> points3 = solver(3);
-    std::vector<DOmega> points4 = solver(4);
-    std::vector<DOmega> points5 = solver(5);
+    std::function<List<DOmega>(Integer)> solver = gridprob::gridpoints2_increasing<Real>(u, u2);
+    List<DOmega> points0 = solver(0);
+    List<DOmega> points1 = solver(1);
+    List<DOmega> points2 = solver(2);
+    List<DOmega> points3 = solver(3);
+    List<DOmega> points4 = solver(4);
+    List<DOmega> points5 = solver(5);
     BOOST_CHECK_EQUAL(9, points0.size());
     BOOST_CHECK_EQUAL(8, points1.size());
     // TODO the two commented out tests fail, possibly due to small number precision differences

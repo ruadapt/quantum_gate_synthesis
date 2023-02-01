@@ -25,7 +25,7 @@ private:
 using CharFun = std::function<bool(Point<DRootTwo>)>;
 
 template <typename T>
-using LineIntersector = std::function<std::optional<std::tuple<T, T>>(Point<DRootTwo>, Point<DRootTwo>)>;
+using LineIntersector = std::function<Maybe<Pair<T>>(Point<DRootTwo>, Point<DRootTwo>)>;
 
 template <typename T>
 class ConvexSet
@@ -38,7 +38,7 @@ public:
     CharFun test_fun() const;
     LineIntersector<T> intersect_fun() const;
     bool test(Point<DRootTwo> p) const;
-    std::optional<std::tuple<T, T>> intersect(Point<DRootTwo> p1, Point<DRootTwo> p2) const;
+    Maybe<Pair<T>> intersect(Point<DRootTwo> p1, Point<DRootTwo> p2) const;
 
 private:
     Ellipse<T> el_;
@@ -69,16 +69,16 @@ namespace gridprob
     T iprod(Point<T> p1, Point<T> p2);
 
     template <typename T>
-    std::vector<ZRootTwo> gridpoints_internal(T x0, T x1, T y0, T y1);
+    List<ZRootTwo> gridpoints_internal(T x0, T x1, T y0, T y1);
 
     template <typename T>
-    std::vector<ZRootTwo> gridpoints(T x0, T x1, T y0, T y1);
+    List<ZRootTwo> gridpoints(T x0, T x1, T y0, T y1);
 
     template <typename T>
-    std::vector<DRootTwo> gridpoints_scaled(T x0, T x1, T y0, T y1, Integer k);
+    List<DRootTwo> gridpoints_scaled(T x0, T x1, T y0, T y1, Integer k);
 
     template <typename T>
-    std::vector<DRootTwo> gridpoints_scaled_parity(DRootTwo beta, T x0, T x1, T y0, T y1, Integer k);
+    List<DRootTwo> gridpoints_scaled_parity(DRootTwo beta, T x0, T x1, T y0, T y1, Integer k);
 
     template <typename T>
     Point<T> point_fromDRootTwo(Point<DRootTwo>);

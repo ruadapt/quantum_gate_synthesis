@@ -71,7 +71,7 @@ public:
     int signum() const;
     Dyadic adj() const;
     Dyadic adj2() const;
-    std::tuple<T, T> decompose_dyadic() const;
+    Pair<T> decompose_dyadic() const;
     T integer_of_dyadic(T k) const;
     QOmega toQOmega() const;
     std::string to_string() const;
@@ -333,7 +333,7 @@ namespace ring
 
     Integer intsqrt(Integer n);
 
-    std::optional<Integer> log2(Integer n);
+    Maybe<Integer> log2(Integer n);
 
     template <typename T>
     T fromInteger(int arg);
@@ -503,22 +503,22 @@ namespace ring
     T omega();
 
     template <typename T, typename U>
-    std::optional<U> maybe_dyadic(T arg);
+    Maybe<U> maybe_dyadic(T arg);
 
     template <typename T, typename U>
-    std::optional<RootTwo<U>> maybe_dyadic(RootTwo<T> arg);
+    Maybe<RootTwo<U>> maybe_dyadic(RootTwo<T> arg);
 
     template <typename T, typename U>
-    std::optional<Complex<U>> maybe_dyadic(Complex<T> arg);
+    Maybe<Complex<U>> maybe_dyadic(Complex<T> arg);
 
     template <typename T, typename U>
-    std::optional<Omega<U>> maybe_dyadic(Omega<T> arg);
+    Maybe<Omega<U>> maybe_dyadic(Omega<T> arg);
 
     template <>
-    std::optional<ZDyadic> maybe_dyadic(ZDyadic arg);
+    Maybe<ZDyadic> maybe_dyadic(ZDyadic arg);
 
     template <>
-    std::optional<ZDyadic> maybe_dyadic(Rational r);
+    Maybe<ZDyadic> maybe_dyadic(Rational r);
 
     template <typename T, typename U>
     U to_dyadic(T arg);
@@ -625,7 +625,7 @@ namespace ring
     template <typename T>
     T fromQOmega(QOmega z);
 
-    std::optional<ZRootTwo> zroottwo_root(ZRootTwo arg);
+    Maybe<ZRootTwo> zroottwo_root(ZRootTwo arg);
 
     ZRootTwo zroottwo_of_zomega(ZOmega arg);
 

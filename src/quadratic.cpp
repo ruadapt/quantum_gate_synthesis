@@ -6,7 +6,7 @@
 #include "ring.h"
 
 template <typename T>
-std::optional<std::tuple<Real, Real>> quadratic(T a_, T b_, T c_)
+Maybe<std::tuple<Real, Real>> quadratic(T a_, T b_, T c_)
 {
     Real a = to_real<Real>(a_);
     Real b = to_real<Real>(b_);

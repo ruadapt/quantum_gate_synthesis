@@ -254,7 +254,7 @@ namespace ring
         return sqrt;
     }
 
-    std::optional<Integer> log2(Integer n)
+    Maybe<Integer> log2(Integer n)
     {
         if (n <= 0)
         {
@@ -605,10 +605,10 @@ namespace ring
     }
 
     template <typename T, typename U>
-    std::optional<RootTwo<U>> maybe_dyadic(RootTwo<T> arg)
+    Maybe<RootTwo<U>> maybe_dyadic(RootTwo<T> arg)
     {
-        std::optional<U> a_dyadic = ring::maybe_dyadic<T, U>(arg.a());
-        std::optional<U> b_dyadic = ring::maybe_dyadic<T, U>(arg.b());
+        Maybe<U> a_dyadic = ring::maybe_dyadic<T, U>(arg.a());
+        Maybe<U> b_dyadic = ring::maybe_dyadic<T, U>(arg.b());
         if (a_dyadic.has_value() && b_dyadic.has_value())
         {
             return RootTwo<U>(a_dyadic.value(), b_dyadic.value());
@@ -617,10 +617,10 @@ namespace ring
     }
 
     template <typename T, typename U>
-    std::optional<Complex<U>> maybe_dyadic(Complex<T> arg)
+    Maybe<Complex<U>> maybe_dyadic(Complex<T> arg)
     {
-        std::optional<U> a_dyadic = ring::maybe_dyadic<T, U>(arg.a());
-        std::optional<U> b_dyadic = ring::maybe_dyadic<T, U>(arg.b());
+        Maybe<U> a_dyadic = ring::maybe_dyadic<T, U>(arg.a());
+        Maybe<U> b_dyadic = ring::maybe_dyadic<T, U>(arg.b());
         if (a_dyadic.has_value() && b_dyadic.has_value())
         {
             return Complex<U>(a_dyadic.value(), b_dyadic.value());
@@ -629,12 +629,12 @@ namespace ring
     }
 
     template <typename T, typename U>
-    std::optional<Omega<U>> maybe_dyadic(Omega<T> arg)
+    Maybe<Omega<U>> maybe_dyadic(Omega<T> arg)
     {
-        std::optional<U> a_dyadic = ring::maybe_dyadic<T, U>(arg.a());
-        std::optional<U> b_dyadic = ring::maybe_dyadic<T, U>(arg.b());
-        std::optional<U> c_dyadic = ring::maybe_dyadic<T, U>(arg.c());
-        std::optional<U> d_dyadic = ring::maybe_dyadic<T, U>(arg.d());
+        Maybe<U> a_dyadic = ring::maybe_dyadic<T, U>(arg.a());
+        Maybe<U> b_dyadic = ring::maybe_dyadic<T, U>(arg.b());
+        Maybe<U> c_dyadic = ring::maybe_dyadic<T, U>(arg.c());
+        Maybe<U> d_dyadic = ring::maybe_dyadic<T, U>(arg.d());
         if (a_dyadic.has_value() && b_dyadic.has_value() && c_dyadic.has_value() && d_dyadic.has_value())
         {
             return Omega<U>(a_dyadic.value(), b_dyadic.value(), c_dyadic.value(), d_dyadic.value());
@@ -643,15 +643,15 @@ namespace ring
     }
 
     template <>
-    std::optional<ZDyadic> maybe_dyadic(ZDyadic arg)
+    Maybe<ZDyadic> maybe_dyadic(ZDyadic arg)
     {
         return arg;
     }
 
     template <>
-    std::optional<ZDyadic> maybe_dyadic(Rational r)
+    Maybe<ZDyadic> maybe_dyadic(Rational r)
     {
-        std::optional<Integer> k = log2(r.get_den());
+        Maybe<Integer> k = log2(r.get_den());
         if (k.has_value())
         {
             return ZDyadic(r.get_num(), k.value());
@@ -662,7 +662,7 @@ namespace ring
     template <typename T, typename U>
     U to_dyadic(T arg)
     {
-        std::optional<U> maybe = maybe_dyadic<T, U>(arg);
+        Maybe<U> maybe = maybe_dyadic<T, U>(arg);
         if (maybe.has_value())
         {
             return maybe.value();
@@ -673,7 +673,7 @@ namespace ring
     template <typename T, typename U>
     RootTwo<U> to_dyadic(RootTwo<T> arg)
     {
-        std::optional<RootTwo<U>> maybe = maybe_dyadic<T, U>(arg);
+        Maybe<RootTwo<U>> maybe = maybe_dyadic<T, U>(arg);
         if (maybe.has_value())
         {
             return maybe.value();
@@ -684,7 +684,7 @@ namespace ring
     template <typename T, typename U>
     Complex<U> to_dyadic(Complex<T> arg)
     {
-        std::optional<Complex<U>> maybe = maybe_dyadic<T, U>(arg);
+        Maybe<Complex<U>> maybe = maybe_dyadic<T, U>(arg);
         if (maybe.has_value())
         {
             return maybe.value();
@@ -695,7 +695,7 @@ namespace ring
     template <typename T, typename U>
     Omega<U> to_dyadic(Omega<T> arg)
     {
-        std::optional<Omega<U>> maybe = maybe_dyadic<T, U>(arg);
+        Maybe<Omega<U>> maybe = maybe_dyadic<T, U>(arg);
         if (maybe.has_value())
         {
             return maybe.value();
@@ -918,7 +918,7 @@ namespace ring
         return fromRational<T>(z.a()) * o3 + fromRational<T>(z.b()) * o2 + fromRational<T>(z.c()) * o + fromRational<T>(z.d());
     }
 
-    std::optional<ZRootTwo> zroottwo_root(ZRootTwo arg)
+    Maybe<ZRootTwo> zroottwo_root(ZRootTwo arg)
     {
         Integer d = arg.a() * arg.a() - 2 * arg.b() * arg.b();
         Integer r = intsqrt(d);
@@ -1182,7 +1182,7 @@ Dyadic<T> Dyadic<T>::adj2() const
 }
 
 template <typename T>
-std::tuple<T, T> Dyadic<T>::decompose_dyadic() const
+Pair<T> Dyadic<T>::decompose_dyadic() const
 {
     if (a() == 0)
     {

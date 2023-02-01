@@ -11,7 +11,7 @@ BOOST_AUTO_TEST_CASE(test_simple_case)
     Integer a = 1;
     Integer b = 2;
     Integer c = 1;
-    std::optional<std::tuple<Real, Real>> r_opt = quadratic<Integer>(a, b, c);
+    Maybe<std::tuple<Real, Real>> r_opt = quadratic<Integer>(a, b, c);
     BOOST_REQUIRE(r_opt.has_value());
     std::tuple<Real, Real> r = r_opt.value();
     Real s1 = std::get<0>(r);
@@ -25,7 +25,7 @@ BOOST_AUTO_TEST_CASE(test_no_solution)
     Integer a = 7;
     Integer b = 0;
     Integer c = 1;
-    std::optional<std::tuple<Real, Real>> r_opt = quadratic<Integer>(a, b, c);
+    Maybe<std::tuple<Real, Real>> r_opt = quadratic<Integer>(a, b, c);
     BOOST_REQUIRE(!r_opt.has_value());
 }
 
@@ -34,7 +34,7 @@ BOOST_AUTO_TEST_CASE(test_non_integral1)
     Integer a = 5;
     Integer b = 13;
     Integer c = -9;
-    std::optional<std::tuple<Real, Real>> r_opt = quadratic<Integer>(a, b, c);
+    Maybe<std::tuple<Real, Real>> r_opt = quadratic<Integer>(a, b, c);
     BOOST_REQUIRE(r_opt.has_value());
     std::tuple<Real, Real> r = r_opt.value();
     Real s1 = std::get<0>(r);
@@ -50,7 +50,7 @@ BOOST_AUTO_TEST_CASE(test_non_integral2)
     Integer a = 5;
     Integer b = -13;
     Integer c = -9;
-    std::optional<std::tuple<Real, Real>> r_opt = quadratic<Integer>(a, b, c);
+    Maybe<std::tuple<Real, Real>> r_opt = quadratic<Integer>(a, b, c);
     BOOST_REQUIRE(r_opt.has_value());
     std::tuple<Real, Real> r = r_opt.value();
     Real s1 = std::get<0>(r);
