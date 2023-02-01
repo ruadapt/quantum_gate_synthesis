@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE gridProblems
+#define BOOST_TEST_MODULE gridproblems
 #include "comparisons.h"
 #include "../src/gridproblems.h"
 #include "../src/gridSynth.h"

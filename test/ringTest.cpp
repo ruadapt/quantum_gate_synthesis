@@ -1,5 +1,7 @@
+#define BOOST_TEST_MODULE ring
 #include "comparisons.h"
 #include "../src/ring.h"
+#include <boost/test/included/unit_test.hpp>
 #include <assert.h>
 #include <iostream>
 
@@ -9,10 +11,8 @@ void templateError(std::string T, std::string baseType)
     exit(1);
 }
 
-void testUtilityFunctions()
+BOOST_AUTO_TEST_CASE(test_utility_functions)
 {
-    std::cout << "Utility function testing:" << std::endl;
-
     assert(1 == ring::shift<int>(1, 0));
     assert(1 == ring::shift<Integer>(1, 0));
     assert(5120 == ring::shift<int>(5, 10));
@@ -22,7 +22,6 @@ void testUtilityFunctions()
            ring::shift<Integer>(515377520732011331036461129765621272702107522001_mpz, 20));
     // Fails at runtime because the shift ammount is too large.
     // assert(1 == ring::shift<Integer>(3, 515377520732011331036461129765621272702107522001_mpz));
-    std::cout << "\tshift tests passed" << std::endl;
 
     // shiftL should be the same as shift.
     assert(1 == ring::shiftL<int>(1, 0));
@@ -32,7 +31,6 @@ void testUtilityFunctions()
     assert(8034690221294951377709810461705813012611014968913964176506880_mpz == ring::shiftL<Integer>(5, 200));
     assert(540412499179089513452888265605116091644885096989720576_mpz ==
            ring::shiftL<Integer>(515377520732011331036461129765621272702107522001_mpz, 20));
-    std::cout << "\tshiftL tests passed" << std::endl;
 
     assert(1 == ring::shiftR<int>(1, 0));
     assert(1 == ring::shiftR<Integer>(1, 0));
@@ -41,19 +39,16 @@ void testUtilityFunctions()
     assert(5 == ring::shiftR<Integer>(8034690221294951377709810461705813012611014968913964176506880_mpz, 200));
     assert(515377520732011331036461129765621272702107522001_mpz ==
            ring::shiftR<Integer>(540412499179089513452888265605116091644885096989720576_mpz, 20));
-    std::cout << "\tshiftR tests passed" << std::endl;
 
     assert(1 == ring::exp2<int>(0));
     assert(1 == ring::exp2<Integer>(0));
     assert(1024 == ring::exp2<int>(10));
     assert(1024 == ring::exp2<Integer>(10));
     assert(1606938044258990275541962092341162602522202993782792835301376_mpz == ring::exp2<Integer>(200));
-    std::cout << "\texp2 tests passed" << std::endl;
 
     assert(2 == ring::intsqrt(4));
     assert(11096085937082_mpz == ring::intsqrt(123123123123123123123123123_mpz));
     assert(456456456456456456_mpz == ring::intsqrt(208352496640784928656512368224079936_mpz));
-    std::cout << "\tintsqrt tests passed" << std::endl;
 
     assert(!ring::log2(0).has_value());
     assert(0 == ring::log2(1).value());
@@ -61,18 +56,15 @@ void testUtilityFunctions()
     assert(10 == ring::log2(1024).value());
     assert(200 == ring::log2(1606938044258990275541962092341162602522202993782792835301376_mpz).value());
     assert(!ring::log2(1606938044258990275541962092341162602522202993782792835301377_mpz).has_value());
-    std::cout << "\tlog2 tests passed" << std::endl;
 
     assert(QRootTwo(32) == ring::pow_non_neg(QRootTwo(2), 5));
     assert(ZOmega(0) == ring::pow_non_neg(ZOmega(0), 5));
     assert(ZDyadic(1099511627776_mpz) == ring::pow_non_neg(ZDyadic(2), 40));
     assert(1 == ring::pow_non_neg(3, 0));
     assert(1000_mpz == ring::pow_non_neg<Integer>(10_mpz, 3));
-    std::cout << "\tpowNonNeg tests passed" << std::endl;
 
     assert(QRootTwo(32) == ring::pow_int(QRootTwo(2), 5));
     assert(QRootTwo(1_mpq / 27, 0) == ring::pow_int(QRootTwo(3), -3));
-    std::cout << "\tpowInt tests passed" << std::endl;
 
     assert(3_mpz == ring::div(10_mpz, 3_mpz));
     assert(3_mpz == ring::div(-10_mpz, -3_mpz));
@@ -82,13 +74,10 @@ void testUtilityFunctions()
     assert(3 == ring::div(-10, -3));
     assert(-4 == ring::div(10, -3));
     assert(-4 == ring::div(-10, 3));
-    std::cout << "\tdiv tests passed" << std::endl;
 }
 
-void testTypeConversions()
+BOOST_AUTO_TEST_CASE(test_type_conversions)
 {
-    std::cout << "Type conversion testing" << std::endl;
-
     Real d = Real(2);
     assert(2.0 == d);
     Integer i = Integer(2);
@@ -123,7 +112,6 @@ void testTypeConversions()
     assert(QOmega(0_mpq, 0_mpq, 0_mpq, 2_mpq) == oRational);
     DOmega oDyadicInteger = DOmega(2);
     assert(DOmega(ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(2, 0)) == oDyadicInteger);
-    std::cout << "\tconversion from int tests passed" << std::endl;
 
     Integer n = 123412341234123412341234123412341234123412341234123412341234123412341234_mpz;
 
@@ -151,14 +139,12 @@ void testTypeConversions()
         assert(QOmega(0, 0, 0, n) == oRational);
         DOmega oDyadicInteger = DOmega(n);
         assert(DOmega(ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(n, 0)) == oDyadicInteger);
-        std::cout << "\tconversion from Integer tests passed" << std::endl;
     }
     return;
 
     assert(QRootTwo(2) == ring::fromQRootTwo<QRootTwo>(2));
     assert(QRComplex(2) == ring::fromQRootTwo<QRComplex>(2));
     assert(QOmega(2) == ring::fromQRootTwo<QOmega>(2));
-    std::cout << "\tfromQRootTwo tests passed" << std::endl;
 
     assert(ZComplex(2) == ring::fromZComplex<ZComplex>(2));
     assert(DComplex(2) == ring::fromZComplex<DComplex>(2));
@@ -169,7 +155,6 @@ void testTypeConversions()
     assert(ZOmega(2) == ring::fromZComplex<ZOmega>(2));
     assert(DOmega(2) == ring::fromZComplex<DOmega>(2));
     assert(QOmega(2) == ring::fromZComplex<QOmega>(2));
-    std::cout << "\tfromZComplex tests passed" << std::endl;
 
     assert(DComplex(2) == ring::fromDComplex<DComplex>(2));
     assert(QComplex(2) == ring::fromDComplex<QComplex>(2));
@@ -178,25 +163,21 @@ void testTypeConversions()
     assert(CReal(2) == ring::fromDComplex<CReal>(2));
     assert(DOmega(2) == ring::fromDComplex<DOmega>(2));
     assert(QOmega(2) == ring::fromDComplex<QOmega>(2));
-    std::cout << "\tfromDComplex tests passed" << std::endl;
 
     assert(QComplex(2) == ring::fromQComplex<QComplex>(2));
     assert(QRComplex(2) == ring::fromQComplex<QRComplex>(2));
     assert(CReal(2) == ring::fromQComplex<CReal>(2));
     assert(QOmega(2) == ring::fromQComplex<QOmega>(2));
-    std::cout << "\tfromQComplex tests passed" << std::endl;
 
     assert(DRComplex(2) == ring::fromDRComplex<DRComplex>(2));
     assert(QRComplex(2) == ring::fromDRComplex<QRComplex>(2));
     assert(CReal(2) == ring::fromDRComplex<CReal>(2));
     assert(DOmega(2) == ring::fromDRComplex<DOmega>(2));
     assert(QOmega(2) == ring::fromDRComplex<QOmega>(2));
-    std::cout << "\tfromDRComplex tests passed" << std::endl;
 
     assert(QRComplex(2) == ring::fromQRComplex<QRComplex>(2));
     assert(CReal(2) == ring::fromQRComplex<CReal>(2));
     assert(QOmega(2) == ring::fromQRComplex<QOmega>(2));
-    std::cout << "\tfromQRComplex tests passed" << std::endl;
 
     assert(DRComplex(2) == ring::fromZOmega<DRComplex>(2));
     assert(QRComplex(2) == ring::fromZOmega<QRComplex>(2));
@@ -204,25 +185,20 @@ void testTypeConversions()
     assert(ZOmega(2) == ring::fromZOmega<ZOmega>(2));
     assert(DOmega(2) == ring::fromZOmega<DOmega>(2));
     assert(QOmega(2) == ring::fromZOmega<QOmega>(2));
-    std::cout << "\tfromZOmega tests passed" << std::endl;
 
     assert(DRComplex(2) == ring::fromDOmega<DRComplex>(2));
     assert(QRComplex(2) == ring::fromDOmega<QRComplex>(2));
     assert(CReal(2) == ring::fromDOmega<CReal>(2));
     assert(DOmega(2) == ring::fromDOmega<DOmega>(2));
     assert(QOmega(2) == ring::fromDOmega<QOmega>(2));
-    std::cout << "\tfromDOmega tests passed" << std::endl;
 
     assert(QRComplex(2) == ring::fromQOmega<QRComplex>(2));
     assert(CReal(2) == ring::fromQOmega<CReal>(2));
     assert(QOmega(2) == ring::fromQOmega<QOmega>(2));
-    std::cout << "\tfromQOmega tests passed" << std::endl;
 }
 
-void testFractional()
+BOOST_AUTO_TEST_CASE(test_fractional)
 {
-    std::cout << "Fractional testing:" << std::endl;
-
     RootTwo<Real> r = RootTwo<Real>(1.25, -2.45).recip();
     assert(approx_equal(-0.119703136222169, r.a()));
     assert(approx_equal(-0.23461814699545125, r.b()));
@@ -256,18 +232,14 @@ void testFractional()
            QOmega(3, 7, 12, 2).recip());
     assert(QOmega(812_mpq / 25009, -1737_mpq / 25009, 605_mpq / 25009, -1017_mpq / 25009) ==
            QOmega(5, 9, -4, -9).recip());
-    std::cout << "\trecip tests passed" << std::endl;
 
     assert(QRootTwo(123_mpq / 456, 0) == ring::fromRational<QRootTwo>(123_mpq / 456));
     assert(QComplex(123_mpq / 456, 0) == ring::fromRational<QComplex>(123_mpq / 456));
     assert(QOmega(0, 0, 0, 41_mpq / 152) == ring::fromRational<QOmega>(123_mpq / 456));
-    std::cout << "\tfromRational tests passed" << std::endl;
 }
 
-void testHalfRing()
+BOOST_AUTO_TEST_CASE(test_half_ring)
 {
-    std::cout << "HalfRing testing:" << std::endl;
-
     assert(0.5 == ring::half<Real>());
     assert(1_mpq / 2 == ring::half<Rational>());
     assert(Dyadic<int>(1, 1) == ring::half<Dyadic<int>>());
@@ -277,7 +249,6 @@ void testHalfRing()
     assert(Omega<Real>(0, 0, 0, 0.5) == ring::half<Omega<Real>>());
     assert(QOmega(0_mpq, 0_mpq, 0_mpq, 1_mpq / 2) == ring::half<QOmega>());
     assert(DOmega(ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(1, 1)) == ring::half<DOmega>());
-    std::cout << "\thalf tests passed" << std::endl;
 
     assert(0.625 == ring::fromDyadic<Real>(Dyadic<int>(5, 3)));
     assert(40 == ring::fromDyadic<Real>(Dyadic<int>(5, -3)));
@@ -297,7 +268,6 @@ void testHalfRing()
            ring::fromDyadic<DOmega>(Dyadic<int>(5, 3)));
     assert(DOmega(ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(5, -3)) ==
            ring::fromDyadic<DOmega>(Dyadic<int>(5, -3)));
-    std::cout << "\tfromDyadic for Dyadic<int> passed" << std::endl;
 
     assert(0.625 == ring::fromDyadic<Real>(ZDyadic(5, 3)));
     assert(40 == ring::fromDyadic<Real>(ZDyadic(5, -3)));
@@ -317,13 +287,10 @@ void testHalfRing()
            ring::fromDyadic<DOmega>(ZDyadic(5, 3)));
     assert(DOmega(ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(0, 0), ZDyadic(5, -3)) ==
            ring::fromDyadic<DOmega>(ZDyadic(5, -3)));
-    std::cout << "\tfromDyadic for ZDyadic (ZDyadic) passed" << std::endl;
 }
 
-void testRootTwoRing()
+BOOST_AUTO_TEST_CASE(test_roottwo_ring)
 {
-    std::cout << "RootTwoRing testing:" << std::endl;
-
     assert(approx_equal(1.4142135623730951, ring::roottwo<Real>()));
     assert(approx_equal(1.4142135623730951, ring::roottwo<CReal>().a()));
     assert(0 == ring::roottwo<CReal>().b());
@@ -332,7 +299,6 @@ void testRootTwoRing()
     assert(ZOmega(-1, 0, 1, 0) == ring::roottwo<ZOmega>());
     assert(DOmega(-1, 0, 1, 0) == ring::roottwo<DOmega>());
     assert(QOmega(-1, 0, 1, 0) == ring::roottwo<QOmega>());
-    std::cout << "\trootTwo tests passed" << std::endl;
 
     ZRootTwo z = ZRootTwo(10, -7);
     assert(approx_equal(0.10050506338833465, ring::fromZRootTwo<Real>(z)));
@@ -343,20 +309,16 @@ void testRootTwoRing()
     assert(ZOmega(7, 0, -7, 10) == ring::fromZRootTwo<ZOmega>(z));
     assert(DOmega(7, 0, -7, 10) == ring::fromZRootTwo<DOmega>(z));
     assert(QOmega(7, 0, -7, 10) == ring::fromZRootTwo<QOmega>(z));
-    std::cout << "\tfromZRootTwo tests passed" << std::endl;
 }
 
-void testRootHalfRing()
+BOOST_AUTO_TEST_CASE(test_roothalf_ring)
 {
-    std::cout << "RootHalfRing testing:" << std::endl;
-
     assert(approx_equal(0.7071067811865476, ring::roothalf<Real>()));
     assert(approx_equal(0.7071067811865476, ring::roothalf<CReal>().a()));
     assert(0 == ring::roothalf<CReal>().b());
     assert(QRootTwo(0, 1_mpq / 2) == ring::roothalf<QRootTwo>());
     assert(DOmega(ZDyadic(-1, 1), 0, ZDyadic(1, 1), 0) == ring::roothalf<DOmega>());
     assert(QOmega(-1_mpq / 2, 0, 1_mpq / 2, 0) == ring::roothalf<QOmega>());
-    std::cout << "\trootHalf tests passed" << std::endl;
 
     DRootTwo d = DRootTwo(ZDyadic(5, 2), ZDyadic(-3, 5));
     assert(approx_equal(1.1174174785275224, ring::fromDRootTwo<Real>(d)));
@@ -365,12 +327,10 @@ void testRootHalfRing()
     assert(QRootTwo(5_mpq / 4, -3_mpq / 32) == ring::fromDRootTwo<QRootTwo>(d));
     assert(DOmega(ZDyadic(3, 5), 0, ZDyadic(-3, 5), ZDyadic(5, 2)) == ring::fromDRootTwo<DOmega>(d));
     assert(QOmega(3_mpq / 32, 0, -3_mpq / 32, 5_mpq / 4) == ring::fromDRootTwo<QOmega>(d));
-    std::cout << "\tfromDRootTwo tests passed" << std::endl;
 }
 
-void testComplexRing()
+BOOST_AUTO_TEST_CASE(test_complex_ring)
 {
-    std::cout << "ComplexRing testing:" << std::endl;
 
     assert(Complex<int>(0, 1) == ring::i<Complex<int>>());
     assert(ZComplex(0, 1) == ring::i<ZComplex>());
@@ -380,12 +340,10 @@ void testComplexRing()
     assert(ZOmega(0, 1, 0, 0) == ring::i<ZOmega>());
     assert(DOmega(0, 1, 0, 0) == ring::i<DOmega>());
     assert(QOmega(0, 1, 0, 0) == ring::i<QOmega>());
-    std::cout << "\ti tests passed" << std::endl;
 }
 
-void testOmegaRing()
+BOOST_AUTO_TEST_CASE(test_omega_ring)
 {
-    std::cout << "OmegaRing testing:" << std::endl;
 
     assert(approx_equal(0.7071067811865476, ring::omega<CReal>().a()));
     assert(approx_equal(0.7071067811865476, ring::omega<CReal>().b()));
@@ -400,13 +358,10 @@ void testOmegaRing()
     assert(ZOmega(0, 0, 1, 0) == ring::omega<ZOmega>());
     assert(DOmega(0, 0, 1, 0) == ring::omega<DOmega>());
     assert(QOmega(0, 0, 1, 0) == ring::omega<QOmega>());
-
-    std::cout << "\tomega tests passed" << std::endl;
 }
 
-void testNormedRing()
+BOOST_AUTO_TEST_CASE(test_normed_ring)
 {
-    std::cout << "NormedRing testing:" << std::endl;
 
     assert(10_mpz == ring::norm<int>(10));
     assert(10_mpz == ring::norm<Integer>(10));
@@ -422,12 +377,10 @@ void testNormedRing()
                           Complex<RootTwo<int>>(RootTwo<int>(3, 4), RootTwo<int>(5, 2))));
     assert(6562_mpq == ring::norm<Omega<int>>(Omega<int>(7, 3, -2, 6)));
     assert(6562_mpq == ring::norm<ZOmega>(ZOmega(7, 3, -2, 6)));
-    std::cout << "\tnorm tests passed" << std::endl;
 }
 
-void testAdjoint()
+BOOST_AUTO_TEST_CASE(test_adjoint)
 {
-    std::cout << "Adjoint testing:" << std::endl;
 
     assert(7 == ring::adj<int>(7));
     assert(123123123123123123_mpz == ring::adj<Integer>(123123123123123123_mpz));
@@ -459,12 +412,10 @@ void testAdjoint()
            ring::adj<DOmega>(DOmega(ZDyadic(1, 2), ZDyadic(3, 4), ZDyadic(5, 6), ZDyadic(7, 8))));
     assert(QOmega(-5_mpq / 6, -3_mpq / 4, -1_mpq / 2, 7_mpq / 8) ==
            ring::adj<QOmega>(QOmega(1_mpq / 2, 3_mpq / 4, 5_mpq / 6, 7_mpq / 8)));
-    std::cout << "\tadj tests passed" << std::endl;
 }
 
-void testAdjoint2()
+BOOST_AUTO_TEST_CASE(test_adjoint2)
 {
-    std::cout << "Adjoint2 testing:" << std::endl;
 
     assert(7 == ring::adj2<int>(7));
     assert(123123123123123123_mpz == ring::adj2<Integer>(123123123123123123_mpz));
@@ -496,12 +447,10 @@ void testAdjoint2()
            ring::adj2<DOmega>(DOmega(ZDyadic(1, 2), ZDyadic(3, 4), ZDyadic(5, 6), ZDyadic(7, 8))));
     assert(QOmega(-1_mpq / 2, 3_mpq / 4, -5_mpq / 6, 7_mpq / 8) ==
            ring::adj2<QOmega>(QOmega(1_mpq / 2, 3_mpq / 4, 5_mpq / 6, 7_mpq / 8)));
-    std::cout << "\tadj2 tests passed" << std::endl;
 }
 
-void testFloor()
+BOOST_AUTO_TEST_CASE(test_floor)
 {
-    std::cout << "Floor testing:" << std::endl;
 
     // Real
     assert(5 == ring::floor_of(5.2));
@@ -518,7 +467,6 @@ void testFloor()
     assert(3 == ring::floor_of(QRootTwo(123_mpq / 22, -45_mpq / 27)));
     assert(12 == ring::floor_of(QRootTwo(144_mpq / 12, 0)));
     assert(-1398 == ring::floor_of(QRootTwo(12345671234567_mpq / 786876876876_mpq, -999)));
-    std::cout << "\tfloor_of tests passed" << std::endl;
 
     // Real
     assert(6 == ring::ceiling_of(5.2));
@@ -535,12 +483,10 @@ void testFloor()
     assert(4 == ring::ceiling_of(QRootTwo(123_mpq / 22, -45_mpq / 27)));
     assert(12 == ring::ceiling_of(QRootTwo(144_mpq / 12, 0)));
     assert(-1397 == ring::ceiling_of(QRootTwo(12345671234567_mpq / 786876876876_mpz, -999)));
-    std::cout << "\tceiling_of tests passed" << std::endl;
 }
 
-void testToDyadic()
+BOOST_AUTO_TEST_CASE(test_to_dyadic)
 {
-    std::cout << "ToDyadic testing:" << std::endl;
 
     assert(ZDyadic(5, 8) == (ring::maybe_dyadic<ZDyadic, ZDyadic>(ZDyadic(5, 8))));
     assert(ZDyadic(5, 8) == (ring::maybe_dyadic<Rational, ZDyadic>(5_mpq / 256)));
@@ -562,7 +508,6 @@ void testToDyadic()
     assert(!(ring::maybe_dyadic<Rational, ZDyadic>(QOmega(3_mpq / 4, 1_mpq / 7, 2, 2)).has_value()));
     assert(!(ring::maybe_dyadic<Rational, ZDyadic>(QOmega(2, 2, 3_mpq / 7, 2)).has_value()));
     assert(!(ring::maybe_dyadic<Rational, ZDyadic>(QOmega(2, 2, 2, 3_mpq / 7)).has_value()));
-    std::cout << "\tmaybeDyadic tests passed" << std::endl;
 
     assert(ZDyadic(5, 8) == (ring::to_dyadic<ZDyadic, ZDyadic>(ZDyadic(5, 8))));
     assert(ZDyadic(5, 8) == (ring::to_dyadic<Rational, ZDyadic>(5_mpq / 256)));
@@ -572,12 +517,10 @@ void testToDyadic()
            (ring::to_dyadic<Rational, ZDyadic>(QComplex(3_mpq / 4, 1_mpq / 8))));
     assert(DOmega(ZDyadic(3, 2), ZDyadic(1, 3), 2, 3) ==
            (ring::to_dyadic<Rational, ZDyadic>(QOmega(3_mpq / 4, 1_mpq / 8, 2, 3))));
-    std::cout << "\ttoDyadic tests passed" << std::endl;
 }
 
-void testRealPart()
+BOOST_AUTO_TEST_CASE(test_real_part)
 {
-    std::cout << "RealPart testing:" << std::endl;
 
     assert(2 == ring::real(Complex<int>(2, 3)));
     assert(2 == ring::real(ZComplex(2, 3)));
@@ -586,33 +529,27 @@ void testRealPart()
     assert(QRootTwo(7_mpq / 8, 1_mpq / 6) == ring::real(QOmega(1_mpq / 2, 3_mpq / 4, 5_mpq / 6, 7_mpq / 8)));
     assert(DRootTwo(ZDyadic(7, 8), ZDyadic(-11, 7)) ==
            ring::real(DOmega(ZDyadic(1, 2), ZDyadic(3, 4), ZDyadic(5, 6), ZDyadic(7, 8))));
-    std::cout << "\treal tests passed" << std::endl;
 }
 
-void testWholePart()
+BOOST_AUTO_TEST_CASE(test_whole_part)
 {
-    std::cout << "WholePart testing:" << std::endl;
 
     assert(ZDyadic(5) == (ring::from_whole<ZDyadic, Integer>(5)));
     assert(DOmega(1, 2, 3, 4) == (ring::from_whole<DOmega, ZOmega>(ZOmega(1, 2, 3, 4))));
     assert(DRootTwo(1, 2) == (ring::from_whole<DRootTwo, ZRootTwo>(ZRootTwo(1, 2))));
-    std::cout << "\tfromWhole tests passed" << std::endl;
 
     assert(5 == (ring::to_whole<ZDyadic, Integer>(ZDyadic(5))));
     assert(ZOmega(1, 2, 3, 4) == (ring::to_whole<DOmega, ZOmega>(DOmega(1, 2, 3, 4))));
     assert(ZRootTwo(1, 2) == (ring::to_whole<DRootTwo, ZRootTwo>(DRootTwo(1, 2))));
-    std::cout << "\ttoWhole tests passed" << std::endl;
 }
 
-void testDenomExp()
+BOOST_AUTO_TEST_CASE(test_denom_exp)
 {
-    std::cout << "DenomExp testing:" << std::endl;
 
     assert(21 == ring::denomexp(DRootTwo(ZDyadic(3, 7), ZDyadic(4, 13))));
     assert(34 == ring::denomexp(DOmega(ZDyadic(12, 3), ZDyadic(15, 17), ZDyadic(13, 2), ZDyadic(5, 9))));
     assert(18 == ring::denomexp(
                      DRComplex(DRootTwo(ZDyadic(1, 9), ZDyadic(2, 8)), DRootTwo(ZDyadic(3, 7), ZDyadic(4, 6)))));
-    std::cout << "\tdenomExp tests passed" << std::endl;
 
     assert(DRootTwo(ZDyadic(64, 13), ZDyadic(1536, 13)) ==
            ring::denomexp_factor(DRootTwo(ZDyadic(3, 7), ZDyadic(4, 13)), 7));
@@ -620,12 +557,10 @@ void testDenomExp()
            ring::denomexp_factor(DOmega(ZDyadic(12, 3), ZDyadic(15, 17), ZDyadic(13, 2), ZDyadic(5, 9)), 12));
     assert(DRComplex(DRootTwo(ZDyadic(32, 9), ZDyadic(4, 9)), DRootTwo(ZDyadic(64, 7), ZDyadic(12, 7))) ==
            ring::denomexp_factor(DRComplex(DRootTwo(ZDyadic(1, 9), ZDyadic(2, 8)), DRootTwo(ZDyadic(3, 7), ZDyadic(4, 6))), 5));
-    std::cout << "\tdenomExpFactor tests passed" << std::endl;
 }
 
-void testToQOmega()
+BOOST_AUTO_TEST_CASE(test_to_qomega)
 {
-    std::cout << "ToQOmega testing:" << std::endl;
 
     assert(QOmega(5) == ring::toQOmega<Integer>(5));
     assert(QOmega(0, 0, 0, 5_mpq / 6) == ring::toQOmega<Rational>(5_mpq / 6));
@@ -637,12 +572,10 @@ void testToQOmega()
            ring::toQOmega<QRootTwo>(QRootTwo(5_mpq / 6, 7_mpq / 8)));
     assert(QOmega(3_mpq / 512, 1_mpq / 1024, 3, 4) ==
            ring::toQOmega<DOmega>(DOmega(ZDyadic(3, 9), ZDyadic(4, 12), 3, 4)));
-    std::cout << "\ttoQOmega tests passed" << std::endl;
 }
 
-void testParity()
+BOOST_AUTO_TEST_CASE(test_parity)
 {
-    std::cout << "Parity testing:" << std::endl;
 
     assert(Z2(0) == ring::parity(1234));
     assert(Z2(1) == ring::parity(55555));
@@ -650,19 +583,16 @@ void testParity()
     assert(Z2(1) == ring::parity(555555555555555555555555555555555555555555555555_mpz));
     assert(Z2(0) == ring::parity(ZRootTwo(1234, 1235)));
     assert(Z2(1) == ring::parity(ZRootTwo(1235, 1234)));
-    std::cout << "\tparity tests passed" << std::endl;
 }
 
-void testFromInteger()
+BOOST_AUTO_TEST_CASE(test_from_integer)
 {
-    std::cout << "fromInteger testing" << std::endl;
     assert(Real(2.0) == ring::fromInteger<Real>(2));
     assert(Real(2.0) == ring::fromInteger<Real>(Integer(2)));
-    std::cout << "\tfromInteger tests passed" << std::endl;
 }
 
 template <typename T>
-void testDyadic()
+void test_dyadic_impl()
 {
     Dyadic<T> d = Dyadic<T>(1, 5);
     Dyadic<T> d0 = Dyadic<T>(0, 9);
@@ -672,22 +602,17 @@ void testDyadic()
     Dyadic<T> d4 = Dyadic<T>(3, 5);
     Dyadic<T> dneg = Dyadic<T>(-2, 6);
 
-    std::cout << "Dyadic<" << typeid(T).name() << "> testing:" << std::endl;
-
     assert(d == dcopy); // Equal with the same constructor values.
     assert(d == d2);    // Equal with different constructor values.
     assert(!(d == d3));
-    std::cout << "\tequality tests passed" << std::endl;
 
     Dyadic<T> d2copy = d2.copy();
     assert(d2copy == d2);
     assert(std::addressof(d2copy) != std::addressof(d2)); // Not the same object
-    std::cout << "\tcopy test passed" << std::endl;
 
     // assert("Dyadic(1, 5)" == d.to_string());
     // assert("Dyadic(-2, 6)" == dneg.to_string());
-    // std::cout << "\tto_string tests passed" << std::endl;
-
+    //
     assert(LT == d.compare(d4));
     assert(d < d4);
     assert(d <= d4);
@@ -703,36 +628,27 @@ void testDyadic()
     assert(d2 >= d3);
     assert(!(d2 < d3));
     assert(!(d2 <= d3));
-    std::cout << "\tcomparison tests passed" << std::endl;
 
     assert(Dyadic<T>(7, 7) == d + d3);
-    std::cout << "\tsum test passed" << std::endl;
 
     assert(Dyadic<T>(-1, 7) == d3 - d);
-    std::cout << "\tsubtraction test passed" << std::endl;
 
     assert(Dyadic<T>(6, 13) == d2 * d3);
-    std::cout << "\tproduct test passed" << std::endl;
 
     assert(Dyadic<T>(-3, 7) == -d3);
-    std::cout << "\tnegation test passed" << std::endl;
 
     assert(1 == d.signum());
     assert(-1 == dneg.signum());
     assert(0 == d0.signum());
-    std::cout << "\tsignum tests passed" << std::endl;
 
     assert(Dyadic<T>(1, 5) == d.abs());
     assert(Dyadic<T>(2, 6) == dneg.abs());
-    std::cout << "\tabs tests passed" << std::endl;
 
     assert(Dyadic<T>(1, 5) == d.adj());
     assert(Dyadic<T>(-2, 6) == dneg.adj());
-    std::cout << "\tadj tests passed" << std::endl;
 
     assert(Dyadic<T>(1, 5) == d.adj2());
     assert(Dyadic<T>(-2, 6) == dneg.adj2());
-    std::cout << "\tadj2 tests passed" << std::endl;
 
     Dyadic<T> dnegDenom = Dyadic<T>(3, -5);
     assert(std::make_tuple(96, 0) == dnegDenom.decompose_dyadic());
@@ -740,31 +656,30 @@ void testDyadic()
     assert(std::make_tuple(-1, 5) == dneg.decompose_dyadic());
     Dyadic<T> veryReducible = Dyadic<T>(128, 9);
     assert(std::make_tuple(1, 2) == veryReducible.decompose_dyadic());
-    std::cout << "\tdecomposeDyadic tests passed" << std::endl;
 
     assert(2 == d.integer_of_dyadic(6));
     assert(-1 == dneg.integer_of_dyadic(5));
-    std::cout << "\tintegerOfDyadic tests passed" << std::endl;
 
     assert(Dyadic<T>(6, 0) == Dyadic<T>::fromInteger(6));
-    std::cout << "\tfromInteger test passed" << std::endl;
 
     assert(Dyadic<T>(1, 5) == Dyadic<T>::fromDyadic(d));
     assert(Dyadic<T>(-2, 6) == Dyadic<T>::fromDyadic(dneg));
-    std::cout << "\tfromDyadic<Dyadic<T>> tests passed" << std::endl;
 
     assert(0.25 == ring::fromDyadic<Real>(Dyadic<T>(1, 2)));
-    std::cout << "\tfromDyadic<Real> test passed" << std::endl;
 
     assert(3_mpq / 128 == ring::fromDyadic<Rational>(Dyadic<T>(3, 7)));
-    std::cout << "\tfromDyadic<Rational> test passed" << std::endl;
 
     assert(Dyadic<T>(1, 1) == Dyadic<T>::half());
-    std::cout << "\thalf test passed" << std::endl;
+}
+
+BOOST_AUTO_TEST_CASE(test_dyadic)
+{
+    test_dyadic_impl<int>();
+    test_dyadic_impl<Integer>();
 }
 
 template <typename T>
-void testRootTwoIntegral()
+void test_roottwo_integral_impl()
 {
     // rneg2 < r < r3 < r2
     RootTwo<T> r = RootTwo<T>(1, 2);
@@ -774,18 +689,14 @@ void testRootTwoIntegral()
     RootTwo<T> rneg1 = RootTwo<T>(-3, 1);
     RootTwo<T> rneg2 = RootTwo<T>(3, -3);
 
-    std::cout << "RootTwo<" << typeid(T).name() << "> testing:" << std::endl;
-
     assert(r == rcopy);
     assert(!(r == r2));
     assert(r != r2);
     assert(!(r != rcopy));
-    std::cout << "\tequality tests passed" << std::endl;
 
     // assert("RootTwo(1, 2)" == r.to_string());
     // assert("RootTwo(4, 9)" == r2.to_string());
-    // std::cout << "\tto_string tests passed" << std::endl;
-
+    //
     assert(rneg2 < r);
     assert(r < r3);
     assert(r3 < r2);
@@ -817,51 +728,45 @@ void testRootTwoIntegral()
     assert(!(r3 <= r));
     assert(!(r2 <= r3));
     assert(!(r2 <= rneg1));
-    std::cout << "\tcomparison tests passed" << std::endl;
 
     assert(RootTwo<T>(5, 2) == r + 4);
-    std::cout << "\tscalar sum test passed" << std::endl;
 
     assert(RootTwo<T>(-1, 2) == r - 2);
-    std::cout << "\tscalar difference test passed" << std::endl;
 
     assert(RootTwo<T>(12, 27) == r2 * 3);
-    std::cout << "\tscalar product test passed" << std::endl;
 
     assert(RootTwo<T>(5, 11) == r + r2);
-    std::cout << "\tsum test passed" << std::endl;
 
     assert(RootTwo<T>(-3, -7) == r - r2);
-    std::cout << "\tdifference test passed" << std::endl;
 
     assert(RootTwo<T>(40, 17) == r * r2);
-    std::cout << "\tproduct test passed" << std::endl;
 
     assert(RootTwo<T>(-1, -2) == -r);
-    std::cout << "\tnegation test passed" << std::endl;
 
     assert(RootTwo<T>(1, 2) == r.abs());
     assert(RootTwo<T>(-2, 5) == r3.abs());
     assert(RootTwo<T>(3, -1) == rneg1.abs());
     assert(RootTwo<T>(-3, 3) == rneg2.abs());
-    std::cout << "\tabs tests passed" << std::endl;
 
     assert(1 == r.signum());
     assert(1 == r3.signum());
     assert(-1 == rneg1.signum());
     assert(-1 == rneg2.signum());
-    std::cout << "\tsignum tests passed" << std::endl;
 
     assert(RootTwo<T>(0, 1) == RootTwo<T>::roottwo());
-    std::cout << "\trootTwo test passed" << std::endl;
 
     assert(RootTwo<T>(5, 0) == RootTwo<T>::fromInteger(5));
     assert(RootTwo<T>(-2, 0) == RootTwo<T>::fromInteger(-2));
-    std::cout << "\tfromInteger tests passed" << std::endl;
+}
+
+BOOST_AUTO_TEST_CASE(test_roottwo_integral)
+{
+    test_roottwo_integral_impl<int>();
+    test_roottwo_integral_impl<Integer>();
 }
 
 template <typename T>
-void testRootTwoDyadic()
+void test_roottwo_dyadic_impl()
 {
     Dyadic<T> d0 = Dyadic<T>(0, 0);
     Dyadic<T> d1 = Dyadic<T>(1, 2);
@@ -877,18 +782,14 @@ void testRootTwoDyadic()
     RootTwo<Dyadic<T>> r3 = RootTwo<Dyadic<T>>(d5, d3);    //  -0.065
     RootTwo<Dyadic<T>> r4 = RootTwo<Dyadic<T>>(d3, d4);    // 0.070
 
-    std::cout << "RootTwo<Dyadic<" << typeid(T).name() << ">> testing:" << std::endl;
-
     assert(r == rcopy);
     assert(!(r == r2));
     assert(r != r2);
     assert(!(r != rcopy));
-    std::cout << "\tequality tests passed" << std::endl;
 
     // assert("RootTwo(Dyadic(1, 2), Dyadic(2, 3))" == r.to_string());
     // assert("RootTwo(Dyadic(1, 2), Dyadic(-2, 5))" == r2.to_string());
-    // std::cout << "\tto_string tests passed" << std::endl;
-
+    //
     // r3 < r4 < r2 < r
     assert(r3 < r4);
     assert(r4 < r2);
@@ -930,31 +831,26 @@ void testRootTwoDyadic()
     assert(!(r <= r2));
     assert(!(r2 <= r3));
     assert(!(r <= r4));
-    std::cout << "\tcomparison tests passed" << std::endl;
 
     RootTwo<Dyadic<T>> sum = r + r2;
     RootTwo<Dyadic<T>> expectedSum = RootTwo<Dyadic<T>>(
         Dyadic<T>(2, 2), Dyadic<T>(6, 5));
     assert(expectedSum == sum);
-    std::cout << "\tsum test passed" << std::endl;
 
     RootTwo<Dyadic<T>> difference = r - r2;
     RootTwo<Dyadic<T>> expectedDifference = RootTwo<Dyadic<T>>(
         Dyadic<T>(0, 2), Dyadic<T>(10, 5));
     assert(expectedDifference == difference);
-    std::cout << "\tdifference test passed" << std::endl;
 
     RootTwo<Dyadic<T>> product = r * r2;
     RootTwo<Dyadic<T>> expectedProduct = RootTwo<Dyadic<T>>(
         Dyadic<T>(8, 8), Dyadic<T>(6, 7));
     assert(expectedProduct == product);
-    std::cout << "\tproduct test passed" << std::endl;
 
     RootTwo<Dyadic<T>> negation = -r;
     RootTwo<Dyadic<T>> expectedNegation = RootTwo<Dyadic<T>>(
         Dyadic<T>(-1, 2), Dyadic<T>(-2, 3));
     assert(expectedNegation == negation);
-    std::cout << "\tnegation test passed" << std::endl;
 
     RootTwo<Dyadic<T>> expectedR0Abs = RootTwo<Dyadic<T>>(
         Dyadic<T>(0, 0), Dyadic<T>(0, 0)); // No change because r0 = 0.
@@ -965,29 +861,24 @@ void testRootTwoDyadic()
     RootTwo<Dyadic<T>> expectedR3Abs = RootTwo<Dyadic<T>>(
         Dyadic<T>(-3, 7), Dyadic<T>(2, 5)); // Get -r3 because r3 is negative.
     assert(expectedR3Abs == r3.abs());
-    std::cout << "\tabs tests passed" << std::endl;
 
     assert(0 == r0.signum());
     assert(1 == r.signum());
     assert(1 == r2.signum());
     assert(1 == r4.signum());
     assert(-1 == r3.signum());
-    std::cout << "\tsignum tests passed" << std::endl;
 
     RootTwo<Dyadic<T>> expectedHalf = RootTwo<Dyadic<T>>(
         Dyadic<T>(1, 1), Dyadic<T>(0, 0));
     assert(expectedHalf == RootTwo<Dyadic<T>>::half());
-    std::cout << "\thalf test passed" << std::endl;
 
     RootTwo<Dyadic<T>> expectedRootTwo = RootTwo<Dyadic<T>>(
         Dyadic<T>(0, 0), Dyadic<T>(1, 0));
     assert(expectedRootTwo == RootTwo<Dyadic<T>>::roottwo());
-    std::cout << "\trootTwo test passed" << std::endl;
 
     RootTwo<Dyadic<T>> expectedRootHalf = RootTwo<Dyadic<T>>(
         Dyadic<T>(0, 0), Dyadic<T>(1, 1));
     assert(expectedRootHalf == RootTwo<Dyadic<T>>::roothalf());
-    std::cout << "\trootHalf test passed" << std::endl;
 
     RootTwo<Dyadic<T>> expectedFrom5 = RootTwo<Dyadic<T>>(
         Dyadic<T>(5, 0), Dyadic<T>(0, 0));
@@ -995,10 +886,15 @@ void testRootTwoDyadic()
     RootTwo<Dyadic<T>> expectedFromNeg2 = RootTwo<Dyadic<T>>(
         Dyadic<T>(-2, 0), Dyadic<T>(0, 0));
     assert(expectedFromNeg2 == RootTwo<Dyadic<T>>::fromInteger(-2));
-    std::cout << "\tfromInteger tests passed" << std::endl;
 }
 
-void testRootTwoRational()
+BOOST_AUTO_TEST_CASE(test_roottwo_dyadic)
+{
+    test_roottwo_dyadic_impl<int>();
+    test_roottwo_dyadic_impl<Integer>();
+}
+
+BOOST_AUTO_TEST_CASE(test_roottwo_rational)
 {
     QRootTwo r0 = QRootTwo(0_mpq, 0_mpq);              // 0
     QRootTwo r1 = QRootTwo(2_mpq / 4, 9_mpq / 18);     // 1.207
@@ -1007,8 +903,6 @@ void testRootTwoRational()
     QRootTwo r3 = QRootTwo(9_mpq / 17, -100_mpq / 3);  // -46.611
     QRootTwo r4 = QRootTwo(5_mpq, -7_mpq);             // -4.899
 
-    std::cout << "QRootTwo testing:" << std::endl;
-
     // Make sure that we're converting the rational numbers to the standard,
     // canonical form.
     QRootTwo rNonCanonical = QRootTwo(2_mpq / 4, -3_mpq / 9);
@@ -1016,7 +910,6 @@ void testRootTwoRational()
     assert(rNonCanonical.a().get_den() == 2);
     assert(rNonCanonical.b().get_num() == -1);
     assert(rNonCanonical.b().get_den() == 3);
-    std::cout << "\tcanonicalization test passed" << std::endl;
 
     assert(r1 == r1equal);
     assert(r1 != r0);
@@ -1030,14 +923,12 @@ void testRootTwoRational()
     assert(!(r1 == r3));
     assert(!(r2 != r2));
     assert(!(r2 == r3));
-    std::cout << "\tequality tests passed" << std::endl;
 
     // assert("RootTwo(0, 0)" == r0.to_string());
     // assert("RootTwo(-7/13, 33/20)" == r2.to_string());
     // assert("RootTwo(9/17, -100/3)" == r3.to_string());
     // assert("RootTwo(5, -7)" == r4.to_string());
-    // std::cout << "\tto_string tests passed" << std::endl;
-
+    //
     // // r3 < r4 < r0 < r1 < r2
     assert(r3 < r4);
     assert(r4 < r0);
@@ -1087,70 +978,56 @@ void testRootTwoRational()
     assert(!(r2 <= r1));
     assert(!(r1 <= r4));
     assert(!(r2 <= r0));
-    std::cout << "\tcomparison tests passed" << std::endl;
 
     QRootTwo sum = r1 + r2;
     QRootTwo expectedSum = QRootTwo(-1_mpq / 26, 43_mpq / 20);
     assert(expectedSum == sum);
-    std::cout << "\tsum test passed" << std::endl;
 
     QRootTwo difference = r2 - r3;
     QRootTwo expectedDifference = QRootTwo(-236_mpq / 221, 2099_mpq / 60);
     assert(expectedDifference == difference);
-    std::cout << "\tdifference test passed" << std::endl;
 
     QRootTwo product = r2 * r3;
     QRootTwo expectedProduct = QRootTwo(-24373_mpq / 221, 249583_mpq / 13260);
     assert(expectedProduct == product);
-    std::cout << "\tproduct test passed" << std::endl;
 
     QRootTwo negation = -r3;
     QRootTwo expectedNegation = QRootTwo(-9_mpq / 17, 100_mpq / 3);
     assert(expectedNegation == negation);
-    std::cout << "\tnegation test passed" << std::endl;
 
     QRootTwo expectedR0Abs = QRootTwo(0_mpq, 0_mpq);
     assert(QRootTwo(0_mpq, 0_mpq) == r0.abs());
     assert(QRootTwo(1_mpq / 2, 1_mpq / 2) == r1.abs());
     assert(QRootTwo(-9_mpq / 17, 100_mpq / 3) == r3.abs());
-    std::cout << "\tabs tests passed" << std::endl;
 
     assert(0 == r0.signum());
     assert(1 == r1.signum());
     assert(1 == r2.signum());
     assert(-1 == r3.signum());
     assert(-1 == r4.signum());
-    std::cout << "\tsignum tests passed" << std::endl;
 
     assert(QRootTwo(1_mpq / 2, 0_mpq) == QRootTwo::half());
-    std::cout << "\thalf test passed" << std::endl;
 
     assert(QRootTwo(0_mpq, 1_mpq) == QRootTwo::roottwo());
-    std::cout << "\trootTwo test passed" << std::endl;
 
     assert(QRootTwo(0_mpq, 1_mpq / 2) == QRootTwo::roothalf());
-    std::cout << "\trootHalf test passed" << std::endl;
 
     assert(QRootTwo(5_mpq, 0_mpq) == QRootTwo::fromInteger(5));
     assert(QRootTwo(-2_mpq, 0_mpq) == QRootTwo::fromInteger(-2));
-    std::cout << "\tfromInteger tests passed" << std::endl;
 }
 
-void testZRootTwoRoot()
+BOOST_AUTO_TEST_CASE(test_zroottwo_root)
 {
-    std::cout << "zroottwo_root Testing:" << std::endl;
 
     assert(!ring::zroottwo_root(ZRootTwo(1, 2)).has_value());
     assert(ZRootTwo(5, 9) == ring::zroottwo_root(ZRootTwo(187, 90)));
     assert(ZRootTwo(5, 9) == ring::zroottwo_root(ZRootTwo(187, 90)));
     assert(ZRootTwo(12345678912345, 98765432198765) ==
            ring::zroottwo_root(ZRootTwo(19661636982624412467128449475_mpz, 2438652627129865854104507850_mpz)));
-    std::cout << "\tzRootTwoRoot tests passed" << std::endl;
 }
 
-void testZ2()
+BOOST_AUTO_TEST_CASE(test_z2)
 {
-    std::cout << "Z2 testing:" << std::endl;
 
     assert(Z2(0) == Z2(0));
     assert(Z2(1) == Z2(1));
@@ -1160,59 +1037,48 @@ void testZ2()
     assert(!(Z2(1) != Z2(1)));
     assert(Z2(1) != Z2(0));
     assert(Z2(0) != Z2(1));
-    std::cout << "\tequality tests passed" << std::endl;
 
     // assert(Z2(0).to_string() == "Z2(0)");
     // assert(Z2(1).to_string() == "Z2(1)");
-    // std::cout << "\tto_string tests passed" << std::endl;
-
+    //
     assert(Z2(0) == Z2(0) + Z2(0));
     assert(Z2(1) == Z2(0) + Z2(1));
     assert(Z2(1) == Z2(1) + Z2(0));
     assert(Z2(0) == Z2(1) + Z2(1));
-    std::cout << "\tsum tests passed" << std::endl;
 
     assert(Z2(0) == Z2(0) - Z2(0));
     assert(Z2(1) == Z2(0) - Z2(1));
     assert(Z2(1) == Z2(1) - Z2(0));
     assert(Z2(0) == Z2(1) - Z2(1));
-    std::cout << "\tsubtraction tests passed" << std::endl;
 
     assert(Z2(0) == Z2(0) * Z2(0));
     assert(Z2(0) == Z2(0) * Z2(1));
     assert(Z2(0) == Z2(1) * Z2(0));
     assert(Z2(1) == Z2(1) * Z2(1));
-    std::cout << "\tproduct tests passed" << std::endl;
 
     assert(-Z2(0) == Z2(0));
     assert(-Z2(1) == Z2(1));
-    std::cout << "\tnegation tests passed" << std::endl;
 
     assert(Z2(0).abs() == Z2(0));
     assert(Z2(1).abs() == Z2(1));
-    std::cout << "\tabs tests passed" << std::endl;
 
     assert(Z2(0).signum() == 1);
     assert(Z2(1).signum() == 1);
-    std::cout << "\tsignum tests passed" << std::endl;
 
     assert(Z2(0).adj() == Z2(0));
     assert(Z2(1).adj() == Z2(1));
-    std::cout << "\tadj tests passed" << std::endl;
 
     assert(Z2(0).adj2() == Z2(0));
     assert(Z2(1).adj2() == Z2(1));
-    std::cout << "\tadj2 tests passed" << std::endl;
 
     assert(Z2::fromInteger(0) == Z2(0));
     assert(Z2::fromInteger(1) == Z2(1));
     assert(Z2::fromInteger(123) == Z2(1));
     assert(Z2::fromInteger(222) == Z2(0));
-    std::cout << "\tfromInteger tests passed" << std::endl;
 }
 
 template <typename T>
-void testComplex()
+void test_complex_impl()
 {
     Complex<T> c1 = Complex<T>(1, 2);
     Complex<T> c1copy = Complex<T>(1, 2);
@@ -1220,44 +1086,36 @@ void testComplex()
     Complex<T> c3 = Complex<T>(-2, 5);
     Complex<T> c4 = Complex<T>(-3, -1);
 
-    std::cout << "Complex<" << typeid(T).name() << "> testing:" << std::endl;
-
     assert(c1 == c1copy);
     assert(!(c1 == c2));
     assert(c1 != c2);
     assert(!(c1 != c1copy));
-    std::cout << "\tequality tests passed" << std::endl;
 
     // if constexpr (std::is_same<T, int>::value || std::is_same<T, Integer>::value || std::is_same<T, Rational>::value)
     // {
     //     assert("Complex(1, 2)" == c1.to_string());
     //     assert("Complex(4, 9)" == c2.to_string());
-    //     std::cout << "\tto_string tests passed" << std::endl;
-    // }
+    //         // }
     // else if constexpr (std::is_same<T, double>::value)
     // {
     //     assert("Complex(1.000000, 2.000000)" == c1.to_string());
     //     assert("Complex(4.000000, 9.000000)" == c2.to_string());
-    //     std::cout << "\tto_string tests passed" << std::endl;
-    // }
+    //         // }
     // else if constexpr (std::is_same<T, ZDyadic>::value)
     // {
     //     assert("Complex(Dyadic(1, 0), Dyadic(2, 0))" == c1.to_string());
     //     assert("Complex(Dyadic(4, 0), Dyadic(9, 0))" == c2.to_string());
-    //     std::cout << "\tto_string tests passed" << std::endl;
-    // }
+    //         // }
     // else if constexpr (std::is_same<T, DRootTwo>::value)
     // {
     //     assert("Complex(RootTwo(Dyadic(1, 0), Dyadic(0, 0)), RootTwo(Dyadic(2, 0), Dyadic(0, 0)))" == c1.to_string());
     //     assert("Complex(RootTwo(Dyadic(4, 0), Dyadic(0, 0)), RootTwo(Dyadic(9, 0), Dyadic(0, 0)))" == c2.to_string());
-    //     std::cout << "\tto_string tests passed" << std::endl;
-    // }
+    //         // }
     // else if constexpr (std::is_same<T, QRootTwo>::value)
     // {
     //     assert("Complex(RootTwo(1, 0), RootTwo(2, 0))" == c1.to_string());
     //     assert("Complex(RootTwo(4, 0), RootTwo(9, 0))" == c2.to_string());
-    //     std::cout << "\tto_string tests passed" << std::endl;
-    // }
+    //         // }
     // else if constexpr (std::is_same<T, Real>::value)
     // {
     // }
@@ -1267,45 +1125,45 @@ void testComplex()
     // }
 
     assert(Complex<T>(5, 2) == c1 + 4);
-    std::cout << "\tscalar sum test passed" << std::endl;
 
     assert(Complex<T>(-1, 2) == c1 - 2);
-    std::cout << "\tscalar difference test passed" << std::endl;
 
     assert(Complex<T>(12, 27) == c2 * 3);
-    std::cout << "\tscalar product test passed" << std::endl;
 
     assert(Complex<T>(5, 11) == c1 + c2);
-    std::cout << "\tsum test passed" << std::endl;
 
     assert(Complex<T>(-3, -7) == c1 - c2);
-    std::cout << "\tdifference test passed" << std::endl;
 
     assert(Complex<T>(-53, 2) == c2 * c3);
-    std::cout << "\tproduct test passed" << std::endl;
 
     assert(Complex<T>(-1, -2) == -c1);
-    std::cout << "\tnegation test passed" << std::endl;
 
     // abs doesn't do anything for complex numbers.
     assert(Complex<T>(1, 2) == c1.abs());
     assert(Complex<T>(-2, 5) == c3.abs());
-    std::cout << "\tabs tests passed" << std::endl;
 
     // signum is always 1 for complex numbers.
     assert(1 == c1.signum());
     assert(1 == c2.signum());
-    std::cout << "\tsignum tests passed" << std::endl;
 
     assert(Complex<T>(1, -2) == c1.adj());
     assert(Complex<T>(-2, -5) == c3.adj());
-    std::cout << "\tadj tests passed" << std::endl;
+}
+
+BOOST_AUTO_TEST_CASE(test_complex)
+{
+    test_complex_impl<int>();
+    test_complex_impl<Integer>();
+    test_complex_impl<Real>();
+    test_complex_impl<Rational>();
+    test_complex_impl<ZDyadic>();
+    test_complex_impl<DRootTwo>();
+    test_complex_impl<QRootTwo>();
 }
 
 template <typename T>
-void testOmega()
+void test_omega_impl()
 {
-    std::cout << "Omega<" << typeid(T).name() << "> testing:" << std::endl;
 
     Omega<T> o0 = Omega<T>(0, 0, 0, 0);
     Omega<T> o1 = Omega<T>(1, -3, 3, -7);
@@ -1324,7 +1182,6 @@ void testOmega()
     assert(!(o1 == o2));
     assert(!(o2 == o3));
     assert(!(o1 == o3));
-    std::cout << "\tequality tests passed" << std::endl;
 
     // if constexpr (std::is_same<T, int>::value || std::is_same<T, Integer>::value || std::is_same<T, Rational>::value)
     // {
@@ -1332,24 +1189,21 @@ void testOmega()
     //     assert("Omega(1, -3, 3, -7)" == o1.to_string());
     //     assert("Omega(3, 7, 12, 2)" == o2.to_string());
     //     assert("Omega(5, 9, -4, -9)" == o3.to_string());
-    //     std::cout << "\tto_string tests passed" << std::endl;
-    // }
+    //         // }
     // else if constexpr (std::is_same<T, double>::value)
     // {
     //     assert("Omega(0.000000, 0.000000, 0.000000, 0.000000)" == o0.to_string());
     //     assert("Omega(1.000000, -3.000000, 3.000000, -7.000000)" == o1.to_string());
     //     assert("Omega(3.000000, 7.000000, 12.000000, 2.000000)" == o2.to_string());
     //     assert("Omega(5.000000, 9.000000, -4.000000, -9.000000)" == o3.to_string());
-    //     std::cout << "\tto_string tests passed" << std::endl;
-    // }
+    //         // }
     // else if constexpr (std::is_same<T, ZDyadic>::value)
     // {
     //     assert("Omega(Dyadic(0, 0), Dyadic(0, 0), Dyadic(0, 0), Dyadic(0, 0))" == o0.to_string());
     //     assert("Omega(Dyadic(1, 0), Dyadic(-3, 0), Dyadic(3, 0), Dyadic(-7, 0))" == o1.to_string());
     //     assert("Omega(Dyadic(3, 0), Dyadic(7, 0), Dyadic(12, 0), Dyadic(2, 0))" == o2.to_string());
     //     assert("Omega(Dyadic(5, 0), Dyadic(9, 0), Dyadic(-4, 0), Dyadic(-9, 0))" == o3.to_string());
-    //     std::cout << "\tto_string tests passed" << std::endl;
-    // }
+    //         // }
     // else if constexpr (std::is_same<T, Real>::value)
     // {
     // }
@@ -1360,56 +1214,54 @@ void testOmega()
 
     assert(Omega<T>(0, 0, 0, 0) == o0.copy());
     assert(Omega<T>(1, -3, 3, -7) == o1.copy());
-    std::cout << "\tcopy tests passed" << std::endl;
 
     assert(Omega<T>(4, 4, 15, -5) == o1 + o2);
     assert(Omega<T>(8, 16, 8, -7) == o2 + o3);
-    std::cout << "\tsum tests passed" << std::endl;
 
     assert(Omega<T>(-2, -10, -9, -9) == o1 - o2);
     assert(Omega<T>(-2, -2, 16, 11) == o2 - o3);
-    std::cout << "\tdifference tests passed" << std::endl;
 
     assert(Omega<T>(0, 0, 0, 0) == o0 * o2);
     assert(Omega<T>(-34, -22, -76, -14) == o1 * o2);
     assert(Omega<T>(63, -108, -178, -129) == o2 * o3);
-    std::cout << "\tproduct tests passed" << std::endl;
 
     assert(Omega<T>(0, 0, 0, 0) == -o0);
     assert(Omega<T>(-1, 3, -3, 7) == -o1);
     assert(Omega<T>(-3, -7, -12, -2) == -o2);
-    std::cout << "\tnegation tests passed" << std::endl;
 
     assert(Omega<T>(0, 0, 0, 0) == o0.abs());
     assert(Omega<T>(1, -3, 3, -7) == o1.abs());
     assert(Omega<T>(3, 7, 12, 2) == o2.abs());
-    std::cout << "\tabs tests passed" << std::endl;
 
     assert(1 == o0.signum());
     assert(1 == o1.signum());
     assert(1 == o2.signum());
     assert(1 == o3.signum());
-    std::cout << "\tsignum tests passed" << std::endl;
 
     assert(Omega<T>(0, 0, 0, 0) == o0.adj());
     assert(Omega<T>(-3, 3, -1, -7) == o1.adj());
     assert(Omega<T>(-12, -7, -3, 2) == o2.adj());
     assert(Omega<T>(4, -9, -5, -9) == o3.adj());
-    std::cout << "\tadj tests passed" << std::endl;
 }
 
-void testZRootTwoOfZOmega()
+BOOST_AUTO_TEST_CASE(test_omega)
 {
-    std::cout << "zroottwo_of_zomega Testing:" << std::endl;
+    test_omega_impl<int>();
+    test_omega_impl<Integer>();
+    test_omega_impl<Real>();
+    test_omega_impl<Rational>();
+    test_omega_impl<ZDyadic>();
+}
+
+BOOST_AUTO_TEST_CASE(test_zroottwo_of_zomega)
+{
 
     assert(ZRootTwo(4, -3) == ring::zroottwo_of_zomega(ZOmega(3, 0, -3, 4)));
     assert(ZRootTwo(25, 7) == ring::zroottwo_of_zomega(ZOmega(-7, 0, 7, 25)));
-    std::cout << "\tzRootTwoOfZOmega tests passed" << std::endl;
 }
 
-void testCanonicalization()
+BOOST_AUTO_TEST_CASE(test_canonicalization)
 {
-    std::cout << "Canonicalization Testing:" << std::endl;
 
     // Make sure Rational values are being reduced to simplest form.
     QComplex c = QComplex(555_mpq / 1665, 22_mpq / 110);
@@ -1440,104 +1292,4 @@ void testCanonicalization()
     assert(1 == qr.b().a().get_den());
     assert(-3 == qr.b().b().get_num());
     assert(1 == qr.b().b().get_den());
-    std::cout << "\tcanonicalization tests passed" << std::endl;
-}
-
-int main()
-{
-    testUtilityFunctions();
-    std::cout << std::endl;
-    testTypeConversions();
-    std::cout << std::endl;
-
-    testFractional();
-    std::cout << std::endl;
-    testHalfRing();
-    std::cout << std::endl;
-    testRootTwoRing();
-    std::cout << std::endl;
-    testRootHalfRing();
-    std::cout << std::endl;
-    testComplexRing();
-    std::cout << std::endl;
-    testOmegaRing();
-    std::cout << std::endl;
-    testAdjoint();
-    std::cout << std::endl;
-    testAdjoint2();
-    std::cout << std::endl;
-    testNormedRing();
-    std::cout << std::endl;
-    testFloor();
-    std::cout << std::endl;
-    testToDyadic();
-    std::cout << std::endl;
-    testRealPart();
-    std::cout << std::endl;
-    testWholePart();
-    std::cout << std::endl;
-    testDenomExp();
-    std::cout << std::endl;
-    testToQOmega();
-    std::cout << std::endl;
-    testParity();
-    std::cout << std::endl;
-    testFromInteger();
-    std::cout << std::endl;
-
-    testRootTwoIntegral<int>();
-    std::cout << std::endl;
-    testRootTwoIntegral<Integer>();
-    std::cout << std::endl;
-    testRootTwoDyadic<int>();
-    std::cout << std::endl;
-    testRootTwoDyadic<Integer>();
-    std::cout << std::endl;
-    testRootTwoRational();
-    std::cout << std::endl;
-
-    testZRootTwoRoot();
-    std::cout << std::endl;
-
-    testComplex<int>();
-    std::cout << std::endl;
-    testComplex<Integer>();
-    std::cout << std::endl;
-    testComplex<Real>();
-    std::cout << std::endl;
-    testComplex<Rational>();
-    std::cout << std::endl;
-    testComplex<ZDyadic>();
-    std::cout << std::endl;
-    testComplex<DRootTwo>();
-    std::cout << std::endl;
-    testComplex<QRootTwo>();
-    std::cout << std::endl;
-
-    testDyadic<int>();
-    std::cout << std::endl;
-    testDyadic<Integer>();
-    std::cout << std::endl;
-
-    testZ2();
-    std::cout << std::endl;
-
-    testOmega<int>();
-    std::cout << std::endl;
-    testOmega<Integer>();
-    std::cout << std::endl;
-    testOmega<Real>();
-    std::cout << std::endl;
-    testOmega<Rational>();
-    std::cout << std::endl;
-    testOmega<ZDyadic>();
-    std::cout << std::endl;
-
-    testZRootTwoOfZOmega();
-    std::cout << std::endl;
-
-    testCanonicalization();
-    std::cout << std::endl;
-
-    return 0;
 }
