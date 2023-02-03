@@ -1,5 +1,3 @@
-/** \file quadratic.cpp
- */
 #include "quadratic.h"
 #include "types.h"
 #include "toReal.h"

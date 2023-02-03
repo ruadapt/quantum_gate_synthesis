@@ -1,5 +1,3 @@
-/** \file multiQubitSynthesis.cpp
- */
 #include "multiQubitSynthesis.h"
 #include "matrix.h"
 #include "ring.h"

@@ -1,10 +1,13 @@
-/** \file matrix.cpp
- */
 #include "matrix.h"
 #include "ring.h"
 
 namespace matrix
 {
+    /**
+     * @brief Make a 2x2 matrix that contains the 4 given values.
+     * 
+     * The top left value is x0, top right is x1, bottom left is x2, and bottom right is x3.
+     */
     template <typename T>
     U2<T> matrix2x2(T x0, T x1, T x2, T x3)
     {
@@ -96,6 +99,9 @@ namespace matrix
         return {first_col, rest};
     }
 
+    /**
+     * @brief This is an elementwise adjoint followed by a transpose.
+     */
     template <typename T, size_t M, size_t N>
     Matrix<T, N, M> adjoint(Matrix<T, M, N> m)
     {
@@ -111,7 +117,7 @@ namespace matrix
     }
 
     /**
-     * Trace of a matrix (sum of the main diagonal).
+     * @brief Find the trace of a matrix (sum of the main diagonal).
      */
     template <typename T, size_t N>
     T tr(Matrix<T, N, N> m)

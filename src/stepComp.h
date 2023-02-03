@@ -5,6 +5,19 @@
 #include <optional>
 #include <tuple>
 
+/**
+ * To mimic the StepComp class from Haskell, some changes had to be made. A StepComp<T>
+ * is created either with a value of T, which means it is a finished StepComp, or with
+ * a function that returns a new StepComp, which itself can either be done or return
+ * another StepComp, and so on.
+ * 
+ * The speed_ field represents how many steps to move forward at a time. One step refers
+ * to calling the inner computation once and returning the new StepComp (or doing nothing
+ * if the StepComp is already done).
+ * 
+ * The count_ field keeps track of the total number of steps that have happened (it stops
+ * counting once the StepComp is finished).
+ */
 template <typename T>
 class StepComp
 {

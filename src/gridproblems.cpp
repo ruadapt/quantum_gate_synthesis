@@ -1,5 +1,3 @@
-/** \file gridproblems.cpp
- */
 #include "ring.h"
 #include "quadratic.h"
 #include <boost/math/constants/constants.hpp>
@@ -7,48 +5,6 @@
 
 namespace constants = boost::math::constants;
 namespace bmp = boost::multiprecision;
-
-template <typename T>
-Operator<T> Ellipse<T>::op() const
-{
-    return op_;
-}
-
-template <typename T>
-Point<T> Ellipse<T>::p() const
-{
-    return p_;
-}
-
-template <typename T>
-Ellipse<T> ConvexSet<T>::el() const
-{
-    return el_;
-}
-
-template <typename T>
-CharFun ConvexSet<T>::test_fun() const
-{
-    return test_;
-}
-
-template <typename T>
-LineIntersector<T> ConvexSet<T>::intersect_fun() const
-{
-    return intersect_;
-}
-
-template <typename T>
-bool ConvexSet<T>::test(Point<DRootTwo> p) const
-{
-    return test_(p);
-}
-
-template <typename T>
-Maybe<Pair<T>> ConvexSet<T>::intersect(Point<DRootTwo> p1, Point<DRootTwo> p2) const
-{
-    return intersect_(p1, p2);
-}
 
 namespace gridprob
 {
@@ -86,8 +42,9 @@ namespace gridprob
 
     // TODO move to ring namespace
     /**
-     * This isn't just an elementwise adjoint. There's also a transpose operation afterwards,
-     * which is why the assignments to result(1, 0) and result(0, 1) are flipped.
+     * Note that this isn't just an elementwise adjoint. There's also a transpose operation afterwards,
+     * which is why the assignments to result(1, 0) and result(0, 1) are flipped. This behavior
+     * matches what's done in Haskell.
      */
     template <typename T>
     Operator<T> adj(Operator<T> op)
@@ -376,6 +333,10 @@ namespace gridprob
         return results;
     }
 
+    /**
+     * @brief A convenient version of the other gridpoints_scaled that takes in two
+     * pairs instead of 4 values.
+     */
     template <typename T>
     List<DRootTwo> gridpoints_scaled(T x0, T x1, T y0, T y1, Integer k)
     {
@@ -758,7 +719,6 @@ namespace gridprob
         {
             return opR<DRootTwo>();
         }
-
         if (b >= 0 && l2z <= 1.6969)
         {
             return opK<DRootTwo>();
@@ -983,6 +943,16 @@ namespace gridprob
         return gridpoints2_scaled_with_gridop(setA, setB, opG);
     }
 
+    /**
+     * @brief Modified version of the Haskell implementation.
+     *
+     * The Haskell implementation returns an infinite list of tuples of the form (k, l_k),
+     * where k is a non-negative integer and l_k is a list of the solutions to the scaled
+     * grid problem that first appear for a scale of k. This kind of infinite list
+     * wouldn't work directly in C++ because C++ doesn't use lazy evaluation. Instead, this
+     * function returns a new function that takes in k and returns the list of solutions
+     * that first appear for that k.
+     */
     template <typename T>
     std::function<List<DOmega>(Integer)> gridpoints2_increasing_with_gridop(
         ConvexSet<T> setA, ConvexSet<T> setB, Operator<DRootTwo> opG)
@@ -1003,9 +973,15 @@ namespace gridprob
         return exact_solutions;
     }
 
+    /**
+     * @brief Modified version of the Haskell implementation.
+     *
+     * See the documentation for gridpoints2_increasing_with_gridop: the same explanation
+     * about the difference in return type for Haskell vs. C++ applies here.
+     */
     template <typename T>
     std::function<List<DOmega>(Integer)> gridpoints2_increasing(ConvexSet<T> setA, ConvexSet<T> setB)
     {
         return gridpoints2_increasing_with_gridop(setA, setB, to_upright_sets(setA, setB));
     }
-};
+}

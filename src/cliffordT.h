@@ -19,18 +19,27 @@ enum Gate
     W
 };
 
+/**
+ * @brief The names of the two no-arg Syllables constructors in Haskell.
+ */
 enum LeadSyllable
 {
     S_I,
     S_T
 };
 
+/**
+ * @brief The names of the Syllables constructors in Haskell that take in an argument.
+ */
 enum TrailingSyllable
 {
     HT,
     SHT
 };
 
+/**
+ * @brief Represents the four constructors for Syllables in Haskell.
+ */
 enum SyllableConstructor
 {
     CONS_S_I,
@@ -89,24 +98,32 @@ private:
 };
 
 /**
- * Mimic the S_I constructor in Haskell. The next three functions do the same for the
- * other Syllables constructors.
+ * @brief Construct an equivalent object to the S_I constructor in Haskell.
  */
 Syllables cons_S_I()
 {
     return Syllables(S_I, List<TrailingSyllable>{});
 }
 
+/**
+ * @brief Construct an equivalent object to the S_T constructor in Haskell.
+ */
 Syllables cons_S_T()
 {
     return Syllables(S_T, List<TrailingSyllable>{});
 }
 
+/**
+ * @brief Construct an equivalent object to the SApp_HT constructor in Haskell.
+ */
 Syllables cons_SApp_HT(Syllables s)
 {
     return Syllables(s.lead(), utils::concat(List<TrailingSyllable>{HT}, s.tail()));
 }
 
+/**
+ * @brief Construct an equivalent object to the SApp_SHT constructor in Haskell.
+ */
 Syllables cons_SApp_SHT(Syllables s)
 {
     return Syllables(s.lead(), utils::concat(List<TrailingSyllable>{SHT}, s.tail()));

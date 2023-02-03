@@ -1,5 +1,3 @@
-/** \file cliffordT.cpp
- */
 #include "cliffordT.h"
 #include "clifford.h"
 #include "multiQubitSynthesis.h"
@@ -40,6 +38,9 @@ namespace clifford_t
         return boost::algorithm::join(utils::map<Gate, std::string>(gate_to_string, gs), "");
     }
 
+    /**
+     * @tparam T Must be a List type for this to work.
+     */
     template <typename T>
     List<Gate> to_gates(T other_form)
     {
@@ -85,7 +86,6 @@ namespace clifford_t
         return utils::concat(List<List<Gate>>{as, xs, ss, ws});
     }
 
-    // TODO test
     template <>
     List<Gate> to_gates(TwoLevel tl)
     {
@@ -140,6 +140,9 @@ namespace clifford_t
         throw std::invalid_argument("Invalid TwoLevel input to to_gates");
     }
 
+    /**
+     * @brief This is an iterative version of the equivalent Haskell function.
+     */
     template <>
     List<Gate> to_gates(Syllables s)
     {
@@ -189,8 +192,6 @@ namespace clifford_t
     {
         return gates;
     }
-
-    List<Gate> invert_gates(List<Gate> gs);
 
     template <typename A, typename B>
     B convert(A arg)

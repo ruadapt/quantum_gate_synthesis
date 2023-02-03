@@ -1,5 +1,3 @@
-/** \file ring.cpp
- */
 #include "ring.h"
 #include "utils.h"
 #include <iostream>

@@ -1,5 +1,3 @@
-/** \file clifford.cpp
- */
 #include "clifford.h"
 #include "utils.h"
 
@@ -45,6 +43,9 @@ namespace clifford
         return Clifford(0, 0, 0, 1);
     }
 
+    /**
+     * @brief This implementation only works when T is a List.
+     */
     template <typename T>
     Clifford to_clifford(T arg)
     {
@@ -53,7 +54,7 @@ namespace clifford
         {
             return clifford_id();
         }
-        // TODO convert this to an iterative approach.
+        // \todo An iterative approach might be faster here.
         return clifford_mult(to_clifford(arg.front()), to_clifford(utils::tail(arg)));
     }
 

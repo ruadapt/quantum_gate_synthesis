@@ -6,14 +6,23 @@
 #include <algorithm>
 #include <random>
 
+/**
+ * @brief Utility functions (some of which are versions of built-in Haskell functions).
+ */
 namespace utils
 {
+    /**
+     * @brief Convert an Integer to an int (or throw an error if the Integer wouldn't fit).
+     */
     int to_int(Integer n)
     {
         assert(n.fits_sint_p());
         return static_cast<int>(n.get_si());
     }
 
+    /**
+     * @brief Convert an Integer to an unsigned long (or throw an error if the Integer wouldn't fit).
+     */
     unsigned long to_unsigned_long(Integer n)
     {
         assert(n >= 0);
@@ -21,6 +30,11 @@ namespace utils
         return static_cast<unsigned long>(n.get_ui());
     }
 
+    /**
+     * @brief Get the tail of a list (everything after the first element).
+     * 
+     * This will throw an error for an empty list.
+     */
     template <typename T>
     List<T> tail(List<T> x)
     {
@@ -31,6 +45,9 @@ namespace utils
         return List<T>(x.begin() + 1, x.end());
     }
 
+    /**
+     * @brief Concatenate two lists into a single list.
+     */
     template <typename T>
     List<T> concat(List<T> x, List<T> y)
     {
@@ -70,6 +87,9 @@ namespace utils
         return result;
     }
 
+    /**
+     * @brief Returns the max value in a list, or the if_empty value for an empty input.
+     */
     template <typename T>
     T max(List<T> lst, T if_empty)
     {
@@ -159,9 +179,10 @@ namespace utils
     }
 
     /**
-     * Uniform random integer. Both endpoints are inclusive. If lo > hi, the two values
-     * are swapped (hi becomes lo and lo becomes hi): this matches the Haskell behavior of
-     * randomR.
+     * @brief Return a uniform random int in [lo, hi] (both endpoints are inclusive).
+     * 
+     *  If lo > hi, the two values are swapped (hi becomes lo and lo becomes hi):
+     * this matches the Haskell behavior of randomR.
      */
     int randint(int lo, int hi)
     {
@@ -182,9 +203,10 @@ namespace utils
     bool seeded = false;
 
     /**
-     * Uniform random integer. Both endpoints are inclusive. If lo > hi, the two values
-     * are swapped (hi becomes lo and lo becomes hi): this matches the Haskell behavior of
-     * randomR.
+     * @brief Return a uniform random Integer in [lo, hi] (both endpoints are inclusive).
+     * 
+     *  If lo > hi, the two values are swapped (hi becomes lo and lo becomes hi):
+     * this matches the Haskell behavior of randomR.
      */
     Integer randint(Integer lo, Integer hi)
     {

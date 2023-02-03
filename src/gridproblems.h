@@ -14,8 +14,8 @@ public:
     Ellipse(Operator<T> op, Point<T> p) : op_{op}, p_{p}
     {
     }
-    Operator<T> op() const;
-    Point<T> p() const;
+    Operator<T> op() const { return op_; }
+    Point<T> p() const { return p_; }
 
 private:
     Operator<T> op_;
@@ -34,11 +34,23 @@ public:
     ConvexSet(Ellipse<T> el, CharFun test, LineIntersector<T> intersect) : el_{el}, test_{test}, intersect_{intersect}
     {
     }
-    Ellipse<T> el() const;
-    CharFun test_fun() const;
-    LineIntersector<T> intersect_fun() const;
-    bool test(Point<DRootTwo> p) const;
-    Maybe<Pair<T>> intersect(Point<DRootTwo> p1, Point<DRootTwo> p2) const;
+    Ellipse<T> el() const { return el_; }
+    /**
+     * @brief Get the test_ member.
+     */
+    CharFun test_fun() const { return test_; }
+    /**
+     * @brief Get the intersect_ member.
+     */
+    LineIntersector<T> intersect_fun() const { return intersect_; }
+    /**
+     * @brief Apply test_ to an argument.
+     */
+    bool test(Point<DRootTwo> p) const { return test_(p); }
+    /**
+     * @brief Apply intersect_ to arguments.
+     */
+    Maybe<Pair<T>> intersect(Point<DRootTwo> p1, Point<DRootTwo> p2) const { return intersect_(p1, p2); }
 
 private:
     Ellipse<T> el_;

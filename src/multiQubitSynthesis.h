@@ -20,6 +20,13 @@ enum ResidueType
     RT_1010
 };
 
+/**
+ * The Haskell TwoLevel class has multiple different constructors that take in different
+ * arguments. Since we can't have constructors with different names in C++, there's only
+ * one constructor for this class, which takes in a type field that indicates which
+ * constructor would have been used in Haskell. An error is thrown if a getter is called
+ * for a field that doesn't exist for a specific type.
+ */
 class TwoLevel
 {
 public:
@@ -88,22 +95,36 @@ std::ostream &operator<<(std::ostream &os, const TwoLevel &tl)
     return os;
 }
 
-
+/**
+ * @brief Mimic the TL_X constructor in Haskell.
+ * 
+ * The name TL_X was already used in the TwoLevelType enum, which is why this
+ * function needs a different name.
+ */
 TwoLevel make_TL_X(Index i1, Index i2)
 {
     return TwoLevel(TL_X, 0, i1, i2);
 }
 
+/**
+ * @brief Mimic the TL_H constructor in Haskell.
+ */
 TwoLevel make_TL_H(Index i1, Index i2)
 {
     return TwoLevel(TL_H, 0, i1, i2);
 }
 
+/**
+ * @brief Mimic the TL_T constructor in Haskell.
+ */
 TwoLevel make_TL_T(int pow, Index i1, Index i2)
 {
     return TwoLevel(TL_T, pow, i1, i2);
 }
 
+/**
+ * @brief Mimic the TL_omega constructor in Haskell.
+ */
 TwoLevel make_TL_omega(int pow, Index i1)
 {
     return TwoLevel(TL_omega, pow, i1, 0);

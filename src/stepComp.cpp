@@ -1,5 +1,3 @@
-/** \file stepComp.cpp
- */
 #include "stepComp.h"
 #include "types.h"
 
@@ -149,6 +147,9 @@ Maybe<T> StepComp<T>::run_bounded(int n) const
 
 namespace stepcomp
 {
+    /**
+     * @brief Mimics the >>= operator from Haskell.
+     */
     template <typename T, typename U>
     StepComp<U> bind(StepComp<T> sc, std::function<StepComp<U>(T)> g)
     {

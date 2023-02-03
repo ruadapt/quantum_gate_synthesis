@@ -1,5 +1,3 @@
-/** \file gridSynth.cpp
- */
 #include "gridSynth.h"
 #include "quadratic.h"
 #include "ring.h"
@@ -87,6 +85,8 @@ namespace gridsynth
 
         List<std::tuple<DOmega, Integer, DStatus>> candidate_info;
         Integer k = 0;
+        // The first_solvable and with_successful_candidate internal functions from Haskell
+        // aren't defined as lambdas here: all of the work they do is done in this while loop.
         while (true)
         {
             List<DOmega> candidates = raw_candidates(k);
@@ -130,7 +130,7 @@ namespace gridsynth
                 {
                     log_err = gp::logBase_double<T>(0.5, err);
                 }
-                return { uU, log_err, candidate_info }; 
+                return {uU, log_err, candidate_info};
             }
             k++;
         }

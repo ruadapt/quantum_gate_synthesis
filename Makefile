@@ -1,4 +1,3 @@
-CC = g++
 CXX = g++
 CPPFLAGS= -isystem /usr/local/include -std=c++17 -Werror -Wall -Wextra -Wpedantic -Wconversion
 LDLIBS = -lgmp -lgmpxx

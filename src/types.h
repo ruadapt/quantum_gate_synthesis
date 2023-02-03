@@ -9,16 +9,32 @@
 #include <variant>
 #include <optional>
 
+/**
+ * @brief Arbitrary precision integer type.
+ */
 using Integer = mpz_class;
+
+/**
+ * @brief Arbitrary precision rational type.
+ */
 using Rational = mpq_class;
 
 namespace bmp = boost::multiprecision;
 
+/**
+ * @brief A real number with N digits of precision.
+ */
 template <unsigned int N>
 using Decimal = bmp::number<bmp::cpp_dec_float<N>, bmp::et_off>;
 
+/**
+ * @brief How many digits of precision to use by default for real numbers.
+ */
 const int REAL_DIGITS = 100;
 
+/**
+ * The default real number type, with REAL_DIGITS digits of precision.
+ */
 using Real = Decimal<REAL_DIGITS>;
 
 template <typename T>
@@ -94,12 +110,22 @@ using Tup4 = std::tuple<T, T, T, T>;
 template <typename T>
 using Tup5 = std::tuple<T, T, T, T, T>;
 
+/**
+ * std::monostate is there so that this type is still default-constructible even if
+ * A and B aren't.
+ */
 template <typename A, typename B>
 using Either = std::variant<std::monostate, A, B>;
 
+/**
+ * @brief Get the A value.
+ */
 template <typename A, typename B>
 A fst(Either<A, B> e) { return std::get<1>(e); }
 
+/**
+ * @brief Get the B value.
+ */
 template <typename A, typename B>
 B snd(Either<A, B> e) { return std::get<2>(e); }
 
