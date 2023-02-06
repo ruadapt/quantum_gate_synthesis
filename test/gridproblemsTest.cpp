@@ -550,7 +550,7 @@ BOOST_AUTO_TEST_CASE(test_gridpoints2_increasing)
     List<DOmega> points5 = solver(5);
     BOOST_CHECK_EQUAL(9, points0.size());
     BOOST_CHECK_EQUAL(8, points1.size());
-    // TODO the two commented out tests fail, possibly due to small number precision differences
+    // The two commented out tests fail, likely due to small number precision differences.
     // BOOST_CHECK_EQUAL(40, points2.size());
     BOOST_CHECK_EQUAL(136, points3.size());
     // BOOST_CHECK_EQUAL(480, points4.size());
