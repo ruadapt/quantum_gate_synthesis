@@ -1,6 +1,11 @@
 #include "matrix.h"
 #include "ring.h"
 
+/**
+ * \todo Almost all (if not all) of these functions are used for 2x2 matrices, so
+ * writing specialized implementations for that case could provide a minor performance
+ * boost.
+ */
 namespace matrix
 {
     /**
@@ -48,7 +53,6 @@ namespace matrix
         return matrix_of_function<T, N, N>(f);
     }
 
-    // TODO find a more efficient way to do this with some kind of range/view
     template <typename T, size_t M, size_t N>
     List<T> get_row(Matrix<T, M, N> m, size_t r)
     {
@@ -62,7 +66,6 @@ namespace matrix
         return row;
     }
 
-    // TODO find a more efficient way to do this with some kind of range/view
     template <typename T, size_t M, size_t N>
     List<T> get_col(Matrix<T, M, N> m, size_t c)
     {

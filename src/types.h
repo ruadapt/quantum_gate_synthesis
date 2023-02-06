@@ -9,6 +9,10 @@
 #include <variant>
 #include <optional>
 
+#ifndef REAL_DIGITS
+    #define REAL_DIGITS 100
+#endif
+
 /**
  * @brief Arbitrary precision integer type.
  */
@@ -26,11 +30,6 @@ namespace bmp = boost::multiprecision;
  */
 template <unsigned int N>
 using Decimal = bmp::number<bmp::cpp_dec_float<N>, bmp::et_off>;
-
-/**
- * @brief How many digits of precision to use by default for real numbers.
- */
-const int REAL_DIGITS = 100;
 
 /**
  * The default real number type, with REAL_DIGITS digits of precision.

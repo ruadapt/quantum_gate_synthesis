@@ -1,5 +1,5 @@
 CXX = g++
-CPPFLAGS= -isystem /usr/local/include -std=c++17 -Werror -Wall -Wextra -Wpedantic -Wconversion
+CPPFLAGS= -isystem /usr/local/include -std=c++17 -Werror -Wall -Wextra -Wpedantic -Wconversion -DREAL_DIGITS=$(REAL_DIGITS)
 LDLIBS = -lgmp -lgmpxx
 
 empty = 
@@ -13,6 +13,8 @@ tests_o = $(tests_cpp:%.cpp=build/%.o)
 tests = $(tests_cpp:%.cpp=build/%)
 
 runtests = $(subst $(space), && ,$(tests))
+
+REAL_DIGITS ?= 100
 
 .PHONY: all
 all: main tests

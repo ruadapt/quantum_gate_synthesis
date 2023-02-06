@@ -136,6 +136,24 @@ namespace gridsynth
         }
     }
 
+    /**
+     * In Haskell, the number of digits of precision for reals is dynamically selected by this
+     * function. In this implentation, the number of digits is determined at compile-time,
+     * so we can't change it, but we can print a warning if it is too low.
+     */
+    template <typename T>
+    std::tuple<U2<DOmega>, Maybe<double>, List<std::tuple<DOmega, Integer, DStatus>>> gridsynth_stats(
+        T prec, T theta, int effort)
+    {
+        // This is a heuristic taken from the Haskell implementation.
+        Integer recommended_digits = ring::ceiling_of(T(15) + T(2.5) * prec * bmp::log10(T(2)));
+        if (recommended_digits > REAL_DIGITS)
+        {
+            std::cout << "WARNING: at least " << recommended_digits << " digits of precision are recommended" << std::endl;
+        }
+        return gridsynth_internal(prec, theta, effort);
+    }
+
     template <typename A, typename B, typename C>
     A first(std::tuple<A, B, C> t)
     {

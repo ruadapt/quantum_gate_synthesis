@@ -703,7 +703,7 @@ namespace gridprob
         {
             return wlog_using(opX<DRootTwo>());
         }
-        if (l2z_minus_zeta > 33.971 || l2z_minus_zeta < 0.029437)
+        if (l2z_minus_zeta > T("33.971") || l2z_minus_zeta < T("0.029437"))
         {
             return wlog_using(opS_power<DRootTwo>(std::round(logLambda(l2z_minus_zeta) / 8)));
         }
@@ -711,19 +711,19 @@ namespace gridprob
         {
             return std::nullopt;
         }
-        if (l2z_minus_zeta > 5.8285 || l2z_minus_zeta < 0.17157)
+        if (l2z_minus_zeta > T("5.8285") || l2z_minus_zeta < T("0.17157"))
         {
             return with_shift(round(logLambda(l2z_minus_zeta) / 4));
         }
-        if (within<T>(l2z, 0.24410, 4.0968) && within<T>(l2zeta, 0.24410, 4.0968))
+        if (within<T>(l2z, T("0.24410"), T("4.0968")) && within<T>(l2zeta, T("0.24410"), T("4.0968")))
         {
             return opR<DRootTwo>();
         }
-        if (b >= 0 && l2z <= 1.6969)
+        if (b >= 0 && l2z <= T("1.6969"))
         {
             return opK<DRootTwo>();
         }
-        if (b >= 0 && l2zeta <= 1.6969)
+        if (b >= 0 && l2zeta <= T("1.6969"))
         {
             return adj2<DRootTwo>(opK<DRootTwo>());
         }

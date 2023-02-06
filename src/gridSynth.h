@@ -25,6 +25,10 @@ namespace gridsynth
     std::tuple<U2<DOmega>, Maybe<double>, List<std::tuple<DOmega, Integer, DStatus>>> gridsynth_internal(
         T prec, T theta, int effort);
 
+    template <typename T>
+    std::tuple<U2<DOmega>, Maybe<double>, List<std::tuple<DOmega, Integer, DStatus>>> gridsynth_stats(
+        T prec, T theta, int effort);
+
     template <typename A, typename B, typename C>
     A first(std::tuple<A, B, C> t);
 }
