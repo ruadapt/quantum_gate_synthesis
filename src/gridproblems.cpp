@@ -3,11 +3,9 @@
 #include <boost/math/constants/constants.hpp>
 #include <vector>
 
-namespace constants = boost::math::constants;
-namespace bmp = boost::multiprecision;
-
 namespace gridprob
 {
+    namespace constants = boost::math::constants;
     namespace mat = matrix;
 
     template <typename T>
@@ -33,14 +31,12 @@ namespace gridprob
         return prod(base, operator_pow(new_base, new_exp));
     }
 
-    // TODO make it possible to use power methods in ring on operators
     template <typename T>
     Operator<T> operator_pow(Operator<T> base, Integer exp)
     {
         return operator_pow(base, utils::to_int(exp));
     }
 
-    // TODO move to ring namespace
     /**
      * Note that this isn't just an elementwise adjoint. There's also a transpose operation afterwards,
      * which is why the assignments to result(1, 0) and result(0, 1) are flipped. This behavior
@@ -57,7 +53,6 @@ namespace gridprob
         return result;
     }
 
-    // TODO move to ring namespace
     template <typename T>
     Operator<T> adj2(Operator<T> op)
     {
@@ -168,7 +163,6 @@ namespace gridprob
             Integer n;
             T r;
             std::tie(n, r) = floorlog(b, x);
-            // TODO check the conversions here
             return ring::fromInteger<double>(n) + logBase(double(b), double(r));
         }
         if (b <= 0)

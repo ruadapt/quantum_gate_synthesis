@@ -539,7 +539,7 @@ namespace ring
 
     Integer floor_of(Real arg)
     {
-        return floor(double(arg));
+        return bmp::floor(arg).convert_to<Integer>();
     }
 
     Integer floor_of(Rational arg)
@@ -576,7 +576,7 @@ namespace ring
 
     Integer ceiling_of(Real arg)
     {
-        return ceil(double(arg));
+        return bmp::ceil(arg).convert_to<Integer>();
     }
 
     Integer ceiling_of(Rational arg)

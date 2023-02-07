@@ -503,7 +503,6 @@ namespace multi_qubit_synthesis
         return utils::concat(gates, reduce_column_aux(w_prime, k - 1, i));
     }
 
-    // TODO move to ring namespace
     std::tuple<List<ZOmega>, Integer> denomexp_decompose(List<DOmega> lst)
     {
         List<Integer> exponents = utils::map<DOmega, Integer>(ring::denomexp<DOmega>, lst);

@@ -38,7 +38,6 @@ namespace matrix
         return result;
     }
 
-    // TODO move to ring namespace
     template <typename T, size_t N>
     Matrix<T, N, N> fromInteger(int x)
     {
@@ -82,7 +81,6 @@ namespace matrix
     /**
      * Break a matrix into its first column and the rest.
      */
-    // TODO find a more efficient way to do this with some kind of range/view
     template <typename T, size_t M, size_t N>
     std::tuple<Matrix<T, M, 1>, Matrix<T, M, N - 1>> col_split(Matrix<T, M, N> m)
     {

@@ -137,15 +137,13 @@ namespace clifford
         if (op.a() == 1)
         {
             Clifford op2 = clifford_mult(clifford_inv('H'), op);
-            // TODO if op2.a() != 0, is this an error or should we just move on to the
-            // next case.
             assert(op2.a() == 0);
             return {Axis_H, op2.b(), op2.c(), op2.d()};
         }
         if (op.a() == 2)
         {
             Clifford op2 = clifford_mult(clifford_inv(std::string("SH")), op);
-            assert(op2.a() == 0); // TODO see comment above about this
+            assert(op2.a() == 0);
             return {Axis_SH, op2.b(), op2.c(), op2.d()};
         }
         throw std::invalid_argument("Invalid input to clifford_decompose_coset");

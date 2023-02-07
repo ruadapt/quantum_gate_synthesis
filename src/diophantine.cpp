@@ -6,12 +6,12 @@
 #include "gridproblems.h"
 #include "euclideanDomain.h"
 
-namespace gp = gridprob;
-namespace sc = stepcomp;
-namespace ed = euclidean_domain;
-
 namespace diophantine
 {
+    namespace gp = gridprob;
+    namespace sc = stepcomp;
+    namespace ed = euclidean_domain;
+
     StepComp<Maybe<ZOmega>> diophantine(ZRootTwo xi)
     {
         if (xi == 0)

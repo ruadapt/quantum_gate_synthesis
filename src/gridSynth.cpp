@@ -9,7 +9,6 @@ namespace gridsynth
     namespace gp = gridprob;
     namespace sc = stepcomp;
     namespace mat = matrix;
-    namespace bmp = boost::multiprecision;
 
     template <typename T>
     ConvexSet<T> epsilon_region(T epsilon, T theta)

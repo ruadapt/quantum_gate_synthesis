@@ -3,6 +3,7 @@
 #include <boost/test/included/unit_test.hpp>
 
 namespace dio = diophantine;
+namespace ed = euclidean_domain;
 
 BOOST_AUTO_TEST_CASE(test_find_factor)
 {
