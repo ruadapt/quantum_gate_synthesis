@@ -1,5 +1,5 @@
 CXX = g++
-INCLUDE_DIR = /usr/local/include
+INCLUDE_DIR ?= /usr/local/include
 CPPFLAGS= -isystem $(INCLUDE_DIR) -std=c++17 -Werror -Wall -Wextra -Wpedantic -Wconversion -DREAL_DIGITS=$(REAL_DIGITS)
 LDLIBS = -lgmp -lgmpxx
 

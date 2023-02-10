@@ -12,15 +12,30 @@ Aliases are defined in "types.h" for certain types to more closely match Haskell
 
 ## Running the Program
 
-Run `make main` to produce an executable called `main` in the "build" folder. Then, run `build/main angle prec [effort=25]`:
+Run `make main` to produce an executable called `main` in the "build" folder. Then, run `build/main <angle> <prec> [effort=25]`:
 
-- `angle`: the angle to approximate (in radians).
-- `prec`: the required precision in bits for the approximation (equivalent to the `bits` flag in Haskell).
-- `effort`: the amount of effort to put into factoring (there is an equivalent `effort` flag in Haskell). This is not required and defaults to 25.
+- `angle`: the program approximates a z-rotation gate for this angle (in radians).
+- `prec`: the required precision in bits for the approximation.
+- `effort`: the effort used for factoring. This is not required and defaults to 25.
 
-The output will include the sequence of gates (as a string), along with the $\log_{0.5}$ of the approximation error (see Haskell implementation for more details).
+These values correspond to the second, third, and fourth arguments of [gridsynth](https://hackage.haskell.org/package/newsynth-0.4.0.0/docs/Quantum-Synthesis-GridSynth.html#v:gridsynth) in Haskell.
 
-**Note**: The `INCLUDE_DIR` variable in the Makefile may have to be changed depending on the system being used. This is where the GMP headers and the "boost" directory should be located.
+For example, `build/main 1.2 10` will synthesize an approximate z-rotation gate of 1.2 radians to at least 10 bits of precision. The output will include the sequence of gates (as a string), along with the $\log_{0.5}$ of the approximation error. These values correspond to the gate sequence returned by [gridsynth_gates](https://hackage.haskell.org/package/newsynth-0.4.0.0/docs/Quantum-Synthesis-GridSynth.html#v:gridsynth_gates) and the error returned by [gridsynth_stats](https://hackage.haskell.org/package/newsynth-0.4.0.0/docs/Quantum-Synthesis-GridSynth.html#v:gridsynth_stats) in Haskell.
+
+### Choosing Precision
+
+The `prec` input controls how accurate the computed gate sequence has to be. Increasing precision increases runtime on a seemingly exponential basis for the C++ implementation. For example, on a 2020 Macbook Air, synthesis an angle of 1.7 radians took approximately:
+
+- 4 seconds for 8 bits of precision
+- 83 seconds for 9 bits
+- 368 seconds for 10 bits
+- 1288 seconds for 11 bits
+
+This runtime will also vary for different angles, but using have too high of a precision value leads to very high runtimes, so starting with lower precisions and trying to work up is advisable. **This implementation is much slower than the Haskell version, which can still run in just a few seconds for 100s of bits of precision.** Some potential ways to improve the speed of this program are presented later.
+
+### Setting Include Directory
+
+The `INCLUDE_DIR` variable in the Makefile, which defaults to `/usr/local/include` may have to be changed depending on the system being used. This is where the GMP headers and the "boost" directory should be located. To set the variable, add `INCLUDE_DIR=<some path>` when invoking `make`, like `make main INCLUDE_DIR=/sample/path`.
 
 ### Setting Real Number Precision
 
@@ -44,3 +59,4 @@ This implementation is significantly slower than the Haskell implementation for 
   - A similar critique is true for functions like `utils::tail` that manipulate lists: if we take the tail of a very long list, almost all of the list is being copied, so some sort of range that points to the original list could be used instead to avoid copying.
 - The numeric classes, like `RootTwo` or `Complex`, are also passed by value and stored as values almost all of the time (e.g. a list will be `List<QRootTwo>` instead of `List<const QRootTwo&>`, and the same for matrices). Since these numeric classes often contain arbitrary precision integers or rationals, which take up more space than normal primitive types, passing them around by reference might improve execution speed.
 - Some recursive algorithms might be convertible to iterative ones, which could save space/time.
+- Also refer to any `\todo` comments in the code.

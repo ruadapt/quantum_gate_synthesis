@@ -27,6 +27,10 @@ namespace bmp = boost::multiprecision;
 
 /**
  * @brief A real number with N digits of precision.
+ * 
+ * \todo Turning expression templates on by using bmp::et_on instead might help speed
+ * up code, but it also causes compilation errors right now, so some code changes would be
+ * needed.
  */
 template <unsigned int N>
 using Decimal = bmp::number<bmp::cpp_dec_float<N>, bmp::et_off>;
