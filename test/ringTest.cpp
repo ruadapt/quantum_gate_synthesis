@@ -453,9 +453,9 @@ BOOST_AUTO_TEST_CASE(test_floor)
 {
 
     // Real
-    assert(5 == ring::floor_of(5.2));
-    assert(4 == ring::floor_of(4));
-    assert(-3 == ring::floor_of(-2.5));
+    assert(5 == ring::floor_of(Real(5.2)));
+    assert(4 == ring::floor_of(Real(4)));
+    assert(-3 == ring::floor_of(Real(-2.5)));
     // Integer
     assert(123123123123123123123123_mpq == ring::floor_of(Integer(123123123123123123123123_mpz)));
     assert(-22 == ring::floor_of(Integer(-22_mpq)));
