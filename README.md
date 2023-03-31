@@ -26,10 +26,10 @@ For example, `build/main 1.2 10` will synthesize an approximate z-rotation gate 
 
 The `prec` input controls how accurate the computed gate sequence has to be. Increasing precision increases runtime on a seemingly exponential basis for the C++ implementation. For example, on a 2020 Macbook Air, synthesis an angle of 1.7 radians took approximately:
 
-- 4 seconds for 8 bits of precision
-- 83 seconds for 9 bits
-- 368 seconds for 10 bits
-- 1288 seconds for 11 bits
+- 1.4 seconds for 8 bits of precision
+- 25.8 seconds for 9 bits
+- 109.0 seconds for 10 bits
+- 403.4 seconds for 11 bits
 
 This runtime will also vary for different angles, but using have too high of a precision value leads to very high runtimes, so starting with lower precisions and trying to work up is advisable. **This implementation is much slower than the Haskell version, which can still run in just a few seconds for 100s of bits of precision.** Some potential ways to improve the speed of this program are presented later.
 
@@ -57,6 +57,6 @@ This implementation is significantly slower than the Haskell implementation for 
 
 - Almost everything is passed by value, including lists, matrices, and lambda functions (as `std::function` values). If a long list or other object is passed around between functions, a lot of copying might be going on. Passing more things by const reference should should speed things up. This wasn't done initially because with all of the higher-order functions and lambdas in the code, I thought passing everything by value would make it easier to avoid bugs, but this is likely slowing execution down. Note that this is probably less of a problem for matrices, because almost all (if not all) of the matrices in the code are only 2x2.
   - A similar critique is true for functions like `utils::tail` that manipulate lists: if we take the tail of a very long list, almost all of the list is being copied, so some sort of range that points to the original list could be used instead to avoid copying.
-- The numeric classes, like `RootTwo` or `Complex`, are also passed by value and stored as values almost all of the time (e.g. a list will be `List<QRootTwo>` instead of `List<const QRootTwo&>`, and the same for matrices). Since these numeric classes often contain arbitrary precision integers or rationals, which take up more space than normal primitive types, passing them around by reference might improve execution speed.
+- The numeric classes, like `RootTwo` or `Complex`, are also passed by value and stored as values almost all of the time, including in data structures like lists/vectors and matrices. Since these numeric classes often contain arbitrary precision integers or rationals, which take up more space than normal primitive types, passing them around by reference might improve execution speed.
 - Some recursive algorithms might be convertible to iterative ones, which could save space/time.
 - Also refer to any `\todo` comments in the code.
